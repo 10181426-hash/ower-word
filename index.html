@@ -1,1 +1,1186 @@
+```html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>👑 OWNER WORLD — V0.1</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+      background: #87ceeb;
+    }
+
+    canvas {
+      display: block;
+    }
+
+    #hud {
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      z-index: 10;
+      color: white;
+      text-shadow: 0 2px 5px black;
+      pointer-events: none;
+    }
+
+    #title {
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    #money {
+      margin-top: 8px;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    #zone {
+      margin-top: 5px;
+      font-size: 16px;
+    }
+
+    #help {
+      position: fixed;
+      bottom: 15px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      color: white;
+      background: rgba(0, 0, 0, 0.65);
+      padding: 10px 16px;
+      border-radius: 12px;
+      text-align: center;
+      font-size: 14px;
+      pointer-events: none;
+    }
+
+    #crosshair {
+      position: fixed;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 10;
+      color: white;
+      font-size: 22px;
+      text-shadow: 0 2px 4px black;
+      pointer-events: none;
+    }
+
+    #startScreen {
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(
+        135deg,
+        rgba(20, 10, 60, 0.95),
+        rgba(5, 20, 60, 0.95)
+      );
+      color: white;
+      text-align: center;
+    }
+
+    #startBox {
+      width: min(90%, 500px);
+      padding: 35px;
+      border-radius: 25px;
+      background: rgba(0, 0, 0, 0.45);
+      border: 2px solid rgba(255, 255, 255, 0.25);
+      box-shadow: 0 0 40px rgba(120, 80, 255, 0.5);
+    }
+
+    #startBox h1 {
+      font-size: 42px;
+      margin: 0 0 10px;
+    }
+
+    #startBox p {
+      font-size: 17px;
+      opacity: 0.9;
+    }
+
+    #playButton {
+      margin-top: 20px;
+      padding: 14px 30px;
+      border: none;
+      border-radius: 15px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      background: #7c3aed;
+      color: white;
+      box-shadow: 0 5px 20px rgba(124, 58, 237, 0.5);
+    }
+
+    #playButton:hover {
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- PANTALLA INICIAL -->
+  <div id="startScreen">
+    <div id="startBox">
+      <h1>👑 OWNER WORLD</h1>
+      <p>🌎 Bienvenido a la primera versión de nuestro mundo.</p>
+      <p>🎮 Muévete, explora las bases y encuentra huevos.</p>
+
+      <button id="playButton">
+        🚀 JUGAR
+      </button>
+    </div>
+  </div>
+
+  <!-- HUD -->
+  <div id="hud">
+    <div id="title">👑 OWNER WORLD</div>
+    <div id="money">💰 $0</div>
+    <div id="zone">📍 Pradera Inicial</div>
+  </div>
+
+  <div id="crosshair">+</div>
+
+  <div id="help">
+    WASD = mover · SHIFT = correr · ESPACIO = saltar · Mouse = mirar
+  </div>
+
+  <script type="module">
+
+    /*
+      ============================================
+      👑 OWNER WORLD — V0.1
+      ============================================
+
+      Esta versión todavía es local.
+
+      MÁS ADELANTE:
+      - Supabase
+      - Multijugador
+      - Datos permanentes
+      - Eventos globales
+      - Panel OWNER
+      - Huevos globales
+      - Mascotas
+      - Mutaciones
+    */
+
+    import * as THREE from
+      "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js";
+
+
+    // ==========================================
+    // ESCENA
+    // ==========================================
+
+    const scene = new THREE.Scene();
+
+    scene.background = new THREE.Color(0x87ceeb);
+
+    scene.fog = new THREE.Fog(
+      0x87ceeb,
+      60,
+      180
+    );
+
+
+    // ==========================================
+    // CÁMARA
+    // ==========================================
+
+    const camera = new THREE.PerspectiveCamera(
+      70,
+      window.innerWidth / window.innerHeight,
+      0.1,
+      400
+    );
+
+    camera.position.set(
+      0,
+      5,
+      10
+    );
+
+
+    // ==========================================
+    // RENDERER
+    // ==========================================
+
+    const renderer = new THREE.WebGLRenderer({
+      antialias: true
+    });
+
+    renderer.setSize(
+      window.innerWidth,
+      window.innerHeight
+    );
+
+    renderer.setPixelRatio(
+      Math.min(window.devicePixelRatio, 2)
+    );
+
+    renderer.shadowMap.enabled = true;
+
+    renderer.shadowMap.type =
+      THREE.PCFSoftShadowMap;
+
+    document.body.appendChild(
+      renderer.domElement
+    );
+
+
+    // ==========================================
+    // LUCES
+    // ==========================================
+
+    const hemisphereLight =
+      new THREE.HemisphereLight(
+        0xffffff,
+        0x557755,
+        2
+      );
+
+    scene.add(
+      hemisphereLight
+    );
+
+
+    const sun =
+      new THREE.DirectionalLight(
+        0xffffff,
+        2.5
+      );
+
+    sun.position.set(
+      40,
+      70,
+      30
+    );
+
+    sun.castShadow = true;
+
+    sun.shadow.mapSize.width = 2048;
+    sun.shadow.mapSize.height = 2048;
+
+    scene.add(sun);
+
+
+    // ==========================================
+    // FUNCIÓN PARA CREAR CUBOS
+    // ==========================================
+
+    function createBox(
+      x,
+      y,
+      z,
+      width,
+      height,
+      depth,
+      color
+    ) {
+
+      const geometry =
+        new THREE.BoxGeometry(
+          width,
+          height,
+          depth
+        );
+
+      const material =
+        new THREE.MeshStandardMaterial({
+          color: color
+        });
+
+      const mesh =
+        new THREE.Mesh(
+          geometry,
+          material
+        );
+
+      mesh.position.set(
+        x,
+        y,
+        z
+      );
+
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+
+      scene.add(mesh);
+
+      return mesh;
+    }
+
+
+    // ==========================================
+    // TERRENO PRINCIPAL
+    // ==========================================
+
+    createBox(
+      0,
+      -0.5,
+      0,
+      150,
+      1,
+      150,
+      0x4f9d45
+    );
+
+
+    // ==========================================
+    // CAMINOS
+    // ==========================================
+
+    createBox(
+      0,
+      0.02,
+      0,
+      14,
+      0.1,
+      150,
+      0x777777
+    );
+
+    createBox(
+      0,
+      0.03,
+      0,
+      150,
+      0.1,
+      14,
+      0x777777
+    );
+
+
+    // ==========================================
+    // ZONAS
+    // ==========================================
+
+    const zones = [
+
+      {
+        name: "🌿 Pradera Inicial",
+        color: 0x69b84f,
+        x: -45,
+        z: -45
+      },
+
+      {
+        name: "🌲 Bosque Encantado",
+        color: 0x2f7d4f,
+        x: 45,
+        z: -45
+      },
+
+      {
+        name: "🏜️ Desierto Dorado",
+        color: 0xd9b45b,
+        x: -45,
+        z: 45
+      },
+
+      {
+        name: "❄️ Cumbres Heladas",
+        color: 0xa9d8e8,
+        x: 45,
+        z: 45
+      }
+
+    ];
+
+
+    // ==========================================
+    // CREAR ZONAS
+    // ==========================================
+
+    for (
+      const zone of zones
+    ) {
+
+      createBox(
+        zone.x,
+        0.05,
+        zone.z,
+        42,
+        0.12,
+        42,
+        zone.color
+      );
+
+    }
+
+
+    // ==========================================
+    // ÁRBOLES
+    // ==========================================
+
+    function createTree(
+      x,
+      z
+    ) {
+
+      createBox(
+        x,
+        2,
+        z,
+        1.3,
+        4,
+        1.3,
+        0x70452b
+      );
+
+      const crown =
+        createBox(
+          x,
+          4.8,
+          z,
+          4,
+          3.5,
+          4,
+          0x236b38
+        );
+
+      crown.rotation.y =
+        Math.random();
+    }
+
+
+    // Árboles del bosque
+
+    for (
+      let i = 0;
+      i < 20;
+      i++
+    ) {
+
+      const x =
+        45 +
+        (Math.random() - 0.5) * 34;
+
+      const z =
+        -45 +
+        (Math.random() - 0.5) * 34;
+
+      createTree(
+        x,
+        z
+      );
+
+    }
+
+
+    // ==========================================
+    // CACTUS
+    // ==========================================
+
+    function createCactus(
+      x,
+      z
+    ) {
+
+      createBox(
+        x,
+        1.5,
+        z,
+        1,
+        3,
+        1,
+        0x2f8f45
+      );
+
+      createBox(
+        x + 0.9,
+        1.8,
+        z,
+        0.8,
+        1.5,
+        0.8,
+        0x2f8f45
+      );
+
+    }
+
+
+    for (
+      let i = 0;
+      i < 15;
+      i++
+    ) {
+
+      const x =
+        -45 +
+        (Math.random() - 0.5) * 34;
+
+      const z =
+        45 +
+        (Math.random() - 0.5) * 34;
+
+      createCactus(
+        x,
+        z
+      );
+
+    }
+
+
+    // ==========================================
+    // CRISTALES DE HIELO
+    // ==========================================
+
+    function createIce(
+      x,
+      z
+    ) {
+
+      const ice =
+        createBox(
+          x,
+          2,
+          z,
+          1.5,
+          4,
+          1.5,
+          0xdceeff
+        );
+
+      ice.rotation.y =
+        Math.random();
+
+    }
+
+
+    for (
+      let i = 0;
+      i < 15;
+      i++
+    ) {
+
+      const x =
+        45 +
+        (Math.random() - 0.5) * 34;
+
+      const z =
+        45 +
+        (Math.random() - 0.5) * 34;
+
+      createIce(
+        x,
+        z
+      );
+
+    }
+
+
+    // ==========================================
+    // BASES
+    // ==========================================
+
+    function createBase(
+      x,
+      z,
+      number
+    ) {
+
+      createBox(
+        x,
+        0.6,
+        z,
+        14,
+        1.2,
+        14,
+        0x334155
+      );
+
+      createBox(
+        x,
+        1.4,
+        z - 6,
+        12,
+        1.4,
+        1,
+        0x1e293b
+      );
+
+      const beacon =
+        createBox(
+          x,
+          2.5,
+          z,
+          2,
+          4,
+          2,
+          0x7c3aed
+        );
+
+      beacon.material.emissive =
+        new THREE.Color(
+          0x35127a
+        );
+
+    }
+
+
+    createBase(
+      -8,
+      -8,
+      1
+    );
+
+    createBase(
+      8,
+      -8,
+      2
+    );
+
+    createBase(
+      -8,
+      8,
+      3
+    );
+
+    createBase(
+      8,
+      8,
+      4
+    );
+
+
+    // ==========================================
+    // HUEVOS
+    // ==========================================
+
+    const eggs = [];
+
+
+    function createEgg(
+      x,
+      y,
+      z,
+      color,
+      rarity
+    ) {
+
+      const egg =
+        createBox(
+          x,
+          y,
+          z,
+          2,
+          2.5,
+          2,
+          color
+        );
+
+      egg.rotation.z =
+        0.2;
+
+      egg.userData.rarity =
+        rarity;
+
+      eggs.push(
+        egg
+      );
+
+      return egg;
+    }
+
+
+    // Huevos iniciales
+
+    for (
+      let i = 0;
+      i < 6;
+      i++
+    ) {
+
+      createEgg(
+        -25 + i * 5,
+        1.4,
+        -30,
+        0xf4f4f4,
+        "Común"
+      );
+
+    }
+
+
+    // Huevo raro
+
+    createEgg(
+      10,
+      1.4,
+      -30,
+      0x3b82f6,
+      "Raro"
+    );
+
+
+    // Huevo épico
+
+    createEgg(
+      18,
+      1.4,
+      -30,
+      0xa855f7,
+      "Épico"
+    );
+
+
+    // ==========================================
+    // JUGADOR
+    // ==========================================
+
+    const player =
+      createBox(
+        0,
+        1.2,
+        0,
+        1.2,
+        2.4,
+        1.2,
+        0x2563eb
+      );
+
+
+    const head =
+      createBox(
+        0,
+        2.9,
+        0,
+        1.3,
+        1.3,
+        1.3,
+        0xf1c27d
+      );
+
+
+    // ==========================================
+    // CONTROLES
+    // ==========================================
+
+    const keys = {};
+
+    window.addEventListener(
+      "keydown",
+      function(event) {
+
+        keys[event.code] =
+          true;
+
+      }
+    );
+
+
+    window.addEventListener(
+      "keyup",
+      function(event) {
+
+        keys[event.code] =
+          false;
+
+      }
+    );
+
+
+    // ==========================================
+    // CÁMARA
+    // ==========================================
+
+    let yaw = 0;
+
+    let pitch = -0.18;
+
+
+    document.body.addEventListener(
+      "click",
+      function() {
+
+        renderer.domElement.requestPointerLock();
+
+      }
+    );
+
+
+    window.addEventListener(
+      "mousemove",
+      function(event) {
+
+        if (
+          document.pointerLockElement ===
+          renderer.domElement
+        ) {
+
+          yaw -=
+            event.movementX *
+            0.0025;
+
+          pitch -=
+            event.movementY *
+            0.0025;
+
+          pitch =
+            Math.max(
+              -1.2,
+              Math.min(
+                0.6,
+                pitch
+              )
+            );
+
+        }
+
+      }
+    );
+
+
+    // ==========================================
+    // FÍSICA
+    // ==========================================
+
+    let velocityY = 0;
+
+    let onGround = true;
+
+
+    // ==========================================
+    // DINERO
+    // ==========================================
+
+    let money = 0;
+
+
+    // ==========================================
+    // RELOJ DEL JUEGO
+    // ==========================================
+
+    const clock =
+      new THREE.Clock();
+
+
+    // ==========================================
+    // ANIMACIÓN
+    // ==========================================
+
+    function animate() {
+
+      requestAnimationFrame(
+        animate
+      );
+
+
+      const delta =
+        Math.min(
+          clock.getDelta(),
+          0.05
+        );
+
+
+      // -------------------------------
+      // VELOCIDAD
+      // -------------------------------
+
+      let speed = 5;
+
+
+      if (
+        keys.ShiftLeft ||
+        keys.ShiftRight
+      ) {
+
+        speed = 10;
+
+      }
+
+
+      // -------------------------------
+      // DIRECCIÓN
+      // -------------------------------
+
+      const forward =
+        new THREE.Vector3(
+          Math.sin(yaw),
+          0,
+          Math.cos(yaw)
+        );
+
+
+      const right =
+        new THREE.Vector3(
+          Math.cos(yaw),
+          0,
+          -Math.sin(yaw)
+        );
+
+
+      const movement =
+        new THREE.Vector3();
+
+
+      if (
+        keys.KeyW
+      ) {
+
+        movement.add(
+          forward
+        );
+
+      }
+
+
+      if (
+        keys.KeyS
+      ) {
+
+        movement.sub(
+          forward
+        );
+
+      }
+
+
+      if (
+        keys.KeyD
+      ) {
+
+        movement.add(
+          right
+        );
+
+      }
+
+
+      if (
+        keys.KeyA
+      ) {
+
+        movement.sub(
+          right
+        );
+
+      }
+
+
+      if (
+        movement.lengthSq() > 0
+      ) {
+
+        movement
+          .normalize()
+          .multiplyScalar(
+            speed * delta
+          );
+
+      }
+
+
+      player.position.add(
+        movement
+      );
+
+
+      // -------------------------------
+      // SALTO
+      // -------------------------------
+
+      if (
+        keys.Space &&
+        onGround
+      ) {
+
+        velocityY = 8;
+
+        onGround = false;
+
+      }
+
+
+      velocityY -=
+        22 * delta;
+
+
+      player.position.y +=
+        velocityY * delta;
+
+
+      if (
+        player.position.y < 1.2
+      ) {
+
+        player.position.y =
+          1.2;
+
+        velocityY = 0;
+
+        onGround = true;
+
+      }
+
+
+      // -------------------------------
+      // CABEZA
+      // -------------------------------
+
+      head.position.x =
+        player.position.x;
+
+      head.position.y =
+        player.position.y + 1.7;
+
+      head.position.z =
+        player.position.z;
+
+
+      // -------------------------------
+      // CÁMARA
+      // -------------------------------
+
+      const cameraTarget =
+        new THREE.Vector3(
+
+          player.position.x -
+          Math.sin(yaw) * 8,
+
+          player.position.y +
+          4.2 +
+          Math.sin(pitch) * 4,
+
+          player.position.z -
+          Math.cos(yaw) * 8
+
+        );
+
+
+      camera.position.lerp(
+        cameraTarget,
+        0.12
+      );
+
+
+      camera.lookAt(
+        player.position.x,
+        player.position.y + 1.2,
+        player.position.z
+      );
+
+
+      // -------------------------------
+      // DINERO
+      // -------------------------------
+
+      money +=
+        delta * 0.5;
+
+
+      document.getElementById(
+        "money"
+      ).textContent =
+        Math.floor(
+          money
+        );
+
+
+      // -------------------------------
+      // ANIMACIÓN HUEVOS
+      // -------------------------------
+
+      for (
+        const egg of eggs
+      ) {
+
+        egg.rotation.y +=
+          delta;
+
+        egg.position.y =
+          1.4 +
+          Math.sin(
+            performance.now() *
+            0.002 +
+            egg.position.x
+          ) *
+          0.12;
+
+      }
+
+
+      renderer.render(
+        scene,
+        camera
+      );
+
+    }
+
+
+    // ==========================================
+    // INICIAR JUEGO
+    // ==========================================
+
+    document
+      .getElementById("playButton")
+      .addEventListener(
+        "click",
+        function() {
+
+          document
+            .getElementById(
+              "startScreen"
+            )
+            .style.display =
+            "none";
+
+          renderer.domElement
+            .requestPointerLock();
+
+        }
+      );
+
+
+    // ==========================================
+    // CAMBIO DE TAMAÑO
+    // ==========================================
+
+    window.addEventListener(
+      "resize",
+      function() {
+
+        camera.aspect =
+          window.innerWidth /
+          window.innerHeight;
+
+        camera.updateProjectionMatrix();
+
+        renderer.setSize(
+          window.innerWidth,
+          window.innerHeight
+        );
+
+      }
+    );
+
+
+    // ==========================================
+    // ARRANCAR
+    // ==========================================
+
+    animate();
+
+  </script>
+
+</body>
+</html>
+```
 
