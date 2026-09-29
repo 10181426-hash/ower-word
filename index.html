@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -13,7 +12,9 @@
     padding:0;
 }
 
-body{
+html,body{
+    width:100%;
+    height:100%;
     overflow:hidden;
     font-family:Arial,Helvetica,sans-serif;
     background:#87ceeb;
@@ -21,6 +22,8 @@ body{
 
 canvas{
     display:block;
+    width:100%;
+    height:100%;
 }
 
 #hud{
@@ -29,110 +32,144 @@ canvas{
     left:15px;
     z-index:10;
     color:white;
-    text-shadow:0 3px 6px #000;
+    font-weight:bold;
+    text-shadow:0 3px 8px #000;
     pointer-events:none;
 }
 
 #title{
-    font-size:27px;
-    font-weight:900;
+    font-size:28px;
+    letter-spacing:2px;
+}
+
+#version{
+    font-size:14px;
+    opacity:.8;
+    margin-top:3px;
 }
 
 #money{
-    margin-top:7px;
-    font-size:20px;
-    font-weight:bold;
+    margin-top:10px;
+    font-size:22px;
 }
 
 #zone{
-    margin-top:5px;
-    font-size:17px;
+    margin-top:6px;
+    font-size:18px;
+}
+
+#announcement{
+    position:fixed;
+    top:25px;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:20;
+    padding:14px 24px;
+    border-radius:15px;
+    background:rgba(10,10,25,.9);
+    color:white;
+    font-size:20px;
     font-weight:bold;
+    text-align:center;
+    box-shadow:0 5px 25px rgba(0,0,0,.5);
+    display:none;
+    pointer-events:none;
+}
+
+#controls{
+    position:fixed;
+    bottom:15px;
+    left:15px;
+    z-index:10;
+    padding:10px 14px;
+    border-radius:12px;
+    background:rgba(0,0,0,.55);
+    color:white;
+    font-size:13px;
+    line-height:1.6;
+    pointer-events:none;
 }
 
 #startScreen{
     position:fixed;
     inset:0;
-    z-index:50;
+    z-index:100;
     display:flex;
-    flex-direction:column;
-    align-items:center;
     justify-content:center;
+    align-items:center;
     background:
-        radial-gradient(circle at center,rgba(100,70,180,.35),transparent 45%),
-        linear-gradient(#07152f,#102d55 55%,#142b25);
-    color:white;
+        radial-gradient(circle at center,#182b58 0%,#07101f 45%,#02050c 100%);
+}
+
+.startBox{
+    width:min(90%,500px);
+    padding:45px 30px;
+    border-radius:25px;
     text-align:center;
+    color:white;
+    background:rgba(10,20,45,.8);
+    border:2px solid rgba(120,180,255,.35);
+    box-shadow:
+        0 0 40px rgba(70,130,255,.35),
+        inset 0 0 35px rgba(70,130,255,.08);
 }
 
-#startScreen h1{
-    font-size:clamp(45px,8vw,90px);
-    font-weight:1000;
-    letter-spacing:5px;
+.logo{
+    font-size:48px;
+    font-weight:900;
+    letter-spacing:4px;
     text-shadow:
-        0 0 10px #8b5cff,
-        0 0 25px #4c7dff,
-        0 8px 15px #000;
+        0 0 10px #fff,
+        0 0 25px #5d8cff,
+        0 0 45px #7b4dff;
 }
 
-#startScreen p{
-    margin-top:10px;
-    font-size:18px;
+.startVersion{
+    margin-top:8px;
+    font-size:20px;
+    color:#9ec5ff;
+    font-weight:bold;
+}
+
+.startDescription{
+    margin-top:20px;
+    line-height:1.6;
+    color:#dce8ff;
 }
 
 #playButton{
     margin-top:30px;
-    padding:18px 55px;
+    padding:15px 45px;
     border:0;
-    border-radius:15px;
-    background:linear-gradient(135deg,#6c4cff,#00bfff);
+    border-radius:14px;
+    font-size:22px;
+    font-weight:bold;
     color:white;
-    font-size:23px;
-    font-weight:900;
+    background:linear-gradient(135deg,#3c75ff,#793dff);
+    box-shadow:0 8px 25px rgba(70,80,255,.45);
     cursor:pointer;
-    box-shadow:0 8px 25px rgba(0,0,0,.45);
+    transition:.2s;
 }
 
 #playButton:hover{
-    transform:scale(1.08);
+    transform:scale(1.06);
+    box-shadow:0 10px 35px rgba(90,100,255,.7);
 }
 
-#version{
-    position:absolute;
-    bottom:28px;
-    font-size:18px;
-    font-weight:900;
-    letter-spacing:2px;
-    text-shadow:0 2px 5px #000;
-}
-
-#help{
+#crosshair{
     position:fixed;
-    bottom:18px;
     left:50%;
-    transform:translateX(-50%);
-    z-index:10;
-    color:white;
-    font-weight:bold;
-    text-shadow:0 2px 5px #000;
+    top:50%;
+    width:7px;
+    height:7px;
+    margin-left:-3px;
+    margin-top:-3px;
+    border-radius:50%;
+    background:white;
+    box-shadow:0 0 8px black;
+    z-index:8;
     pointer-events:none;
-    text-align:center;
-}
-
-#announcement{
-    position:fixed;
-    top:80px;
-    left:50%;
-    transform:translateX(-50%);
-    z-index:20;
-    color:white;
-    font-size:22px;
-    font-weight:900;
-    text-align:center;
-    text-shadow:0 3px 8px #000;
-    opacity:0;
-    transition:opacity .4s;
-    pointer-events:none;
+    opacity:.7;
 }
 </style>
 </head>
@@ -140,49 +177,41 @@ canvas{
 <body>
 
 <div id="startScreen">
+    <div class="startBox">
+        <div class="logo">OWNER WORLD</div>
+        <div class="startVersion">V0.5</div>
 
-    <h1>👑 OWNER WORLD 👑</h1>
+        <div class="startDescription">
+            🌎 Explora las 9 zonas<br>
+            🐾 Consigue mascotas<br>
+            🥚 Descubre huevos<br>
+            👑 Prepárate para convertirte en OWNER
+        </div>
 
-    <p>
-        Explora las zonas. Consigue mascotas.
-        Conviértete en el dueño.
-    </p>
-
-    <button id="playButton">
-        JUGAR
-    </button>
-
-    <div id="version">
-        V0.5
+        <button id="playButton">JUGAR</button>
     </div>
-
 </div>
 
 <div id="hud">
-
-    <div id="title">
-        👑 OWNER WORLD
-    </div>
-
-    <div id="money">
-        💰 $0
-    </div>
-
-    <div id="zone">
-        🌿 Pradera Inicial
-    </div>
-
+    <div id="title">👑 OWNER WORLD</div>
+    <div id="version">V0.5</div>
+    <div id="money">💰 $0</div>
+    <div id="zone">🌿 Pradera Inicial</div>
 </div>
 
 <div id="announcement"></div>
 
-<div id="help">
-    WASD = Mover |
-    Mouse = Cámara |
-    SPACE = Saltar
+<div id="controls">
+    <b>CONTROLES</b><br>
+    W A S D — Moverse<br>
+    SHIFT — Correr<br>
+    SPACE — Saltar<br>
+    MOUSE — Cámara
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.min.js"></script>
+<div id="crosshair"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 
 <script>
 
@@ -190,31 +219,41 @@ canvas{
    OWNER WORLD V0.5
    ========================================================= */
 
+
+/* =========================================================
+   ESCENA
+   ========================================================= */
+
 const scene = new THREE.Scene();
 
-scene.background =
-    new THREE.Color(0x83cfff);
+scene.background = new THREE.Color(0x79bde8);
 
-scene.fog =
-    new THREE.Fog(
-        0x83cfff,
-        250,
-        1450
-    );
+scene.fog = new THREE.Fog(
+    0x79bde8,
+    180,
+    1150
+);
 
-const camera =
-    new THREE.PerspectiveCamera(
-        70,
-        window.innerWidth /
-        window.innerHeight,
-        0.1,
-        2500
-    );
 
-const renderer =
-    new THREE.WebGLRenderer({
-        antialias:true
-    });
+/* =========================================================
+   CÁMARA
+   ========================================================= */
+
+const camera = new THREE.PerspectiveCamera(
+    70,
+    window.innerWidth / window.innerHeight,
+    0.1,
+    2000
+);
+
+
+/* =========================================================
+   RENDERER
+   ========================================================= */
+
+const renderer = new THREE.WebGLRenderer({
+    antialias:true
+});
 
 renderer.setSize(
     window.innerWidth,
@@ -230,34 +269,33 @@ renderer.shadowMap.enabled = true;
 renderer.shadowMap.type =
     THREE.PCFSoftShadowMap;
 
-document.body.appendChild(
-    renderer.domElement
-);
+document.body.appendChild(renderer.domElement);
 
 
 /* =========================================================
    LUCES
    ========================================================= */
 
-const hemiLight =
+const hemisphereLight =
     new THREE.HemisphereLight(
-        0xffffff,
-        0x42643c,
-        1.8
+        0xbde8ff,
+        0x4b3826,
+        2.0
     );
 
-scene.add(hemiLight);
+scene.add(hemisphereLight);
+
 
 const sun =
     new THREE.DirectionalLight(
         0xffffff,
-        2.2
+        2.5
     );
 
 sun.position.set(
-    -250,
-    400,
-    150
+    100,
+    180,
+    80
 );
 
 sun.castShadow = true;
@@ -265,305 +303,29 @@ sun.castShadow = true;
 sun.shadow.mapSize.width = 2048;
 sun.shadow.mapSize.height = 2048;
 
-sun.shadow.camera.left = -500;
-sun.shadow.camera.right = 500;
-sun.shadow.camera.top = 500;
-sun.shadow.camera.bottom = -1200;
+sun.shadow.camera.left = -300;
+sun.shadow.camera.right = 300;
+sun.shadow.camera.top = 300;
+sun.shadow.camera.bottom = -1300;
 
 scene.add(sun);
 
 
 /* =========================================================
-   MATERIALES
-   ========================================================= */
-
-const mat = {
-
-    grass:
-        new THREE.MeshStandardMaterial({
-            color:0x58a946
-        }),
-
-    grass2:
-        new THREE.MeshStandardMaterial({
-            color:0x76bd4c
-        }),
-
-    dirt:
-        new THREE.MeshStandardMaterial({
-            color:0x7b4d2a
-        }),
-
-    dirtDark:
-        new THREE.MeshStandardMaterial({
-            color:0x56351e
-        }),
-
-    stone:
-        new THREE.MeshStandardMaterial({
-            color:0x747b82
-        }),
-
-    wood:
-        new THREE.MeshStandardMaterial({
-            color:0x71452a
-        }),
-
-    leaves:
-        new THREE.MeshStandardMaterial({
-            color:0x25833c
-        }),
-
-    leaves2:
-        new THREE.MeshStandardMaterial({
-            color:0x42a843
-        }),
-
-    sand:
-        new THREE.MeshStandardMaterial({
-            color:0xd7ad5c
-        }),
-
-    sandstone:
-        new THREE.MeshStandardMaterial({
-            color:0xc9964b
-        }),
-
-    snow:
-        new THREE.MeshStandardMaterial({
-            color:0xeaf8ff
-        }),
-
-    ice:
-        new THREE.MeshStandardMaterial({
-            color:0x69d9ff,
-            transparent:true,
-            opacity:.75
-        }),
-
-    rock:
-        new THREE.MeshStandardMaterial({
-            color:0x30343b
-        }),
-
-    lava:
-        new THREE.MeshStandardMaterial({
-            color:0xff4a16,
-            emissive:0xff2600,
-            emissiveIntensity:2
-        }),
-
-    water:
-        new THREE.MeshStandardMaterial({
-            color:0x168ed0,
-            transparent:true,
-            opacity:.72
-        }),
-
-    galaxy:
-        new THREE.MeshStandardMaterial({
-            color:0x30205d,
-            emissive:0x160c35,
-            emissiveIntensity:.7
-        }),
-
-    purple:
-        new THREE.MeshStandardMaterial({
-            color:0x774cff,
-            emissive:0x37118c,
-            emissiveIntensity:1.4
-        }),
-
-    gold:
-        new THREE.MeshStandardMaterial({
-            color:0xffd447,
-            emissive:0xff9f00,
-            emissiveIntensity:.7
-        }),
-
-    white:
-        new THREE.MeshStandardMaterial({
-            color:0xf5f5ff
-        }),
-
-    dark:
-        new THREE.MeshStandardMaterial({
-            color:0x151521
-        })
-};
-
-
-/* =========================================================
-   FUNCIONES
-   ========================================================= */
-
-function box(
-    x,y,z,
-    sx,sy,sz,
-    material,
-    parent=scene
-){
-
-    const geometry =
-        new THREE.BoxGeometry(
-            sx,sy,sz
-        );
-
-    const mesh =
-        new THREE.Mesh(
-            geometry,
-            material
-        );
-
-    mesh.position.set(
-        x,y,z
-    );
-
-    mesh.castShadow = true;
-    mesh.receiveShadow = true;
-
-    parent.add(mesh);
-
-    return mesh;
-}
-
-
-function cyl(
-    x,y,z,
-    radius,
-    height,
-    material,
-    segments=10,
-    parent=scene
-){
-
-    const geometry =
-        new THREE.CylinderGeometry(
-            radius,
-            radius,
-            height,
-            segments
-        );
-
-    const mesh =
-        new THREE.Mesh(
-            geometry,
-            material
-        );
-
-    mesh.position.set(
-        x,y,z
-    );
-
-    mesh.castShadow = true;
-    mesh.receiveShadow = true;
-
-    parent.add(mesh);
-
-    return mesh;
-}
-
-
-function sphere(
-    x,y,z,
-    radius,
-    material,
-    parent=scene
-){
-
-    const geometry =
-        new THREE.SphereGeometry(
-            radius,
-            12,
-            8
-        );
-
-    const mesh =
-        new THREE.Mesh(
-            geometry,
-            material
-        );
-
-    mesh.position.set(
-        x,y,z
-    );
-
-    mesh.castShadow = true;
-    mesh.receiveShadow = true;
-
-    parent.add(mesh);
-
-    return mesh;
-}
-
-
-function cone(
-    x,y,z,
-    radius,
-    height,
-    material,
-    parent=scene
-){
-
-    const geometry =
-        new THREE.ConeGeometry(
-            radius,
-            height,
-            8
-        );
-
-    const mesh =
-        new THREE.Mesh(
-            geometry,
-            material
-        );
-
-    mesh.position.set(
-        x,y,z
-    );
-
-    mesh.castShadow = true;
-    mesh.receiveShadow = true;
-
-    parent.add(mesh);
-
-    return mesh;
-}
-
-
-/* =========================================================
-   MAPA
+   CONFIGURACIÓN DEL MAPA
    ========================================================= */
 
 const MAP_WIDTH = 230;
-
-const HALF_WIDTH =
-    MAP_WIDTH / 2;
 
 const ZONE_LENGTH = 175;
 
 const START_Z = 110;
 
+const TOTAL_ZONES = 9;
+
 const END_Z =
     START_Z -
-    ZONE_LENGTH * 9;
-
-const roadWidth = 30;
-
-
-/* =========================================================
-   TERRENO
-   ========================================================= */
-
-box(
-    0,
-    -1,
-    (START_Z + END_Z) / 2,
-    MAP_WIDTH,
-    2,
-    START_Z - END_Z + 80,
-    mat.grass
-);
+    ZONE_LENGTH * TOTAL_ZONES;
 
 
 /* =========================================================
@@ -574,336 +336,1096 @@ const zones = [
 
     {
         name:"🌿 Pradera Inicial",
-        color:0x58a946,
-        material:mat.grass
+        color:0x65bd55
     },
 
     {
         name:"🌲 Bosque Encantado",
-        color:0x3c7d3a,
-        material:
-            new THREE.MeshStandardMaterial({
-                color:0x3c7d3a
-            })
+        color:0x327c43
     },
 
     {
         name:"🏜️ Desierto Dorado",
-        color:0xd7ad5c,
-        material:mat.sand
+        color:0xd9ad4d
     },
 
     {
         name:"❄️ Cumbres Heladas",
-        color:0xb8e9f7,
-        material:
-            new THREE.MeshStandardMaterial({
-                color:0xb8e9f7
-            })
+        color:0xbce7f4
     },
 
     {
         name:"🌋 Volcán Carmesí",
-        color:0x351f1b,
-        material:
-            new THREE.MeshStandardMaterial({
-                color:0x351f1b
-            })
+        color:0x8d3028
     },
 
     {
         name:"🌊 Abismo Marino",
-        color:0x126a9c,
-        material:
-            new THREE.MeshStandardMaterial({
-                color:0x126a9c
-            })
+        color:0x126fa5
     },
 
     {
         name:"🌌 Galaxia Perdida",
-        color:0x30205d,
-        material:mat.galaxy
+        color:0x251b69
     },
 
     {
         name:"♾️ Santuario Eterno",
-        color:0x827fa5,
-        material:
-            new THREE.MeshStandardMaterial({
-                color:0x827fa5
-            })
+        color:0x4e2d82
     },
 
     {
         name:"✨ Dominio Divino",
-        color:0xe5c94c,
-        material:
-            new THREE.MeshStandardMaterial({
-                color:0xc7a52d
-            })
+        color:0xd7c76a
     }
+
 ];
 
 
-for(
-    let i=0;
-    i<zones.length;
-    i++
-){
-
-    const top =
-        START_Z -
-        i * ZONE_LENGTH;
-
-    const bottom =
-        top -
-        ZONE_LENGTH;
-
-    box(
-        0,
-        .05,
-        (top + bottom)/2,
-        MAP_WIDTH-10,
-        .2,
-        ZONE_LENGTH-4,
-        zones[i].material
-    );
-}
-
-
 /* =========================================================
-   CAMINO
+   TERRENO
    ========================================================= */
 
-const roadMat =
+const groundGeometry =
+    new THREE.BoxGeometry(
+        MAP_WIDTH,
+        4,
+        ZONE_LENGTH * TOTAL_ZONES + 100
+    );
+
+const groundMaterial =
     new THREE.MeshStandardMaterial({
-        color:0x9a7955
+        color:0x4c8f4d,
+        roughness:1
     });
 
-box(
+const ground =
+    new THREE.Mesh(
+        groundGeometry,
+        groundMaterial
+    );
+
+ground.position.set(
     0,
-    .13,
-    (START_Z + END_Z)/2,
-    roadWidth,
-    .25,
-    START_Z-END_Z,
-    roadMat
+    -2,
+    START_Z - (ZONE_LENGTH * TOTAL_ZONES)/2
 );
+
+ground.receiveShadow = true;
+
+scene.add(ground);
 
 
 /* =========================================================
-   BORDES DEL CAMINO
+   CAMINO CENTRAL
    ========================================================= */
 
-for(
-    let z=START_Z;
-    z>END_Z;
-    z-=10
+const roadGeometry =
+    new THREE.BoxGeometry(
+        34,
+        0.15,
+        ZONE_LENGTH * TOTAL_ZONES + 20
+    );
+
+const roadMaterial =
+    new THREE.MeshStandardMaterial({
+        color:0x8a7968,
+        roughness:1
+    });
+
+const road =
+    new THREE.Mesh(
+        roadGeometry,
+        roadMaterial
+    );
+
+road.position.set(
+    0,
+    0.08,
+    START_Z - (ZONE_LENGTH * TOTAL_ZONES)/2
+);
+
+road.receiveShadow = true;
+
+scene.add(road);
+
+
+/* =========================================================
+   FRANJAS DE ZONAS
+   ========================================================= */
+
+function createZoneGround(
+    index,
+    color
 ){
 
-    box(
-        -roadWidth/2-1.3,
-        .3,
-        z,
-        2,
-        .45,
-        8,
-        mat.stone
+    const geometry =
+        new THREE.BoxGeometry(
+            MAP_WIDTH - 8,
+            0.35,
+            ZONE_LENGTH - 4
+        );
+
+    const material =
+        new THREE.MeshStandardMaterial({
+            color:color,
+            roughness:1
+        });
+
+    const mesh =
+        new THREE.Mesh(
+            geometry,
+            material
+        );
+
+    mesh.position.set(
+        0,
+        0.15,
+        START_Z -
+        index * ZONE_LENGTH -
+        ZONE_LENGTH / 2
     );
 
-    box(
-        roadWidth/2+1.3,
-        .3,
-        z,
-        2,
-        .45,
-        8,
-        mat.stone
-    );
+    mesh.receiveShadow = true;
+
+    scene.add(mesh);
+
+    return mesh;
 }
 
 
-/* =========================================================
-   PAREDES DE TIERRA + CÉSPED
-   ========================================================= */
-
-function makeNaturalWall(
-    x,
-    z,
-    length,
-    side
-){
-
-    box(
-        x,
-        5,
-        z,
-        9,
-        10,
-        length,
-        mat.dirtDark
-    );
-
-    box(
-        x,
-        10.3,
-        z,
-        10,
-        1.8,
-        length+1,
-        mat.grass
-    );
-
-    for(
-        let i=-length/2;
-        i<=length/2;
-        i+=22
-    ){
-
-        box(
-            x +
-            (side==="left"?1.2:-1.2),
-            3.5,
-            z+i,
-            3,
-            7,
-            6,
-            mat.dirt
+zones.forEach(
+    (zone,index)=>{
+        createZoneGround(
+            index,
+            zone.color
         );
     }
-}
-
-
-makeNaturalWall(
-    -HALF_WIDTH+2,
-    (START_Z+END_Z)/2,
-    START_Z-END_Z+40,
-    "left"
-);
-
-makeNaturalWall(
-    HALF_WIDTH-2,
-    (START_Z+END_Z)/2,
-    START_Z-END_Z+40,
-    "right"
-);
-
-
-/* Pared final */
-
-box(
-    0,
-    5,
-    END_Z-8,
-    MAP_WIDTH,
-    10,
-    8,
-    mat.dirtDark
-);
-
-box(
-    0,
-    10.3,
-    END_Z-8,
-    MAP_WIDTH+2,
-    2,
-    10,
-    mat.grass
 );
 
 
 /* =========================================================
-   ÁRBOLES
+   PAREDES EXTERIORES
    ========================================================= */
 
-function tree(
+function createOuterWall(
+    x,
+    z,
+    width,
+    depth
+){
+
+    const dirtGeometry =
+        new THREE.BoxGeometry(
+            width,
+            26,
+            depth
+        );
+
+    const dirtMaterial =
+        new THREE.MeshStandardMaterial({
+            color:0x765334,
+            roughness:1
+        });
+
+    const wall =
+        new THREE.Mesh(
+            dirtGeometry,
+            dirtMaterial
+        );
+
+    wall.position.set(
+        x,
+        13,
+        z
+    );
+
+    wall.castShadow = true;
+    wall.receiveShadow = true;
+
+    scene.add(wall);
+
+
+    const grassGeometry =
+        new THREE.BoxGeometry(
+            width + 2,
+            2.2,
+            depth + 2
+        );
+
+    const grassMaterial =
+        new THREE.MeshStandardMaterial({
+            color:0x4e8d3e,
+            roughness:1
+        });
+
+    const grass =
+        new THREE.Mesh(
+            grassGeometry,
+            grassMaterial
+        );
+
+    grass.position.set(
+        x,
+        26.1,
+        z
+    );
+
+    grass.castShadow = true;
+
+    scene.add(grass);
+}
+
+
+/* izquierda */
+
+createOuterWall(
+    -MAP_WIDTH/2,
+    START_Z - (ZONE_LENGTH*TOTAL_ZONES)/2,
+    8,
+    ZONE_LENGTH*TOTAL_ZONES + 50
+);
+
+
+/* derecha */
+
+createOuterWall(
+    MAP_WIDTH/2,
+    START_Z - (ZONE_LENGTH*TOTAL_ZONES)/2,
+    8,
+    ZONE_LENGTH*TOTAL_ZONES + 50
+);
+
+
+/* inicio */
+
+createOuterWall(
+    0,
+    START_Z + 45,
+    MAP_WIDTH,
+    8
+);
+
+
+/* final */
+
+createOuterWall(
+    0,
+    END_Z - 45,
+    MAP_WIDTH,
+    8
+);
+
+
+/* =========================================================
+   FUNCIONES DE DECORACIÓN
+   ========================================================= */
+
+function randomRange(min,max){
+    return Math.random()*(max-min)+min;
+}
+
+
+/* =========================================================
+   ÁRBOL
+   ========================================================= */
+
+function createTree(
     x,
     z,
     scale=1
 ){
 
-    cyl(
+    const group =
+        new THREE.Group();
+
+
+    const trunkGeometry =
+        new THREE.CylinderGeometry(
+            1.3*scale,
+            1.7*scale,
+            9*scale,
+            8
+        );
+
+    const trunkMaterial =
+        new THREE.MeshStandardMaterial({
+            color:0x704323
+        });
+
+    const trunk =
+        new THREE.Mesh(
+            trunkGeometry,
+            trunkMaterial
+        );
+
+    trunk.position.y =
+        4.5*scale;
+
+    trunk.castShadow = true;
+
+    group.add(trunk);
+
+
+    const leavesGeometry =
+        new THREE.SphereGeometry(
+            5.5*scale,
+            8,
+            8
+        );
+
+    const leavesMaterial =
+        new THREE.MeshStandardMaterial({
+            color:0x26783b
+        });
+
+    const leaves =
+        new THREE.Mesh(
+            leavesGeometry,
+            leavesMaterial
+        );
+
+    leaves.position.y =
+        10*scale;
+
+    leaves.castShadow = true;
+
+    group.add(leaves);
+
+
+    group.position.set(
         x,
-        3*scale,
-        z,
-        1.5*scale,
-        6*scale,
-        mat.wood,
-        8
+        0,
+        z
     );
 
-    sphere(
-        x,
-        7*scale,
-        z,
-        4*scale,
-        mat.leaves
-    );
-
-    sphere(
-        x+2*scale,
-        8*scale,
-        z,
-        3*scale,
-        mat.leaves2
-    );
-}
-
-
-function rock(
-    x,
-    z,
-    scale=1,
-    material=mat.stone
-){
-
-    box(
-        x,
-        1.3*scale,
-        z,
-        4*scale,
-        2.6*scale,
-        3*scale,
-        material
-    );
+    scene.add(group);
 }
 
 
 /* =========================================================
-   PRADERA
+   ROCA
    ========================================================= */
 
-const meadowBottom =
-    START_Z -
-    ZONE_LENGTH;
+function createRock(
+    x,
+    z,
+    scale=1,
+    color=0x777777
+){
+
+    const geometry =
+        new THREE.DodecahedronGeometry(
+            3*scale,
+            0
+        );
+
+    const material =
+        new THREE.MeshStandardMaterial({
+            color:color,
+            roughness:1
+        });
+
+    const rock =
+        new THREE.Mesh(
+            geometry,
+            material
+        );
+
+    rock.position.set(
+        x,
+        2*scale,
+        z
+    );
+
+    rock.rotation.y =
+        Math.random()*Math.PI;
+
+    rock.castShadow = true;
+
+    scene.add(rock);
+}
+
+
+/* =========================================================
+   CACTUS
+   ========================================================= */
+
+function createCactus(
+    x,
+    z
+){
+
+    const group =
+        new THREE.Group();
+
+
+    const material =
+        new THREE.MeshStandardMaterial({
+            color:0x3b9b50
+        });
+
+
+    const body =
+        new THREE.Mesh(
+            new THREE.CylinderGeometry(
+                1.5,
+                1.8,
+                9,
+                8
+            ),
+            material
+        );
+
+    body.position.y=4.5;
+
+    body.castShadow=true;
+
+    group.add(body);
+
+
+    const arm1 =
+        new THREE.Mesh(
+            new THREE.CylinderGeometry(
+                .9,
+                1.1,
+                4,
+                8
+            ),
+            material
+        );
+
+    arm1.position.set(
+        3,
+        4.5,
+        0
+    );
+
+    arm1.rotation.z =
+        Math.PI/2;
+
+    group.add(arm1);
+
+
+    const arm2 =
+        new THREE.Mesh(
+            new THREE.CylinderGeometry(
+                .9,
+                1.1,
+                3.5,
+                8
+            ),
+            material
+        );
+
+    arm2.position.set(
+        -3,
+        3.5,
+        0
+    );
+
+    arm2.rotation.z =
+        Math.PI/2;
+
+    group.add(arm2);
+
+
+    group.position.set(
+        x,
+        0,
+        z
+    );
+
+    scene.add(group);
+}
+
+
+/* =========================================================
+   CRISTAL
+   ========================================================= */
+
+function createCrystal(
+    x,
+    z,
+    color=0x7bdcff,
+    scale=1
+){
+
+    const geometry =
+        new THREE.OctahedronGeometry(
+            3*scale,
+            0
+        );
+
+    const material =
+        new THREE.MeshStandardMaterial({
+            color:color,
+            emissive:color,
+            emissiveIntensity:.25
+        });
+
+    const crystal =
+        new THREE.Mesh(
+            geometry,
+            material
+        );
+
+    crystal.position.set(
+        x,
+        3*scale,
+        z
+    );
+
+    crystal.rotation.z =
+        randomRange(-.3,.3);
+
+    crystal.castShadow=true;
+
+    scene.add(crystal);
+}
+
+
+/* =========================================================
+   FLORES
+   ========================================================= */
+
+function createFlower(
+    x,
+    z
+){
+
+    const stem =
+        new THREE.Mesh(
+            new THREE.CylinderGeometry(
+                .12,
+                .12,
+                1.5,
+                5
+            ),
+            new THREE.MeshStandardMaterial({
+                color:0x308a3b
+            })
+        );
+
+    stem.position.set(
+        x,
+        .75,
+        z
+    );
+
+    scene.add(stem);
+
+
+    const flower =
+        new THREE.Mesh(
+            new THREE.SphereGeometry(
+                .65,
+                6,
+                6
+            ),
+            new THREE.MeshStandardMaterial({
+                color:
+                    Math.random()>.5
+                    ?0xff5f8d
+                    :0xffd34e
+            })
+        );
+
+    flower.position.set(
+        x,
+        1.7,
+        z
+    );
+
+    scene.add(flower);
+}
+
+
+/* =========================================================
+   VOLCÁN
+   ========================================================= */
+
+function createVolcano(
+    x,
+    z
+){
+
+    const geometry =
+        new THREE.ConeGeometry(
+            18,
+            26,
+            12
+        );
+
+    const material =
+        new THREE.MeshStandardMaterial({
+            color:0x4d2521
+        });
+
+    const volcano =
+        new THREE.Mesh(
+            geometry,
+            material
+        );
+
+    volcano.position.set(
+        x,
+        13,
+        z
+    );
+
+    volcano.castShadow=true;
+
+    scene.add(volcano);
+
+
+    const lava =
+        new THREE.Mesh(
+            new THREE.CylinderGeometry(
+                5,
+                5,
+                .8,
+                12
+            ),
+            new THREE.MeshStandardMaterial({
+                color:0xff431f,
+                emissive:0xff2600,
+                emissiveIntensity:1
+            })
+        );
+
+    lava.position.set(
+        x,
+        26,
+        z
+    );
+
+    scene.add(lava);
+}
+
+
+/* =========================================================
+   TEMPLO DIVINO
+   ========================================================= */
+
+function createDivineTemple(
+    x,
+    z
+){
+
+    const material =
+        new THREE.MeshStandardMaterial({
+            color:0xffdf75,
+            emissive:0x8c641d,
+            emissiveIntensity:.2
+        });
+
+
+    const base =
+        new THREE.Mesh(
+            new THREE.BoxGeometry(
+                45,
+                3,
+                35
+            ),
+            material
+        );
+
+    base.position.set(
+        x,
+        1.5,
+        z
+    );
+
+    base.castShadow=true;
+
+    scene.add(base);
+
+
+    for(
+        let i=-2;
+        i<=2;
+        i++
+    ){
+
+        const pillar =
+            new THREE.Mesh(
+                new THREE.CylinderGeometry(
+                    2.2,
+                    2.2,
+                    24,
+                    10
+                ),
+                material
+            );
+
+        pillar.position.set(
+            x + i*9,
+            13,
+            z
+        );
+
+        pillar.castShadow=true;
+
+        scene.add(pillar);
+    }
+
+
+    const roof =
+        new THREE.Mesh(
+            new THREE.ConeGeometry(
+                29,
+                18,
+                4
+            ),
+            material
+        );
+
+    roof.position.set(
+        x,
+        32,
+        z
+    );
+
+    roof.rotation.y =
+        Math.PI/4;
+
+    roof.castShadow=true;
+
+    scene.add(roof);
+}
+
+
+/* =========================================================
+   DECORAR ZONAS
+   ========================================================= */
+
+function decorateZone(
+    index
+){
+
+    const centerZ =
+        START_Z -
+        index*ZONE_LENGTH -
+        ZONE_LENGTH/2;
+
+
+    /* PRADERA */
+
+    if(index===0){
+
+        for(
+            let i=0;
+            i<24;
+            i++
+        ){
+
+            const x =
+                randomRange(
+                    -105,
+                    105
+                );
+
+            const z =
+                centerZ +
+                randomRange(
+                    -70,
+                    70
+                );
+
+            if(Math.abs(x)<28)
+                continue;
+
+            createFlower(x,z);
+
+            if(i%4===0)
+                createTree(x,z+5,.8);
+        }
+    }
+
+
+    /* BOSQUE */
+
+    if(index===1){
+
+        for(
+            let i=0;
+            i<34;
+            i++
+        ){
+
+            const x =
+                randomRange(
+                    -105,
+                    105
+                );
+
+            if(Math.abs(x)<25)
+                continue;
+
+            const z =
+                centerZ +
+                randomRange(
+                    -75,
+                    75
+                );
+
+            createTree(
+                x,
+                z,
+                randomRange(.7,1.2)
+            );
+        }
+    }
+
+
+    /* DESIERTO */
+
+    if(index===2){
+
+        for(
+            let i=0;
+            i<24;
+            i++
+        ){
+
+            const x =
+                randomRange(
+                    -105,
+                    105
+                );
+
+            if(Math.abs(x)<25)
+                continue;
+
+            const z =
+                centerZ +
+                randomRange(
+                    -75,
+                    75
+                );
+
+            createCactus(
+                x,
+                z
+            );
+        }
+
+        for(
+            let i=0;
+            i<15;
+            i++
+        ){
+
+            createRock(
+                randomRange(-105,105),
+                centerZ+randomRange(-70,70),
+                randomRange(.5,1.4),
+                0xa47d48
+            );
+        }
+    }
+
+
+    /* HIELO */
+
+    if(index===3){
+
+        for(
+            let i=0;
+            i<25;
+            i++
+        ){
+
+            const x =
+                randomRange(
+                    -105,
+                    105
+                );
+
+            if(Math.abs(x)<25)
+                continue;
+
+            const z =
+                centerZ+
+                randomRange(-75,75);
+
+            createCrystal(
+                x,
+                z,
+                0xbcefff,
+                randomRange(.7,1.5)
+            );
+        }
+    }
+
+
+    /* VOLCÁN */
+
+    if(index===4){
+
+        for(
+            let i=0;
+            i<6;
+            i++
+        ){
+
+            const x =
+                randomRange(-90,90);
+
+            if(Math.abs(x)<28)
+                continue;
+
+            createVolcano(
+                x,
+                centerZ+
+                randomRange(-65,65)
+            );
+        }
+
+        for(
+            let i=0;
+            i<15;
+            i++
+        ){
+
+            createRock(
+                randomRange(-105,105),
+                centerZ+randomRange(-70,70),
+                randomRange(.5,1.2),
+                0x36201e
+            );
+        }
+    }
+
+
+    /* ABISMO */
+
+    if(index===5){
+
+        for(
+            let i=0;
+            i<30;
+            i++
+        ){
+
+            const x =
+                randomRange(
+                    -105,
+                    105
+                );
+
+            if(Math.abs(x)<25)
+                continue;
+
+            const z =
+                centerZ+
+                randomRange(-75,75);
+
+            createCrystal(
+                x,
+                z,
+                0x208cff,
+                randomRange(.5,1.2)
+            );
+        }
+    }
+
+
+    /* GALAXIA */
+
+    if(index===6){
+
+        for(
+            let i=0;
+            i<40;
+            i++
+        ){
+
+            const x =
+                randomRange(
+                    -105,
+                    105
+                );
+
+            if(Math.abs(x)<25)
+                continue;
+
+            const z =
+                centerZ+
+                randomRange(-75,75);
+
+            createCrystal(
+                x,
+                z,
+                Math.random()>.5
+                ?0x8d6cff
+                :0xff66ee,
+                randomRange(.4,1.2)
+            );
+        }
+    }
+
+
+    /* SANTUARIO */
+
+    if(index===7){
+
+        for(
+            let i=-4;
+            i<=4;
+            i++
+        ){
+
+            createCrystal(
+                i*20,
+                centerZ-40,
+                0xd36cff,
+                1.2
+            );
+
+            createCrystal(
+                i*20,
+                centerZ+40,
+                0x7e63ff,
+                1
+            );
+        }
+    }
+
+
+    /* DOMINIO DIVINO */
+
+    if(index===8){
+
+        createDivineTemple(
+            0,
+            centerZ-5
+        );
+
+        for(
+            let i=0;
+            i<20;
+            i++
+        ){
+
+            createCrystal(
+                randomRange(-105,105),
+                centerZ+randomRange(-70,70),
+                0xffe56b,
+                randomRange(.5,1.2)
+            );
+        }
+    }
+}
+
 
 for(
     let i=0;
-    i<18;
+    i<TOTAL_ZONES;
     i++
 ){
-
-    const x =
-        -90 +
-        Math.random()*180;
-
-    const z =
-        meadowBottom+15+
-        Math.random()*
-        (ZONE_LENGTH-30);
-
-    if(
-        Math.abs(x)>25
-    ){
-
-        tree(
-            x,
-            z,
-            .8+
-            Math.random()*.35
-        );
-    }
+    decorateZone(i);
 }
 
 
@@ -911,76 +1433,200 @@ for(
    CORRALES
    ========================================================= */
 
-const corralZ = 68;
-
-function makeCorral(
+function createCorral(
     x,
+    z,
     number
 ){
+
+    const group =
+        new THREE.Group();
+
 
     const floor =
         new THREE.Mesh(
             new THREE.BoxGeometry(
-                43,
-                .5,
-                42
+                46,
+                .4,
+                40
             ),
             new THREE.MeshStandardMaterial({
-                color:0x8d6945
+                color:0xb89a68
             })
         );
 
-    floor.position.set(
-        x,
-        .25,
-        corralZ
+    floor.position.y=.25;
+
+    floor.receiveShadow=true;
+
+    group.add(floor);
+
+
+    const sign =
+        new THREE.Mesh(
+            new THREE.BoxGeometry(
+                22,
+                8,
+                1
+            ),
+            new THREE.MeshStandardMaterial({
+                color:0x3e291d
+            })
+        );
+
+    sign.position.set(
+        0,
+        5,
+        -19
     );
 
-    floor.receiveShadow = true;
-
-    scene.add(floor);
+    group.add(sign);
 
 
-    const positions = [
-        [-19,-18],
-        [19,-18],
-        [-19,18],
-        [19,18]
-    ];
-
-
-    for(
-        const p of positions
-    ){
-
-        box(
-            x+p[0],
-            2,
-            corralZ+p[1],
-            1.2,
-            4,
-            1.2,
-            mat.wood
+    const textPole =
+        new THREE.Mesh(
+            new THREE.CylinderGeometry(
+                .5,
+                .5,
+                8,
+                8
+            ),
+            new THREE.MeshStandardMaterial({
+                color:0x54341d
+            })
         );
-    }
 
-
-    box(
-        x,
+    textPole.position.set(
+        0,
         4,
-        corralZ-21,
-        11,
-        3,
-        1,
-        mat.wood
+        -20
+    );
+
+    group.add(textPole);
+
+
+    group.position.set(
+        x,
+        0,
+        z
+    );
+
+    scene.add(group);
+
+
+    /* etiqueta 3D simple */
+
+    const label =
+        createTextSprite(
+            "🏠 CORRAL "+number
+        );
+
+    label.position.set(
+        x,
+        8,
+        z-20
+    );
+
+    label.scale.set(
+        18,
+        5,
+        1
+    );
+
+    scene.add(label);
+}
+
+
+/* =========================================================
+   TEXTO 3D
+   ========================================================= */
+
+function createTextSprite(
+    text
+){
+
+    const canvas =
+        document.createElement(
+            "canvas"
+        );
+
+    canvas.width=512;
+    canvas.height=128;
+
+    const ctx =
+        canvas.getContext("2d");
+
+    ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    ctx.fillStyle=
+        "rgba(0,0,0,.65)";
+
+    ctx.roundRect(
+        10,
+        10,
+        492,
+        108,
+        25
+    );
+
+    ctx.fill();
+
+    ctx.fillStyle="white";
+
+    ctx.font=
+        "bold 50px Arial";
+
+    ctx.textAlign="center";
+    ctx.textBaseline="middle";
+
+    ctx.fillText(
+        text,
+        256,
+        64
+    );
+
+    const texture =
+        new THREE.CanvasTexture(
+            canvas
+        );
+
+    const material =
+        new THREE.SpriteMaterial({
+            map:texture,
+            transparent:true
+        });
+
+    return new THREE.Sprite(
+        material
     );
 }
 
 
-makeCorral(-78,1);
-makeCorral(-26,2);
-makeCorral(26,3);
-makeCorral(78,4);
+/* =========================================================
+   CREAR LOS 4 CORRALES
+   ========================================================= */
+
+const corralPositions=[
+    -78,
+    -26,
+    26,
+    78
+];
+
+corralPositions.forEach(
+    (x,index)=>{
+        createCorral(
+            x,
+            68,
+            index+1
+        );
+    }
+);
 
 
 /* =========================================================
@@ -992,21 +1638,21 @@ const plaza =
         new THREE.CylinderGeometry(
             28,
             28,
-            .8,
+            1,
             32
         ),
         new THREE.MeshStandardMaterial({
-            color:0x6c765f
+            color:0x596579
         })
     );
 
 plaza.position.set(
     0,
-    .4,
-    18
+    .5,
+    5
 );
 
-plaza.scale.z=.7;
+plaza.receiveShadow=true;
 
 scene.add(plaza);
 
@@ -1015,649 +1661,65 @@ scene.add(plaza);
    PORTAL
    ========================================================= */
 
-function makePortal(
-    x,
-    z
-){
+const portalGroup =
+    new THREE.Group();
 
-    box(
-        x-12,
-        8,
-        z,
-        4,
-        16,
-        4,
-        mat.stone
-    );
 
-    box(
-        x+12,
-        8,
-        z,
-        4,
-        16,
-        4,
-        mat.stone
-    );
-
-    box(
-        x,
-        16,
-        z,
-        28,
-        4,
-        4,
-        mat.stone
-    );
-
-    box(
-        x,
-        8,
-        z-1,
-        18,
-        13,
-        1,
+const portalRing =
+    new THREE.Mesh(
+        new THREE.TorusGeometry(
+            12,
+            2,
+            16,
+            48
+        ),
         new THREE.MeshStandardMaterial({
-            color:0x684cff,
-            emissive:0x2c1188,
-            emissiveIntensity:1.5,
-            transparent:true,
-            opacity:.55
+            color:0x7e55ff,
+            emissive:0x4c2cff,
+            emissiveIntensity:1
         })
     );
-}
 
-makePortal(
-    0,
-    -8
+portalRing.rotation.x=
+    Math.PI/2;
+
+portalRing.position.y=12;
+
+portalGroup.add(
+    portalRing
 );
 
 
-/* =========================================================
-   BOSQUE
-   ========================================================= */
-
-const forestTop =
-    START_Z-ZONE_LENGTH;
-
-const forestBottom =
-    forestTop-ZONE_LENGTH;
-
-
-for(
-    let i=0;
-    i<35;
-    i++
-){
-
-    const x =
-        -95+Math.random()*190;
-
-    const z =
-        forestBottom+10+
-        Math.random()*
-        (ZONE_LENGTH-20);
-
-    if(
-        Math.abs(x)>23
-    ){
-
-        tree(
-            x,
-            z,
-            .8+
-            Math.random()*.5
-        );
-    }
-}
-
-
-/* =========================================================
-   DESIERTO
-   ========================================================= */
-
-const desertTop =
-    START_Z-
-    ZONE_LENGTH*2;
-
-const desertBottom =
-    desertTop-
-    ZONE_LENGTH;
-
-
-function cactus(
-    x,
-    z
-){
-
-    cyl(
-        x,
-        3,
-        z,
-        1.3,
-        6,
-        mat.leaves,
-        8
-    );
-
-    cyl(
-        x+2,
-        3.5,
-        z,
-        .7,
-        3,
-        mat.leaves,
-        8
-    );
-}
-
-
-for(
-    let i=0;
-    i<18;
-    i++
-){
-
-    const x =
-        -90+Math.random()*180;
-
-    const z =
-        desertBottom+
-        Math.random()*ZONE_LENGTH;
-
-    if(
-        Math.abs(x)>23
-    ){
-
-        cone(
-            x,
-            3,
-            z,
-            5+Math.random()*4,
-            6+Math.random()*5,
-            mat.sandstone
-        );
-
-        cactus(
-            x,
-            z
-        );
-    }
-}
-
-
-/* =========================================================
-   CUMBRES HELADAS
-   ========================================================= */
-
-const iceTop =
-    START_Z-
-    ZONE_LENGTH*3;
-
-const iceBottom =
-    iceTop-
-    ZONE_LENGTH;
-
-
-for(
-    let i=0;
-    i<14;
-    i++
-){
-
-    const x =
-        -95+Math.random()*190;
-
-    const z =
-        iceBottom+
-        Math.random()*ZONE_LENGTH;
-
-    if(
-        Math.abs(x)>23
-    ){
-
-        cone(
-            x,
+const portalCore =
+    new THREE.Mesh(
+        new THREE.CircleGeometry(
             10,
-            z,
-            9+Math.random()*7,
-            20+Math.random()*15,
-            mat.snow
-        );
-    }
-}
-
-
-/* =========================================================
-   VOLCÁN
-   ========================================================= */
-
-const volcanoTop =
-    START_Z-
-    ZONE_LENGTH*4;
-
-const volcanoBottom =
-    volcanoTop-
-    ZONE_LENGTH;
-
-
-for(
-    let i=0;
-    i<9;
-    i++
-){
-
-    const x =
-        -90+Math.random()*180;
-
-    const z =
-        volcanoBottom+
-        Math.random()*ZONE_LENGTH;
-
-    if(
-        Math.abs(x)>25
-    ){
-
-        cone(
-            x,
-            9,
-            z,
-            10+Math.random()*7,
-            18+Math.random()*15,
-            mat.rock
-        );
-    }
-}
-
-
-for(
-    let i=0;
-    i<7;
-    i++
-){
-
-    const x =
-        -75+Math.random()*150;
-
-    const z =
-        volcanoBottom+
-        Math.random()*ZONE_LENGTH;
-
-    if(
-        Math.abs(x)>24
-    ){
-
-        box(
-            x,
-            .35,
-            z,
-            4,
-            .35,
-            14,
-            mat.lava
-        );
-    }
-}
-
-
-/* =========================================================
-   ABISMO MARINO
-   ========================================================= */
-
-const oceanTop =
-    START_Z-
-    ZONE_LENGTH*5;
-
-const oceanBottom =
-    oceanTop-
-    ZONE_LENGTH;
-
-
-box(
-    -55,
-    .2,
-    (oceanTop+oceanBottom)/2,
-    70,
-    .35,
-    ZONE_LENGTH,
-    mat.water
-);
-
-box(
-    55,
-    .2,
-    (oceanTop+oceanBottom)/2,
-    70,
-    .35,
-    ZONE_LENGTH,
-    mat.water
-);
-
-
-function coral(
-    x,
-    z
-){
-
-    cyl(
-        x,
-        2,
-        z,
-        1.3,
-        4,
-        new THREE.MeshStandardMaterial({
-            color:0xff4c9b
-        }),
-        7
-    );
-
-    cyl(
-        x+2,
-        2.5,
-        z,
-        .7,
-        5,
-        new THREE.MeshStandardMaterial({
-            color:0xff7148
-        }),
-        7
-    );
-}
-
-
-for(
-    let i=0;
-    i<25;
-    i++
-){
-
-    const x =
-        -95+Math.random()*190;
-
-    const z =
-        oceanBottom+
-        Math.random()*ZONE_LENGTH;
-
-    if(
-        Math.abs(x)>25
-    ){
-
-        coral(
-            x,
-            z
-        );
-    }
-}
-
-
-/* =========================================================
-   GALAXIA
-   ========================================================= */
-
-const galaxyTop =
-    START_Z-
-    ZONE_LENGTH*6;
-
-const galaxyBottom =
-    galaxyTop-
-    ZONE_LENGTH;
-
-
-function crystal(
-    x,
-    z,
-    scale=1
-){
-
-    const geometry =
-        new THREE.OctahedronGeometry(
-            2.5*scale,
-            0
-        );
-
-    const mesh =
-        new THREE.Mesh(
-            geometry,
-            mat.purple
-        );
-
-    mesh.position.set(
-        x,
-        3.5*scale,
-        z
-    );
-
-    mesh.rotation.y =
-        Math.random()*Math.PI;
-
-    mesh.castShadow = true;
-
-    scene.add(mesh);
-}
-
-
-for(
-    let i=0;
-    i<25;
-    i++
-){
-
-    const x =
-        -95+Math.random()*190;
-
-    const z =
-        galaxyBottom+
-        Math.random()*ZONE_LENGTH;
-
-    if(
-        Math.abs(x)>23
-    ){
-
-        crystal(
-            x,
-            z,
-            .7+
-            Math.random()
-        );
-    }
-}
-
-
-/* =========================================================
-   SANTUARIO
-   ========================================================= */
-
-const sanctuaryTop =
-    START_Z-
-    ZONE_LENGTH*7;
-
-const sanctuaryBottom =
-    sanctuaryTop-
-    ZONE_LENGTH;
-
-
-function sanctuaryPillar(
-    x,
-    z
-){
-
-    box(
-        x,
-        8,
-        z,
-        5,
-        16,
-        5,
-        mat.white
-    );
-
-    box(
-        x,
-        16.5,
-        z,
-        7,
-        1.5,
-        7,
-        mat.gold
-    );
-}
-
-
-for(
-    let i=0;
-    i<5;
-    i++
-){
-
-    const z =
-        sanctuaryBottom+
-        25+
-        i*30;
-
-    sanctuaryPillar(
-        -42,
-        z
-    );
-
-    sanctuaryPillar(
-        42,
-        z
-    );
-}
-
-
-/* =========================================================
-   DOMINIO DIVINO
-   ========================================================= */
-
-const divineTop =
-    START_Z-
-    ZONE_LENGTH*8;
-
-const divineBottom =
-    divineTop-
-    ZONE_LENGTH;
-
-
-for(
-    const x of [-65,-35,35,65]
-){
-
-    box(
-        x,
-        14,
-        divineBottom+65,
-        8,
-        28,
-        8,
-        mat.white
-    );
-
-    box(
-        x,
-        29,
-        divineBottom+65,
-        11,
-        3,
-        11,
-        mat.gold
-    );
-}
-
-
-/* Templo */
-
-box(
-    0,
-    10,
-    divineBottom+70,
-    90,
-    20,
-    18,
-    mat.white
-);
-
-box(
-    0,
-    21,
-    divineBottom+70,
-    100,
-    4,
-    24,
-    mat.gold
-);
-
-
-/* =========================================================
-   LETREROS
-   ========================================================= */
-
-function zoneGate(
-    name,
-    z,
-    color
-){
-
-    box(
-        -25,
-        6,
-        z,
-        3,
-        12,
-        3,
-        mat.stone
-    );
-
-    box(
-        25,
-        6,
-        z,
-        3,
-        12,
-        3,
-        mat.stone
-    );
-
-    box(
-        0,
-        12,
-        z,
-        53,
-        3,
-        3,
-        mat.stone
-    );
-
-    box(
-        0,
-        9,
-        z-1.8,
-        43,
-        6,
-        1,
-        new THREE.MeshStandardMaterial({
-            color:color
+            32
+        ),
+        new THREE.MeshBasicMaterial({
+            color:0x27115e
         })
     );
-}
+
+portalCore.rotation.x=
+    -Math.PI/2;
+
+portalCore.position.y=.1;
+
+portalGroup.add(
+    portalCore
+);
 
 
-for(
-    let i=1;
-    i<zones.length;
-    i++
-){
+portalGroup.position.set(
+    0,
+    0,
+    -25
+);
 
-    const z =
-        START_Z-
-        i*ZONE_LENGTH;
-
-    zoneGate(
-        zones[i].name,
-        z,
-        zones[i].color
-    );
-}
+scene.add(
+    portalGroup
+);
 
 
 /* =========================================================
@@ -1668,76 +1730,67 @@ const player =
     new THREE.Group();
 
 
-box(
-    0,
-    2.5,
-    0,
-    3.5,
-    5,
-    2.5,
-    new THREE.MeshStandardMaterial({
-        color:0x246bff
-    }),
-    player
-);
+const body =
+    new THREE.Mesh(
+        new THREE.BoxGeometry(
+            4,
+            5,
+            3
+        ),
+        new THREE.MeshStandardMaterial({
+            color:0x326aff
+        })
+    );
+
+body.position.y=5;
+
+body.castShadow=true;
+
+player.add(body);
 
 
-sphere(
-    0,
-    6.5,
-    0,
-    2,
-    new THREE.MeshStandardMaterial({
-        color:0xffc59a
-    }),
-    player
-);
+const head =
+    new THREE.Mesh(
+        new THREE.BoxGeometry(
+            4,
+            4,
+            4
+        ),
+        new THREE.MeshStandardMaterial({
+            color:0xffc89b
+        })
+    );
+
+head.position.y=9.5;
+
+head.castShadow=true;
+
+player.add(head);
 
 
-box(
-    0,
-    8,
-    0,
-    3.5,
-    1.5,
-    3.5,
-    mat.dark,
-    player
-);
+const hair =
+    new THREE.Mesh(
+        new THREE.BoxGeometry(
+            4.2,
+            1.2,
+            4.2
+        ),
+        new THREE.MeshStandardMaterial({
+            color:0x17120f
+        })
+    );
 
+hair.position.y=11.4;
 
-box(
-    -1,
-    -1,
-    0,
-    1.2,
-    2,
-    1.5,
-    new THREE.MeshStandardMaterial({
-        color:0x202b44
-    }),
-    player
-);
+hair.castShadow=true;
 
-
-box(
-    1,
-    -1,
-    0,
-    1.2,
-    2,
-    1.5,
-    new THREE.MeshStandardMaterial({
-        color:0x202b44
-    }),
-    player
-);
+player.add(hair);
 
 
 player.position.set(
     0,
     0,
-    35
+    24
 );
 
 scene.add(player);
@@ -1747,25 +1800,19 @@ scene.add(player);
    MOVIMIENTO
    ========================================================= */
 
-const keys = {};
-
-let playerVelocityY = 0;
-
-const gravity = -0.028;
-
+const keys={};
 
 document.addEventListener(
     "keydown",
     function(event){
 
-        keys[event.code] = true;
+        keys[event.code]=true;
 
         if(
-            event.code === "Space" &&
-            player.position.y <= 0.06
+            event.code==="Space" &&
+            player.position.y<=0.05
         ){
-
-            playerVelocityY = 0.58;
+            playerVelocityY=.55;
         }
     }
 );
@@ -1774,42 +1821,57 @@ document.addEventListener(
 document.addEventListener(
     "keyup",
     function(event){
-
-        keys[event.code] = false;
+        keys[event.code]=false;
     }
 );
 
 
+let playerVelocityY=0;
+
+const gravity=-0.025;
+
+const normalSpeed=.32;
+
+const sprintSpeed=.55;
+
+
 /* =========================================================
-   CÁMARA MOUSE
+   CÁMARA CON MOUSE
    ========================================================= */
 
-let cameraYaw = 0;
+let cameraYaw=0;
 
-let cameraPitch = 0.35;
+let cameraPitch=.35;
 
+
+/*
+    La cámara responde al movimiento
+    del mouse sin usar pointer lock.
+*/
 
 document.addEventListener(
     "mousemove",
     function(event){
 
         if(
-            !document.pointerLockElement
+            !gameStarted
         ){
             return;
         }
 
         cameraYaw -=
-            event.movementX * 0.0025;
+            event.movementX *
+            0.003;
 
         cameraPitch -=
-            event.movementY * 0.002;
+            event.movementY *
+            0.002;
 
         cameraPitch =
             Math.max(
-                -0.2,
+                -0.25,
                 Math.min(
-                    0.9,
+                    .95,
                     cameraPitch
                 )
             );
@@ -1818,142 +1880,12 @@ document.addEventListener(
 
 
 /* =========================================================
-   DINERO
-   ========================================================= */
-
-let money = 0;
-
-document.getElementById(
-    "money"
-).textContent =
-    "💰 $" + money;
-
-
-/* =========================================================
-   ZONA
-   ========================================================= */
-
-function updateZone(){
-
-    const relative =
-        START_Z-
-        player.position.z;
-
-    let index =
-        Math.floor(
-            relative /
-            ZONE_LENGTH
-        );
-
-    index =
-        Math.max(
-            0,
-            Math.min(
-                zones.length-1,
-                index
-            )
-        );
-
-    document.getElementById(
-        "zone"
-    ).textContent =
-        zones[index].name;
-}
-
-
-/* =========================================================
-   ACTUALIZAR JUGADOR
-   ========================================================= */
-
-function updatePlayer(){
-
-    const speed =
-        keys["ShiftLeft"] ||
-        keys["ShiftRight"]
-            ? .32
-            : .20;
-
-    let dx = 0;
-    let dz = 0;
-
-    if(keys["KeyW"])
-        dz -= 1;
-
-    if(keys["KeyS"])
-        dz += 1;
-
-    if(keys["KeyA"])
-        dx -= 1;
-
-    if(keys["KeyD"])
-        dx += 1;
-
-
-    if(
-        dx !== 0 ||
-        dz !== 0
-    ){
-
-        const length =
-            Math.sqrt(
-                dx*dx+
-                dz*dz
-            );
-
-        dx /= length;
-        dz /= length;
-
-        player.position.x +=
-            dx*speed;
-
-        player.position.z +=
-            dz*speed;
-    }
-
-
-    playerVelocityY +=
-        gravity;
-
-    player.position.y +=
-        playerVelocityY;
-
-
-    if(
-        player.position.y < 0
-    ){
-
-        player.position.y = 0;
-        playerVelocityY = 0;
-    }
-
-
-    player.position.x =
-        THREE.MathUtils.clamp(
-            player.position.x,
-            -HALF_WIDTH+13,
-            HALF_WIDTH-13
-        );
-
-
-    player.position.z =
-        THREE.MathUtils.clamp(
-            player.position.z,
-            END_Z+12,
-            START_Z+35
-        );
-
-
-    updateZone();
-}
-
-
-/* =========================================================
-   CÁMARA
+   ACTUALIZAR CÁMARA
    ========================================================= */
 
 function updateCamera(){
 
-    const distance = 38;
+    const distance=34;
 
     const horizontalDistance =
         Math.cos(cameraPitch) *
@@ -1967,19 +1899,19 @@ function updateCamera(){
 
 
     const cameraY =
-        player.position.y+
-        12+
+        player.position.y +
+        10 +
         Math.sin(cameraPitch) *
         distance;
 
 
     const cameraZ =
-        player.position.z+
+        player.position.z +
         Math.cos(cameraYaw) *
         horizontalDistance;
 
 
-    const cameraPosition =
+    const targetPosition =
         new THREE.Vector3(
             cameraX,
             cameraY,
@@ -1988,7 +1920,7 @@ function updateCamera(){
 
 
     camera.position.lerp(
-        cameraPosition,
+        targetPosition,
         .12
     );
 
@@ -2008,35 +1940,198 @@ function updateCamera(){
 
 
 /* =========================================================
-   BOTÓN JUGAR
+   MOVIMIENTO DEL JUGADOR
    ========================================================= */
 
-/*
-   CORREGIDO:
-   NO usamos requestPointerLock aquí.
-   El juego empieza directamente.
-*/
+function updatePlayer(){
 
-document.getElementById(
-    "playButton"
-).addEventListener(
-    "click",
-    function(){
+    if(!gameStarted)
+        return;
 
-        document.getElementById(
-            "startScreen"
-        ).style.display =
-            "none";
 
-        showAnnouncement(
-            "🌎 ¡BIENVENIDO A OWNER WORLD! 👑"
+    let speed =
+        keys["ShiftLeft"] ||
+        keys["ShiftRight"]
+        ? sprintSpeed
+        : normalSpeed;
+
+
+    let moveX=0;
+    let moveZ=0;
+
+
+    if(keys["KeyW"])
+        moveZ-=1;
+
+    if(keys["KeyS"])
+        moveZ+=1;
+
+    if(keys["KeyA"])
+        moveX-=1;
+
+    if(keys["KeyD"])
+        moveX+=1;
+
+
+    const length =
+        Math.sqrt(
+            moveX*moveX+
+            moveZ*moveZ
         );
+
+
+    if(length>0){
+
+        moveX/=length;
+        moveZ/=length;
+
+
+        const forwardX =
+            -Math.sin(cameraYaw);
+
+        const forwardZ =
+            -Math.cos(cameraYaw);
+
+
+        const rightX =
+            Math.cos(cameraYaw);
+
+        const rightZ =
+            -Math.sin(cameraYaw);
+
+
+        player.position.x +=
+            (
+                forwardX*moveZ+
+                rightX*moveX
+            ) * speed;
+
+
+        player.position.z +=
+            (
+                forwardZ*moveZ+
+                rightZ*moveX
+            ) * speed;
+
+
+        player.rotation.y =
+            Math.atan2(
+                moveX,
+                moveZ
+            ) +
+            cameraYaw;
     }
-);
+
+
+    /* gravedad */
+
+    playerVelocityY +=
+        gravity;
+
+    player.position.y +=
+        playerVelocityY;
+
+
+    if(
+        player.position.y<0
+    ){
+
+        player.position.y=0;
+
+        playerVelocityY=0;
+    }
+
+
+    /* límites exteriores */
+
+    const limitX =
+        MAP_WIDTH/2-12;
+
+    const limitStart =
+        START_Z+30;
+
+    const limitEnd =
+        END_Z-30;
+
+
+    player.position.x =
+        Math.max(
+            -limitX,
+            Math.min(
+                limitX,
+                player.position.x
+            )
+        );
+
+
+    player.position.z =
+        Math.max(
+            limitEnd,
+            Math.min(
+                limitStart,
+                player.position.z
+            )
+        );
+}
 
 
 /* =========================================================
-   MENSAJE
+   ZONA ACTUAL
+   ========================================================= */
+
+function updateZone(){
+
+    const distanceFromStart =
+        START_Z -
+        player.position.z;
+
+
+    let index =
+        Math.floor(
+            distanceFromStart /
+            ZONE_LENGTH
+        );
+
+
+    index =
+        Math.max(
+            0,
+            Math.min(
+                TOTAL_ZONES-1,
+                index
+            )
+        );
+
+
+    document.getElementById(
+        "zone"
+    ).textContent=
+        zones[index].name;
+}
+
+
+/* =========================================================
+   DINERO
+   ========================================================= */
+
+/*
+   IMPORTANTE:
+   No se genera dinero automáticamente.
+
+   En futuras versiones:
+   dinero += producción de mascotas.
+*/
+
+let money=0;
+
+document.getElementById(
+    "money"
+).textContent=
+    "💰 $"+money;
+
+
+/* =========================================================
+   ANUNCIO
    ========================================================= */
 
 function showAnnouncement(
@@ -2048,17 +2143,16 @@ function showAnnouncement(
             "announcement"
         );
 
-    element.textContent =
-        text;
+    element.textContent=text;
 
-    element.style.opacity =
-        "1";
+    element.style.display="block";
+
 
     setTimeout(
         function(){
 
-            element.style.opacity =
-                "0";
+            element.style.display=
+                "none";
 
         },
         3500
@@ -2067,14 +2161,74 @@ function showAnnouncement(
 
 
 /* =========================================================
-   REDIMENSIONAR
+   ANIMACIONES
+   ========================================================= */
+
+const clock =
+    new THREE.Clock();
+
+
+function animateObjects(){
+
+    const time =
+        clock.getElapsedTime();
+
+
+    portalRing.rotation.z =
+        time*.8;
+
+
+    portalRing.rotation.x =
+        Math.PI/2 +
+        Math.sin(time)*.1;
+}
+
+
+/* =========================================================
+   INICIAR JUEGO
+   ========================================================= */
+
+let gameStarted=false;
+
+
+document.getElementById(
+    "playButton"
+).addEventListener(
+    "click",
+    function(){
+
+        document.getElementById(
+            "startScreen"
+        ).style.display=
+            "none";
+
+
+        gameStarted=true;
+
+
+        showAnnouncement(
+            "🌎 ¡BIENVENIDO A OWNER WORLD! 👑"
+        );
+
+
+        camera.position.set(
+            0,
+            12,
+            58
+        );
+    }
+);
+
+
+/* =========================================================
+   RESIZE
    ========================================================= */
 
 window.addEventListener(
     "resize",
     function(){
 
-        camera.aspect =
+        camera.aspect=
             window.innerWidth /
             window.innerHeight;
 
@@ -2089,7 +2243,7 @@ window.addEventListener(
 
 
 /* =========================================================
-   ANIMACIÓN
+   LOOP PRINCIPAL
    ========================================================= */
 
 function animate(){
@@ -2098,9 +2252,15 @@ function animate(){
         animate
     );
 
+
     updatePlayer();
 
     updateCamera();
+
+    updateZone();
+
+    animateObjects();
+
 
     renderer.render(
         scene,
@@ -2108,10 +2268,10 @@ function animate(){
     );
 }
 
+
 animate();
 
 </script>
 
 </body>
 </html>
-```
