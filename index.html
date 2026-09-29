@@ -4,17 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>OWNER WORLD 2.0</title>
-
 <style>
-    * {
-        box-sizing: border-box;
-    }
-
     html, body {
         margin: 0;
+        padding: 0;
+        overflow: hidden;
         width: 100%;
         height: 100%;
-        overflow: hidden;
         background: #87ceeb;
         font-family: Arial, sans-serif;
     }
@@ -31,65 +27,65 @@
         color: white;
         font-size: 28px;
         font-weight: bold;
-        text-shadow: 0 3px 8px #000;
+        text-shadow: 0 3px 8px rgba(0,0,0,.7);
         z-index: 10;
         pointer-events: none;
     }
 
-    #controls {
+    #zoneName {
         position: fixed;
-        bottom: 18px;
+        top: 58px;
         left: 50%;
         transform: translateX(-50%);
-        padding: 10px 18px;
-        border-radius: 12px;
-        background: rgba(0,0,0,.55);
         color: white;
+        font-size: 18px;
+        font-weight: bold;
+        text-shadow: 0 2px 6px rgba(0,0,0,.8);
         z-index: 10;
         pointer-events: none;
-        font-size: 14px;
     }
 </style>
 </head>
 
 <body>
 
-<div id="title">🌎 OWNER WORLD 2.0</div>
-<div id="controls">WASD = mover · SHIFT = correr · ESPACIO = saltar</div>
+<div id="title">👑 OWNER WORLD 2.0</div>
+<div id="zoneName">🌿 Pradera Inicial</div>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 
 <script>
 
-// ============================================================
-// OWNER WORLD 2.0
-// MAPA BASE — DESDE CERO
-// ============================================================
+/* =========================================================
+   ESCENA
+========================================================= */
 
 const scene = new THREE.Scene();
 
 scene.background = new THREE.Color(0x87ceeb);
 
-scene.fog = new THREE.Fog(0x87ceeb, 250, 1800);
+scene.fog = new THREE.Fog(
+    0x87ceeb,
+    350,
+    1500
+);
 
 
-// ============================================================
-// CÁMARA
-// ============================================================
+/* =========================================================
+   CAMARA
+========================================================= */
 
 const camera = new THREE.PerspectiveCamera(
-    65,
+    70,
     window.innerWidth / window.innerHeight,
     0.1,
     3000
 );
 
-camera.position.set(0, 18, 35);
 
-
-// ============================================================
-// RENDER
-// ============================================================
+/* =========================================================
+   RENDER
+========================================================= */
 
 const renderer = new THREE.WebGLRenderer({
     antialias: true
@@ -109,26 +105,18 @@ renderer.shadowMap.enabled = true;
 document.body.appendChild(renderer.domElement);
 
 
-// ============================================================
-// LUCES
-// ============================================================
-
-const ambientLight = new THREE.HemisphereLight(
-    0xffffff,
-    0x6b8e23,
-    2
-);
-
-scene.add(ambientLight);
+/* =========================================================
+   LUCES
+========================================================= */
 
 const sun = new THREE.DirectionalLight(
     0xffffff,
-    2.2
+    1.4
 );
 
 sun.position.set(
-    150,
-    300,
+    100,
+    220,
     100
 );
 
@@ -137,11 +125,22 @@ sun.castShadow = true;
 scene.add(sun);
 
 
-// ============================================================
-// CONFIGURACIÓN DEL MAPA
-// ============================================================
+const ambient = new THREE.HemisphereLight(
+    0xffffff,
+    0x526b42,
+    1.0
+);
+
+scene.add(ambient);
+
+
+/* =========================================================
+   DIMENSIONES DEL MAPA
+========================================================= */
 
 const MAP_WIDTH = 180;
+
+const PATH_WIDTH = 48;
 
 const ZONE_LENGTH = 170;
 
@@ -149,57 +148,45 @@ const START_Z = 0;
 
 const TOTAL_ZONES = 9;
 
-
-// ============================================================
-// MATERIALES
-// ============================================================
-
-const grassMaterial = new THREE.MeshStandardMaterial({
-    color: 0x4f9d45
-});
-
-const dirtMaterial = new THREE.MeshStandardMaterial({
-    color: 0x8b5a2b
-});
-
-const pathMaterial = new THREE.MeshStandardMaterial({
-    color: 0xc69c6d
-});
-
-const woodMaterial = new THREE.MeshStandardMaterial({
-    color: 0x7b421f
-});
-
-const woodLightMaterial = new THREE.MeshStandardMaterial({
-    color: 0xa86732
-});
-
-const wallGrassMaterial = new THREE.MeshStandardMaterial({
-    color: 0x5fae45
-});
+const TOTAL_LENGTH =
+    100 +
+    TOTAL_ZONES * ZONE_LENGTH;
 
 
-// ============================================================
-// SUELO PRINCIPAL
-// ============================================================
+/* =========================================================
+   MATERIALES
+========================================================= */
 
-const totalLength = TOTAL_ZONES * ZONE_LENGTH + 350;
+function mat(color, roughness = 1) {
 
-const groundGeometry = new THREE.BoxGeometry(
-    MAP_WIDTH,
-    4,
-    totalLength
-);
+    return new THREE.MeshStandardMaterial({
+        color: color,
+        roughness: roughness
+    });
+
+}
+
+
+/* =========================================================
+   TERRENO PRINCIPAL
+========================================================= */
 
 const ground = new THREE.Mesh(
-    groundGeometry,
-    grassMaterial
+
+    new THREE.BoxGeometry(
+        MAP_WIDTH,
+        4,
+        TOTAL_LENGTH
+    ),
+
+    mat(0x4f913f)
+
 );
 
 ground.position.set(
     0,
     -2,
-    totalLength / 2 - 120
+    TOTAL_LENGTH / 2
 );
 
 ground.receiveShadow = true;
@@ -207,247 +194,563 @@ ground.receiveShadow = true;
 scene.add(ground);
 
 
-// ============================================================
-// CAMINO PRINCIPAL
-// ============================================================
+/* =========================================================
+   CAMINO PRINCIPAL
+   SOLO UNO
+========================================================= */
 
-const pathWidth = 48;
+const mainPath = new THREE.Mesh(
 
-const pathGeometry = new THREE.BoxGeometry(
-    pathWidth,
-    0.35,
-    totalLength
+    new THREE.BoxGeometry(
+        PATH_WIDTH,
+        0.35,
+        TOTAL_LENGTH
+    ),
+
+    mat(0xb99262)
 );
 
-const path = new THREE.Mesh(
-    pathGeometry,
-    pathMaterial
-);
-
-path.position.set(
+mainPath.position.set(
     0,
     0.15,
-    totalLength / 2 - 120
+    TOTAL_LENGTH / 2
 );
 
-path.receiveShadow = true;
+mainPath.receiveShadow = true;
 
-scene.add(path);
+scene.add(mainPath);
 
 
-// ============================================================
-// PAREDES LATERALES
-// ============================================================
+/* =========================================================
+   ZONAS
+========================================================= */
 
-function createNaturalWall(x, z, length) {
+const zones = [
 
-    const dirt = new THREE.Mesh(
+    {
+        name: "🌿 Pradera Inicial",
+        level: 1,
+        color: 0x5da94f
+    },
+
+    {
+        name: "🌲 Bosque Encantado",
+        level: 5,
+        color: 0x2d713b
+    },
+
+    {
+        name: "🏜️ Desierto Dorado",
+        level: 10,
+        color: 0xc99543
+    },
+
+    {
+        name: "❄️ Cumbres Heladas",
+        level: 20,
+        color: 0xccecff
+    },
+
+    {
+        name: "🌋 Volcán Carmesí",
+        level: 35,
+        color: 0x843528
+    },
+
+    {
+        name: "🌊 Abismo Marino",
+        level: 50,
+        color: 0x217a9c
+    },
+
+    {
+        name: "🌌 Galaxia Perdida",
+        level: 70,
+        color: 0x403071
+    },
+
+    {
+        name: "♾️ Santuario Eterno",
+        level: 100,
+        color: 0x7654a5
+    },
+
+    {
+        name: "✨ Dominio Divino",
+        level: 150,
+        color: 0xd5b34c
+    }
+
+];
+
+
+/* =========================================================
+   BASE DE CADA ZONA
+========================================================= */
+
+zones.forEach((zone, i) => {
+
+    const z =
+        100 +
+        i * ZONE_LENGTH +
+        ZONE_LENGTH / 2;
+
+    const terrain = new THREE.Mesh(
+
         new THREE.BoxGeometry(
-            12,
-            18,
-            length
+            MAP_WIDTH - 18,
+            0.6,
+            ZONE_LENGTH
         ),
-        dirtMaterial
+
+        mat(zone.color)
     );
 
-    dirt.position.set(
-        x,
-        7,
+    terrain.position.set(
+        0,
+        0.25,
         z
     );
 
-    dirt.castShadow = true;
-    dirt.receiveShadow = true;
+    terrain.receiveShadow = true;
 
-    scene.add(dirt);
+    scene.add(terrain);
+
+});
 
 
-    const grassTop = new THREE.Mesh(
+/* =========================================================
+   MUROS NATURALES
+   MUCHO MÁS CERCA DE LAS ZONAS
+========================================================= */
+
+function createWall(x, zoneIndex) {
+
+    const zoneStart =
+        100 +
+        zoneIndex * ZONE_LENGTH;
+
+    const zoneCenter =
+        zoneStart +
+        ZONE_LENGTH / 2;
+
+    const group = new THREE.Group();
+
+
+    const wallMat = mat(
+        zoneIndex === 2
+            ? 0xb77c32
+            : zoneIndex === 3
+            ? 0xbcddea
+            : zoneIndex === 4
+            ? 0x5a2821
+            : zoneIndex === 5
+            ? 0x1b647c
+            : zoneIndex === 6
+            ? 0x34245c
+            : zoneIndex >= 7
+            ? 0x5d4a76
+            : 0x765338
+    );
+
+
+    const grassMat = mat(
+        zoneIndex === 2
+            ? 0xcda14c
+            : zoneIndex === 3
+            ? 0xeafaff
+            : zoneIndex === 4
+            ? 0x7b3025
+            : zoneIndex === 5
+            ? 0x247f9e
+            : zoneIndex === 6
+            ? 0x513d82
+            : zoneIndex >= 7
+            ? 0x816aa5
+            : 0x4f923e
+    );
+
+
+    /* muro principal */
+
+    const wall = new THREE.Mesh(
+
         new THREE.BoxGeometry(
-            14,
-            2,
-            length
+            8,
+            10,
+            ZONE_LENGTH + 6
         ),
-        wallGrassMaterial
+
+        wallMat
     );
 
-    grassTop.position.set(
+    wall.position.set(
         x,
-        16.5,
-        z
+        5,
+        zoneCenter
     );
 
-    grassTop.castShadow = true;
+    wall.castShadow = true;
 
-    scene.add(grassTop);
+    group.add(wall);
+
+
+    /* capa superior */
+
+    const top = new THREE.Mesh(
+
+        new THREE.BoxGeometry(
+            9,
+            1.8,
+            ZONE_LENGTH + 6
+        ),
+
+        grassMat
+    );
+
+    top.position.set(
+        x,
+        10.8,
+        zoneCenter
+    );
+
+    top.castShadow = true;
+
+    group.add(top);
+
+
+    scene.add(group);
+
 }
 
 
-// Pared izquierda
+for (
+    let i = 0;
+    i < TOTAL_ZONES;
+    i++
+) {
 
-createNaturalWall(
-    -96,
-    totalLength / 2 - 120,
-    totalLength
-);
+    createWall(-89, i);
+    createWall(89, i);
 
-
-// Pared derecha
-
-createNaturalWall(
-    96,
-    totalLength / 2 - 120,
-    totalLength
-);
+}
 
 
-// ============================================================
-// CORRALES
-// ============================================================
+/* =========================================================
+   OBJETOS DECORATIVOS
+========================================================= */
 
-function createFence(x, z, width, depth) {
+function cube(
+    x,
+    y,
+    z,
+    sx,
+    sy,
+    sz,
+    color
+) {
 
-    const postHeight = 6;
-    const postSize = 0.9;
+    const m = new THREE.Mesh(
 
-    // POSTES
+        new THREE.BoxGeometry(
+            sx,
+            sy,
+            sz
+        ),
 
-    const posts = [
-        [-width / 2, -depth / 2],
-        [width / 2, -depth / 2],
-        [-width / 2, depth / 2],
-        [width / 2, depth / 2]
-    ];
+        mat(color)
+    );
 
-    posts.forEach(p => {
+    m.position.set(
+        x,
+        y,
+        z
+    );
 
-        const post = new THREE.Mesh(
+    m.castShadow = true;
+    m.receiveShadow = true;
+
+    scene.add(m);
+
+    return m;
+}
+
+
+function cylinder(
+    x,
+    y,
+    z,
+    radius,
+    height,
+    color
+) {
+
+    const m = new THREE.Mesh(
+
+        new THREE.CylinderGeometry(
+            radius,
+            radius,
+            height,
+            12
+        ),
+
+        mat(color)
+    );
+
+    m.position.set(
+        x,
+        y,
+        z
+    );
+
+    m.castShadow = true;
+
+    scene.add(m);
+
+    return m;
+}
+
+
+function sphere(
+    x,
+    y,
+    z,
+    radius,
+    color
+) {
+
+    const m = new THREE.Mesh(
+
+        new THREE.SphereGeometry(
+            radius,
+            16,
+            12
+        ),
+
+        mat(color)
+    );
+
+    m.position.set(
+        x,
+        y,
+        z
+    );
+
+    m.castShadow = true;
+
+    scene.add(m);
+
+    return m;
+}
+
+
+/* =========================================================
+   CORRALES
+========================================================= */
+
+function createFence(
+    x,
+    z,
+    width,
+    depth
+) {
+
+    const wood = mat(0x70431f);
+
+    const woodDark = mat(0x4d2b16);
+
+
+    function post(px, pz) {
+
+        const p = new THREE.Mesh(
+
             new THREE.BoxGeometry(
-                postSize,
-                postHeight,
-                postSize
+                1.5,
+                5,
+                1.5
             ),
-            woodMaterial
+
+            woodDark
         );
 
-        post.position.set(
+        p.position.set(
+            px,
+            2.5,
+            pz
+        );
+
+        p.castShadow = true;
+
+        scene.add(p);
+
+    }
+
+
+    function rail(
+        px,
+        py,
+        pz,
+        sx,
+        sy,
+        sz
+    ) {
+
+        const r = new THREE.Mesh(
+
+            new THREE.BoxGeometry(
+                sx,
+                sy,
+                sz
+            ),
+
+            wood
+        );
+
+        r.position.set(
+            px,
+            py,
+            pz
+        );
+
+        r.castShadow = true;
+
+        scene.add(r);
+
+    }
+
+
+    const halfW = width / 2;
+    const halfD = depth / 2;
+
+
+    /* postes */
+
+    const postPositions = [
+
+        [-halfW, -halfD],
+        [-halfW, 0],
+        [-halfW, halfD],
+
+        [halfW, -halfD],
+        [halfW, 0],
+        [halfW, halfD],
+
+        [0, -halfD],
+        [0, halfD]
+
+    ];
+
+
+    postPositions.forEach(p => {
+
+        post(
             x + p[0],
-            postHeight / 2,
             z + p[1]
         );
 
-        post.castShadow = true;
-
-        scene.add(post);
     });
 
 
-    // TABLAS FRONTALES Y TRASERAS
+    /* laterales */
 
-    for (const side of [-1, 1]) {
+    rail(
+        x - halfW,
+        2,
+        z,
+        1,
+        1,
+        depth
+    );
 
-        const fence = new THREE.Mesh(
-            new THREE.BoxGeometry(
-                width,
-                1.5,
-                0.6
-            ),
-            woodLightMaterial
-        );
-
-        fence.position.set(
-            x,
-            3,
-            z + side * depth / 2
-        );
-
-        fence.castShadow = true;
-
-        scene.add(fence);
-    }
+    rail(
+        x + halfW,
+        2,
+        z,
+        1,
+        1,
+        depth
+    );
 
 
-    // TABLAS LATERALES
+    /* frente */
 
-    for (const side of [-1, 1]) {
-
-        const fence = new THREE.Mesh(
-            new THREE.BoxGeometry(
-                0.6,
-                1.5,
-                depth
-            ),
-            woodLightMaterial
-        );
-
-        fence.position.set(
-            x + side * width / 2,
-            3,
-            z
-        );
-
-        fence.castShadow = true;
-
-        scene.add(fence);
-    }
+    rail(
+        x,
+        2,
+        z - halfD,
+        width,
+        1,
+        1
+    );
 
 
-    // SEGUNDO NIVEL DE VALLA
+    /* fondo */
 
-    for (const side of [-1, 1]) {
-
-        const fence = new THREE.Mesh(
-            new THREE.BoxGeometry(
-                width,
-                0.8,
-                0.5
-            ),
-            woodMaterial
-        );
-
-        fence.position.set(
-            x,
-            4.7,
-            z + side * depth / 2
-        );
-
-        scene.add(fence);
-    }
+    rail(
+        x,
+        2,
+        z + halfD,
+        width,
+        1,
+        1
+    );
 
 
-    for (const side of [-1, 1]) {
+    /* segunda fila */
 
-        const fence = new THREE.Mesh(
-            new THREE.BoxGeometry(
-                0.5,
-                0.8,
-                depth
-            ),
-            woodMaterial
-        );
+    rail(
+        x - halfW,
+        3.7,
+        z,
+        1,
+        0.8,
+        depth
+    );
 
-        fence.position.set(
-            x + side * width / 2,
-            4.7,
-            z
-        );
+    rail(
+        x + halfW,
+        3.7,
+        z,
+        1,
+        0.8,
+        depth
+    );
 
-        scene.add(fence);
-    }
+    rail(
+        x,
+        3.7,
+        z - halfD,
+        width,
+        0.8,
+        1
+    );
+
+    rail(
+        x,
+        3.7,
+        z + halfD,
+        width,
+        0.8,
+        1
+    );
+
 }
 
 
-// ============================================================
-// 4 CORRALES
-// ============================================================
+/* cuatro corrales */
 
-const corralPositions = [-65, -22, 22, 65];
+const corralX = [
+    -65,
+    -22,
+    22,
+    65
+];
 
-corralPositions.forEach((x) => {
+corralX.forEach(x => {
 
     createFence(
         x,
-        35,
+        38,
         34,
         42
     );
@@ -455,227 +758,936 @@ corralPositions.forEach((x) => {
 });
 
 
-// ============================================================
-// ZONA SEGURA
-// ============================================================
-
-const safeZoneGeometry = new THREE.BoxGeometry(
-    150,
-    0.4,
-    50
-);
-
-const safeZoneMaterial = new THREE.MeshStandardMaterial({
-    color: 0x79c85a
-});
+/* =========================================================
+   ZONA SEGURA
+========================================================= */
 
 const safeZone = new THREE.Mesh(
-    safeZoneGeometry,
-    safeZoneMaterial
+
+    new THREE.BoxGeometry(
+        150,
+        0.45,
+        48
+    ),
+
+    mat(0x6bbf52)
 );
 
 safeZone.position.set(
     0,
-    0.2,
-    82
+    0.3,
+    83
 );
+
+safeZone.receiveShadow = true;
 
 scene.add(safeZone);
 
 
-// ============================================================
-// ZONAS
-// ============================================================
+/* =========================================================
+   DECORACIÓN PRADERA
+========================================================= */
 
-const zones = [
+function prairieDecor() {
 
-    {
-        name: "🌿 PRADERA INICIAL",
-        color: 0x4f9d45
-    },
+    for (
+        let i = 0;
+        i < 18;
+        i++
+    ) {
 
-    {
-        name: "🌲 BOSQUE ENCANTADO",
-        color: 0x28733a
-    },
+        const side =
+            i % 2 === 0
+                ? -70
+                : 70;
 
-    {
-        name: "🏜️ DESIERTO DORADO",
-        color: 0xc99a45
-    },
+        const z =
+            110 +
+            (i * 18) % 145;
 
-    {
-        name: "❄️ CUMBRES HELADAS",
-        color: 0xccecff
-    },
+        cylinder(
+            side,
+            2,
+            z,
+            1.4,
+            4,
+            0x7a4b29
+        );
 
-    {
-        name: "🌋 VOLCÁN CARMESÍ",
-        color: 0x8f3825
-    },
+        sphere(
+            side,
+            5,
+            z,
+            3,
+            0x4c9a43
+        );
 
-    {
-        name: "🌊 ABISMO MARINO",
-        color: 0x247fa3
-    },
-
-    {
-        name: "🌌 GALAXIA PERDIDA",
-        color: 0x49326e
-    },
-
-    {
-        name: "♾️ SANTUARIO ETERNO",
-        color: 0x7657a8
-    },
-
-    {
-        name: "✨ DOMINIO DIVINO",
-        color: 0xd8b94a
     }
 
-];
+}
 
 
-// ============================================================
-// PLATAFORMAS DE ZONAS
-// ============================================================
+/* =========================================================
+   BOSQUE ENCANTADO
+========================================================= */
 
-zones.forEach((zone, index) => {
+function enchantedForest() {
 
-    const z =
-        150 +
-        index * ZONE_LENGTH;
+    const start =
+        100 +
+        ZONE_LENGTH;
 
-    const geometry = new THREE.BoxGeometry(
-        MAP_WIDTH - 30,
-        0.5,
-        ZONE_LENGTH
-    );
+    for (
+        let i = 0;
+        i < 12;
+        i++
+    ) {
 
-    const material = new THREE.MeshStandardMaterial({
-        color: zone.color
+        const side =
+            i % 2 === 0
+                ? -73
+                : 73;
+
+        const z =
+            start +
+            25 +
+            (i * 25);
+
+        cylinder(
+            side,
+            5,
+            z,
+            2,
+            10,
+            0x4d301d
+        );
+
+        sphere(
+            side,
+            11,
+            z,
+            5,
+            0x225c35
+        );
+
+        sphere(
+            side + 2,
+            14,
+            z + 2,
+            3,
+            0x3c874b
+        );
+
+    }
+
+
+    /* piedras mágicas */
+
+    for (
+        let i = 0;
+        i < 8;
+        i++
+    ) {
+
+        const side =
+            i % 2 === 0
+                ? -62
+                : 62;
+
+        const z =
+            start +
+            30 +
+            i * 35;
+
+        sphere(
+            side,
+            1.5,
+            z,
+            2,
+            0x8c6bc4
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   DESIERTO DORADO
+========================================================= */
+
+function goldenDesert() {
+
+    const start =
+        100 +
+        2 * ZONE_LENGTH;
+
+
+    for (
+        let i = 0;
+        i < 10;
+        i++
+    ) {
+
+        const side =
+            i % 2 === 0
+                ? -68
+                : 68;
+
+        const z =
+            start +
+            20 +
+            i * 30;
+
+
+        /* cactus */
+
+        cylinder(
+            side,
+            3,
+            z,
+            1.4,
+            6,
+            0x3f7c3a
+        );
+
+        cylinder(
+            side + 2,
+            4,
+            z,
+            0.8,
+            3,
+            0x3f7c3a
+        );
+
+
+        /* roca */
+
+        sphere(
+            side + 5,
+            1.5,
+            z + 8,
+            2.5,
+            0x8b6235
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   CUMBRES HELADAS
+========================================================= */
+
+function frozenPeaks() {
+
+    const start =
+        100 +
+        3 * ZONE_LENGTH;
+
+
+    for (
+        let i = 0;
+        i < 12;
+        i++
+    ) {
+
+        const side =
+            i % 2 === 0
+                ? -70
+                : 70;
+
+        const z =
+            start +
+            15 +
+            i * 25;
+
+
+        const mountain =
+            new THREE.Mesh(
+
+                new THREE.ConeGeometry(
+                    7,
+                    18,
+                    5
+                ),
+
+                mat(0xe9f8ff)
+            );
+
+        mountain.position.set(
+            side,
+            9,
+            z
+        );
+
+        mountain.castShadow = true;
+
+        scene.add(mountain);
+
+    }
+
+}
+
+
+/* =========================================================
+   VOLCÁN CARMESÍ
+========================================================= */
+
+function crimsonVolcano() {
+
+    const start =
+        100 +
+        4 * ZONE_LENGTH;
+
+
+    for (
+        let i = 0;
+        i < 10;
+        i++
+    ) {
+
+        const side =
+            i % 2 === 0
+                ? -70
+                : 70;
+
+        const z =
+            start +
+            20 +
+            i * 30;
+
+
+        /* roca volcánica */
+
+        sphere(
+            side,
+            2,
+            z,
+            4,
+            0x3c2521
+        );
+
+
+        /* cristal de lava */
+
+        const crystal =
+            new THREE.Mesh(
+
+                new THREE.ConeGeometry(
+                    1.5,
+                    7,
+                    5
+                ),
+
+                mat(0xd94722)
+            );
+
+        crystal.position.set(
+            side + 4,
+            3.5,
+            z + 3
+        );
+
+        crystal.castShadow = true;
+
+        scene.add(crystal);
+
+    }
+
+}
+
+
+/* =========================================================
+   ABISMO MARINO
+========================================================= */
+
+function oceanAbyss() {
+
+    const start =
+        100 +
+        5 * ZONE_LENGTH;
+
+
+    for (
+        let i = 0;
+        i < 12;
+        i++
+    ) {
+
+        const side =
+            i % 2 === 0
+                ? -70
+                : 70;
+
+        const z =
+            start +
+            15 +
+            i * 25;
+
+
+        /* coral */
+
+        cylinder(
+            side,
+            4,
+            z,
+            1.3,
+            8,
+            0x3fbd9c
+        );
+
+        sphere(
+            side + 3,
+            2,
+            z + 3,
+            2.5,
+            0x3c9cc1
+        );
+
+
+        /* perla */
+
+        sphere(
+            side - 3,
+            2,
+            z - 3,
+            1.5,
+            0xf3ffff
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   GALAXIA PERDIDA
+========================================================= */
+
+function lostGalaxy() {
+
+    const start =
+        100 +
+        6 * ZONE_LENGTH;
+
+
+    for (
+        let i = 0;
+        i < 14;
+        i++
+    ) {
+
+        const side =
+            i % 2 === 0
+                ? -70
+                : 70;
+
+        const z =
+            start +
+            15 +
+            i * 22;
+
+
+        /* cristales */
+
+        const crystal =
+            new THREE.Mesh(
+
+                new THREE.ConeGeometry(
+                    2,
+                    9,
+                    6
+                ),
+
+                mat(0x7f65d9)
+            );
+
+        crystal.position.set(
+            side,
+            4.5,
+            z
+        );
+
+        crystal.castShadow = true;
+
+        scene.add(crystal);
+
+
+        /* estrellas flotantes */
+
+        sphere(
+            side + 5,
+            8,
+            z + 3,
+            1,
+            0xc7b9ff
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   SANTUARIO ETERNO
+========================================================= */
+
+function eternalSanctuary() {
+
+    const start =
+        100 +
+        7 * ZONE_LENGTH;
+
+
+    for (
+        let i = 0;
+        i < 8;
+        i++
+    ) {
+
+        const side =
+            i % 2 === 0
+                ? -68
+                : 68;
+
+        const z =
+            start +
+            25 +
+            i * 38;
+
+
+        /* columnas */
+
+        cylinder(
+            side,
+            6,
+            z,
+            2,
+            12,
+            0xd0c5df
+        );
+
+
+        /* esfera central */
+
+        sphere(
+            side,
+            13,
+            z,
+            2,
+            0xdccaff
+        );
+
+    }
+
+
+    /* arcos decorativos */
+
+    for (
+        let i = 0;
+        i < 4;
+        i++
+    ) {
+
+        const z =
+            start +
+            40 +
+            i * 40;
+
+        cube(
+            -74,
+            8,
+            z,
+            3,
+            16,
+            3,
+            0xb8a9d0
+        );
+
+        cube(
+            74,
+            8,
+            z,
+            3,
+            16,
+            3,
+            0xb8a9d0
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   DOMINIO DIVINO
+========================================================= */
+
+function divineDomain() {
+
+    const start =
+        100 +
+        8 * ZONE_LENGTH;
+
+
+    /* -----------------------------------------------------
+       CASTILLO DIVINO CENTRAL
+    ----------------------------------------------------- */
+
+    const castle = new THREE.Group();
+
+
+    /* edificio principal */
+
+    const main =
+        new THREE.Mesh(
+
+            new THREE.BoxGeometry(
+                26,
+                20,
+                24
+            ),
+
+            mat(0xf0dfad)
+        );
+
+    main.position.y = 10;
+
+    main.castShadow = true;
+
+    castle.add(main);
+
+
+    /* torres */
+
+    const towerPositions = [
+
+        [-15, -13],
+        [15, -13],
+        [-15, 13],
+        [15, 13]
+
+    ];
+
+
+    towerPositions.forEach(pos => {
+
+        const tower =
+            new THREE.Mesh(
+
+                new THREE.CylinderGeometry(
+                    4,
+                    4,
+                    28,
+                    8
+                ),
+
+                mat(0xe8d19a)
+            );
+
+        tower.position.set(
+            pos[0],
+            14,
+            pos[1]
+        );
+
+        tower.castShadow = true;
+
+        castle.add(tower);
+
+
+        /* punta */
+
+        const roof =
+            new THREE.Mesh(
+
+                new THREE.ConeGeometry(
+                    5.5,
+                    9,
+                    4
+                ),
+
+                mat(0xd4a83c)
+            );
+
+        roof.position.set(
+            pos[0],
+            32,
+            pos[1]
+        );
+
+        roof.castShadow = true;
+
+        castle.add(roof);
+
     });
 
-    const mesh = new THREE.Mesh(
-        geometry,
-        material
-    );
 
-    mesh.position.set(
+    /* techo central */
+
+    const roof =
+        new THREE.Mesh(
+
+            new THREE.ConeGeometry(
+                19,
+                12,
+                4
+            ),
+
+            mat(0xd8ae43)
+        );
+
+    roof.position.y = 26;
+
+    roof.rotation.y =
+        Math.PI / 4;
+
+    roof.castShadow = true;
+
+    castle.add(roof);
+
+
+    castle.position.set(
         0,
-        0.1,
-        z
+        0,
+        start + 80
     );
 
-    mesh.receiveShadow = true;
 
-    scene.add(mesh);
-
-});
+    scene.add(castle);
 
 
-// ============================================================
-// ÁRBOLES BÁSICOS
-// ============================================================
+    /* -----------------------------------------------------
+       COLUMNAS DIVINAS
+    ----------------------------------------------------- */
 
-function createTree(x, z, scale = 1) {
-
-    const trunk = new THREE.Mesh(
-        new THREE.CylinderGeometry(
-            1.1 * scale,
-            1.4 * scale,
-            7 * scale,
-            8
-        ),
-        woodMaterial
-    );
-
-    trunk.position.set(
-        x,
-        3.5 * scale,
-        z
-    );
-
-    trunk.castShadow = true;
-
-    scene.add(trunk);
+    const columnX = [
+        -55,
+        55
+    ];
 
 
-    const leaves = new THREE.Mesh(
-        new THREE.SphereGeometry(
-            4.5 * scale,
-            10,
-            8
-        ),
-        new THREE.MeshStandardMaterial({
-            color: 0x34843b
-        })
-    );
+    columnX.forEach(x => {
 
-    leaves.position.set(
-        x,
-        8 * scale,
-        z
-    );
+        for (
+            let i = 0;
+            i < 4;
+            i++
+        ) {
 
-    leaves.castShadow = true;
+            const z =
+                start +
+                20 +
+                i * 38;
 
-    scene.add(leaves);
+            cylinder(
+                x,
+                9,
+                z,
+                3,
+                18,
+                0xf1dfad
+            );
+
+
+            /* esfera superior */
+
+            sphere(
+                x,
+                19,
+                z,
+                3,
+                0xffe9a3
+            );
+
+        }
+
+    });
+
+
+    /* -----------------------------------------------------
+       SÍMBOLOS DIVINOS
+    ----------------------------------------------------- */
+
+    for (
+        let i = 0;
+        i < 6;
+        i++
+    ) {
+
+        const side =
+            i % 2 === 0
+                ? -68
+                : 68;
+
+        const z =
+            start +
+            25 +
+            i * 27;
+
+
+        /* círculo */
+
+        const ring =
+            new THREE.Mesh(
+
+                new THREE.TorusGeometry(
+                    5,
+                    0.8,
+                    10,
+                    32
+                ),
+
+                mat(0xffdc55)
+            );
+
+        ring.position.set(
+            side,
+            8,
+            z
+        );
+
+        ring.rotation.y =
+            Math.PI / 2;
+
+        scene.add(ring);
+
+
+        /* símbolo vertical */
+
+        cube(
+            side,
+            8,
+            z,
+            1,
+            8,
+            1,
+            0xffe47a
+        );
+
+    }
+
+
+    /* -----------------------------------------------------
+       ESTATUAS / MONUMENTOS
+    ----------------------------------------------------- */
+
+    for (
+        let i = 0;
+        i < 4;
+        i++
+    ) {
+
+        const x =
+            i % 2 === 0
+                ? -38
+                : 38;
+
+        const z =
+            start +
+            45 +
+            Math.floor(i / 2) * 65;
+
+
+        cylinder(
+            x,
+            3,
+            z,
+            4,
+            6,
+            0xcdb889
+        );
+
+
+        const monument =
+            new THREE.Mesh(
+
+                new THREE.ConeGeometry(
+                    3,
+                    10,
+                    5
+                ),
+
+                mat(0xffdf72)
+            );
+
+        monument.position.set(
+            x,
+            11,
+            z
+        );
+
+        monument.castShadow = true;
+
+        scene.add(monument);
+
+    }
+
 }
 
 
-// Decoración sencilla alrededor del mapa
+/* =========================================================
+   ACTIVAR DECORACIONES
+========================================================= */
 
-for (let z = 130; z < totalLength - 100; z += 35) {
+prairieDecor();
 
-    createTree(-72, z, 0.8);
-    createTree(72, z + 15, 0.9);
+enchantedForest();
 
-}
+goldenDesert();
+
+frozenPeaks();
+
+crimsonVolcano();
+
+oceanAbyss();
+
+lostGalaxy();
+
+eternalSanctuary();
+
+divineDomain();
 
 
-// ============================================================
-// JUGADOR TEMPORAL
-// ============================================================
+/* =========================================================
+   JUGADOR TEMPORAL
+========================================================= */
 
 const player = new THREE.Group();
 
 
-// CUERPO
-
 const body = new THREE.Mesh(
+
     new THREE.BoxGeometry(
         2.5,
-        3.5,
-        1.5
+        4,
+        1.7
     ),
-    new THREE.MeshStandardMaterial({
-        color: 0x2477ff
-    })
+
+    mat(0x2877d4)
 );
 
-body.position.y = 2.2;
+body.position.y = 2;
 
 body.castShadow = true;
 
 player.add(body);
 
 
-// CABEZA
-
 const head = new THREE.Mesh(
+
     new THREE.BoxGeometry(
         2.2,
         2.2,
         2.2
     ),
-    new THREE.MeshStandardMaterial({
-        color: 0xffc79c
-    })
+
+    mat(0xf0bd91)
 );
 
-head.position.y = 5;
+head.position.y = 5.1;
 
 head.castShadow = true;
 
@@ -691,38 +1703,38 @@ player.position.set(
 scene.add(player);
 
 
-// ============================================================
-// MOVIMIENTO
-// ============================================================
+/* =========================================================
+   MOVIMIENTO
+========================================================= */
 
 const keys = {};
 
-window.addEventListener("keydown", (e) => {
-    keys[e.key.toLowerCase()] = true;
-
-    if (e.code === "Space") {
-        keys["space"] = true;
+document.addEventListener(
+    "keydown",
+    e => {
+        keys[e.key.toLowerCase()] = true;
     }
-});
+);
 
-window.addEventListener("keyup", (e) => {
-    keys[e.key.toLowerCase()] = false;
-
-    if (e.code === "Space") {
-        keys["space"] = false;
+document.addEventListener(
+    "keyup",
+    e => {
+        keys[e.key.toLowerCase()] = false;
     }
-});
+);
 
 
 let velocityY = 0;
 
-let onGround = true;
+let grounded = true;
 
 
 function updatePlayer() {
 
     const speed =
-        keys["shift"] ? 0.45 : 0.25;
+        keys["shift"]
+            ? 0.65
+            : 0.38;
 
 
     if (keys["w"]) {
@@ -742,13 +1754,28 @@ function updatePlayer() {
     }
 
 
-    // SALTO
+    /* limitar jugador al mapa */
 
-    if (keys["space"] && onGround) {
+    player.position.x =
+        Math.max(
+            -78,
+            Math.min(
+                78,
+                player.position.x
+            )
+        );
 
-        velocityY = 0.55;
 
-        onGround = false;
+    /* salto */
+
+    if (
+        keys[" "] &&
+        grounded
+    ) {
+
+        velocityY = 0.45;
+
+        grounded = false;
 
     }
 
@@ -758,93 +1785,108 @@ function updatePlayer() {
     player.position.y += velocityY;
 
 
-    if (player.position.y <= 0) {
+    if (
+        player.position.y <= 0
+    ) {
 
         player.position.y = 0;
 
         velocityY = 0;
 
-        onGround = true;
+        grounded = true;
 
     }
-
-
-    // LÍMITES LATERALES
-
-    player.position.x = THREE.MathUtils.clamp(
-        player.position.x,
-        -82,
-        82
-    );
 
 }
 
 
-// ============================================================
-// CÁMARA
-// ============================================================
+/* =========================================================
+   CAMARA
+========================================================= */
 
 function updateCamera() {
 
-    const targetX = player.position.x;
+    const targetX =
+        player.position.x;
 
-    const targetY = player.position.y + 7;
+    const targetY =
+        player.position.y + 7;
 
-    const targetZ = player.position.z - 18;
+    const targetZ =
+        player.position.z - 13;
 
 
     camera.position.lerp(
+
         new THREE.Vector3(
             targetX,
             targetY,
             targetZ
         ),
+
         0.08
     );
 
 
     camera.lookAt(
+
         player.position.x,
         player.position.y + 3,
-        player.position.z
+        player.position.z + 5
+
     );
 
 }
 
 
-// ============================================================
-// RESIZE
-// ============================================================
+/* =========================================================
+   ACTUALIZAR NOMBRE DE ZONA
+========================================================= */
 
-window.addEventListener("resize", () => {
+function updateZoneName() {
 
-    camera.aspect =
-        window.innerWidth /
-        window.innerHeight;
+    let index =
+        Math.floor(
+            (player.position.z - 100) /
+            ZONE_LENGTH
+        );
 
-    camera.updateProjectionMatrix();
+    if (index < 0) {
+        index = 0;
+    }
 
-    renderer.setSize(
-        window.innerWidth,
-        window.innerHeight
-    );
-
-});
+    if (index >= TOTAL_ZONES) {
+        index = TOTAL_ZONES - 1;
+    }
 
 
-// ============================================================
-// ANIMACIÓN
-// ============================================================
+    document.getElementById(
+        "zoneName"
+    ).textContent =
+        zones[index].name +
+        "  •  Nivel " +
+        zones[index].level;
 
-const clock = new THREE.Clock();
+}
+
+
+/* =========================================================
+   ANIMACIÓN
+========================================================= */
 
 function animate() {
 
-    requestAnimationFrame(animate);
+    requestAnimationFrame(
+        animate
+    );
+
 
     updatePlayer();
 
     updateCamera();
+
+    updateZoneName();
+
 
     renderer.render(
         scene,
@@ -853,7 +1895,31 @@ function animate() {
 
 }
 
+
 animate();
+
+
+/* =========================================================
+   RESIZE
+========================================================= */
+
+window.addEventListener(
+    "resize",
+    () => {
+
+        camera.aspect =
+            window.innerWidth /
+            window.innerHeight;
+
+        camera.updateProjectionMatrix();
+
+        renderer.setSize(
+            window.innerWidth,
+            window.innerHeight
+        );
+
+    }
+);
 
 </script>
 
