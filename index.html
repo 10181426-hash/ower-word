@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>OWNER WORLD V0.5</title>
+<title>OWNER WORLD V0.6</title>
 
 <style>
 *{
@@ -17,28 +17,30 @@ html,body{
     height:100%;
     overflow:hidden;
     font-family:Arial,Helvetica,sans-serif;
-    background:#87ceeb;
+    background:#79bde8;
 }
 
 canvas{
     display:block;
-    width:100%;
-    height:100%;
 }
+
+/* =========================
+   HUD
+========================= */
 
 #hud{
     position:fixed;
     top:15px;
     left:15px;
-    z-index:10;
+    z-index:20;
     color:white;
-    font-weight:bold;
     text-shadow:0 3px 8px #000;
     pointer-events:none;
 }
 
 #title{
     font-size:28px;
+    font-weight:900;
     letter-spacing:2px;
 }
 
@@ -48,47 +50,30 @@ canvas{
     margin-top:3px;
 }
 
+#playerNameHud{
+    margin-top:8px;
+    font-size:19px;
+    font-weight:bold;
+}
+
 #money{
-    margin-top:10px;
-    font-size:22px;
+    margin-top:6px;
+    font-size:20px;
 }
 
 #zone{
-    margin-top:6px;
-    font-size:18px;
+    margin-top:5px;
+    font-size:17px;
 }
 
-#announcement{
-    position:fixed;
-    top:25px;
-    left:50%;
-    transform:translateX(-50%);
-    z-index:20;
-    padding:14px 24px;
-    border-radius:15px;
-    background:rgba(10,10,25,.9);
-    color:white;
+#speedHud{
+    margin-top:5px;
     font-size:20px;
-    font-weight:bold;
-    text-align:center;
-    box-shadow:0 5px 25px rgba(0,0,0,.5);
-    display:none;
-    pointer-events:none;
 }
 
-#controls{
-    position:fixed;
-    bottom:15px;
-    left:15px;
-    z-index:10;
-    padding:10px 14px;
-    border-radius:12px;
-    background:rgba(0,0,0,.55);
-    color:white;
-    font-size:13px;
-    line-height:1.6;
-    pointer-events:none;
-}
+/* =========================
+   START SCREEN
+========================= */
 
 #startScreen{
     position:fixed;
@@ -98,30 +83,35 @@ canvas{
     justify-content:center;
     align-items:center;
     background:
-        radial-gradient(circle at center,#182b58 0%,#07101f 45%,#02050c 100%);
+        radial-gradient(
+            circle at center,
+            #1c3670 0%,
+            #081226 48%,
+            #02050c 100%
+        );
 }
 
 .startBox{
-    width:min(90%,500px);
-    padding:45px 30px;
-    border-radius:25px;
+    width:min(92%,520px);
+    padding:40px 30px;
+    border-radius:28px;
     text-align:center;
     color:white;
-    background:rgba(10,20,45,.8);
+    background:rgba(8,18,42,.9);
     border:2px solid rgba(120,180,255,.35);
     box-shadow:
-        0 0 40px rgba(70,130,255,.35),
+        0 0 45px rgba(70,130,255,.4),
         inset 0 0 35px rgba(70,130,255,.08);
 }
 
 .logo{
-    font-size:48px;
+    font-size:45px;
     font-weight:900;
-    letter-spacing:4px;
+    letter-spacing:3px;
     text-shadow:
-        0 0 10px #fff,
+        0 0 10px white,
         0 0 25px #5d8cff,
-        0 0 45px #7b4dff;
+        0 0 45px #8b4dff;
 }
 
 .startVersion{
@@ -131,29 +121,221 @@ canvas{
     font-weight:bold;
 }
 
-.startDescription{
-    margin-top:20px;
-    line-height:1.6;
-    color:#dce8ff;
+.startText{
+    margin-top:22px;
+    color:#dbe8ff;
+    line-height:1.5;
+}
+
+.nameLabel{
+    display:block;
+    margin-top:25px;
+    margin-bottom:8px;
+    font-weight:bold;
+}
+
+#nameInput{
+    width:90%;
+    padding:14px;
+    border:none;
+    outline:none;
+    border-radius:12px;
+    text-align:center;
+    font-size:19px;
+    font-weight:bold;
+    background:#edf4ff;
+    color:#10182b;
 }
 
 #playButton{
-    margin-top:30px;
-    padding:15px 45px;
+    margin-top:20px;
+    padding:14px 42px;
     border:0;
     border-radius:14px;
-    font-size:22px;
+    font-size:21px;
     font-weight:bold;
     color:white;
-    background:linear-gradient(135deg,#3c75ff,#793dff);
+    background:linear-gradient(
+        135deg,
+        #3c75ff,
+        #793dff
+    );
     box-shadow:0 8px 25px rgba(70,80,255,.45);
     cursor:pointer;
-    transition:.2s;
 }
 
 #playButton:hover{
-    transform:scale(1.06);
-    box-shadow:0 10px 35px rgba(90,100,255,.7);
+    transform:scale(1.05);
+}
+
+#errorMessage{
+    min-height:22px;
+    margin-top:10px;
+    color:#ff6f7d;
+    font-weight:bold;
+}
+
+/* =========================
+   OWNER ADMIN
+========================= */
+
+#adminButton{
+    position:fixed;
+    top:18px;
+    right:18px;
+    z-index:30;
+    display:none;
+    padding:11px 17px;
+    border:1px solid rgba(255,255,255,.3);
+    border-radius:12px;
+    color:white;
+    font-size:15px;
+    font-weight:bold;
+    background:linear-gradient(
+        135deg,
+        #4c2eff,
+        #a02cff
+    );
+    box-shadow:0 0 20px rgba(110,60,255,.5);
+    cursor:pointer;
+}
+
+#adminPanel{
+    position:fixed;
+    top:75px;
+    right:18px;
+    z-index:40;
+    width:330px;
+    max-height:80vh;
+    overflow-y:auto;
+    display:none;
+    padding:18px;
+    border-radius:18px;
+    color:white;
+    background:rgba(8,10,30,.96);
+    border:1px solid rgba(130,100,255,.6);
+    box-shadow:0 0 35px rgba(90,60,255,.45);
+}
+
+.adminTitle{
+    text-align:center;
+    font-size:22px;
+    font-weight:900;
+    margin-bottom:15px;
+}
+
+.adminSection{
+    margin-top:13px;
+    padding:12px;
+    border-radius:12px;
+    background:rgba(255,255,255,.06);
+}
+
+.adminSectionTitle{
+    margin-bottom:8px;
+    font-weight:bold;
+}
+
+.adminInput,
+.adminSelect{
+    width:100%;
+    margin-top:7px;
+    padding:9px;
+    border:0;
+    border-radius:8px;
+    outline:none;
+}
+
+.adminBtn{
+    width:100%;
+    margin-top:7px;
+    padding:9px;
+    border:0;
+    border-radius:8px;
+    color:white;
+    background:#4435a8;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.adminBtn:hover{
+    background:#604ce0;
+}
+
+.scopeButtons{
+    display:flex;
+    gap:6px;
+}
+
+.scopeButtons button{
+    flex:1;
+    padding:8px;
+    border:0;
+    border-radius:8px;
+    color:white;
+    background:#252a4c;
+    cursor:pointer;
+}
+
+.scopeButtons button.active{
+    background:#684cff;
+}
+
+/* =========================
+   ANNOUNCEMENT
+========================= */
+
+#announcement{
+    position:fixed;
+    top:25px;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:50;
+    display:none;
+    max-width:85%;
+    padding:14px 24px;
+    border-radius:15px;
+    background:rgba(8,10,25,.93);
+    color:white;
+    font-size:19px;
+    font-weight:bold;
+    text-align:center;
+    box-shadow:0 5px 25px rgba(0,0,0,.5);
+    pointer-events:none;
+}
+
+/* =========================
+   CONTROLES
+========================= */
+
+#controls{
+    position:fixed;
+    bottom:15px;
+    left:15px;
+    z-index:20;
+    padding:10px 14px;
+    border-radius:12px;
+    background:rgba(0,0,0,.55);
+    color:white;
+    font-size:13px;
+    line-height:1.6;
+    pointer-events:none;
+}
+
+#interact{
+    position:fixed;
+    bottom:25px;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:20;
+    display:none;
+    padding:12px 22px;
+    border-radius:13px;
+    background:rgba(0,0,0,.8);
+    color:white;
+    font-weight:bold;
+    font-size:17px;
+    pointer-events:none;
 }
 
 #crosshair{
@@ -171,52 +353,321 @@ canvas{
     pointer-events:none;
     opacity:.7;
 }
+
+/* =========================
+   OWNER TAG
+========================= */
+
+.ownerTag{
+    position:fixed;
+    z-index:15;
+    color:white;
+    font-size:18px;
+    font-weight:900;
+    text-shadow:
+        0 0 5px #fff,
+        0 0 12px #694cff,
+        0 0 22px #a64cff;
+    pointer-events:none;
+    transform:translate(-50%,-50%);
+}
 </style>
 </head>
 
 <body>
 
-<div id="startScreen">
-    <div class="startBox">
-        <div class="logo">OWNER WORLD</div>
-        <div class="startVersion">V0.5</div>
+<!-- =========================
+     START
+========================= -->
 
-        <div class="startDescription">
-            🌎 Explora las 9 zonas<br>
-            🐾 Consigue mascotas<br>
-            🥚 Descubre huevos<br>
-            👑 Prepárate para convertirte en OWNER
+<div id="startScreen">
+
+    <div class="startBox">
+
+        <div class="logo">
+            OWNER WORLD
         </div>
 
-        <button id="playButton">JUGAR</button>
+        <div class="startVersion">
+            V0.6
+        </div>
+
+        <div class="startText">
+            🌎 Bienvenido a OWNER WORLD<br>
+            🏠 Reclama tu corral<br>
+            🏃 Entrena tu velocidad<br>
+            👹 Enfrenta a los jefes
+        </div>
+
+        <label class="nameLabel">
+            👤 CREA TU NOMBRE
+        </label>
+
+        <input
+            id="nameInput"
+            maxlength="16"
+            placeholder="Escribe tu nombre"
+            autocomplete="off"
+        >
+
+        <div id="errorMessage"></div>
+
+        <button id="playButton">
+            JUGAR
+        </button>
+
     </div>
+
 </div>
 
+
+<!-- =========================
+     HUD
+========================= -->
+
 <div id="hud">
-    <div id="title">👑 OWNER WORLD</div>
-    <div id="version">V0.5</div>
-    <div id="money">💰 $0</div>
-    <div id="zone">🌿 Pradera Inicial</div>
+
+    <div id="title">
+        👑 OWNER WORLD
+    </div>
+
+    <div id="version">
+        V0.6
+    </div>
+
+    <div id="playerNameHud">
+        👤 ---
+    </div>
+
+    <div id="money">
+        💰 $0
+    </div>
+
+    <div id="zone">
+        🌿 Pradera Inicial
+    </div>
+
+    <div id="speedHud">
+        👟 ⚡ 10
+    </div>
+
 </div>
+
+
+<!-- =========================
+     ADMIN BUTTON
+========================= -->
+
+<button id="adminButton">
+    👑 ADMIN
+</button>
+
+
+<!-- =========================
+     ADMIN PANEL
+========================= -->
+
+<div id="adminPanel">
+
+    <div class="adminTitle">
+        👑 OWNER PANEL 👑
+    </div>
+
+    <div class="adminSection">
+
+        <div class="adminSectionTitle">
+            🌎 ALCANCE
+        </div>
+
+        <div class="scopeButtons">
+
+            <button
+                id="globalScope"
+                class="active"
+            >
+                🌎 GLOBAL
+            </button>
+
+            <button id="serverScope">
+                🖥️ ESTE SERVIDOR
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <div class="adminSection">
+
+        <div class="adminSectionTitle">
+            📢 MENSAJE
+        </div>
+
+        <input
+            id="messageInput"
+            class="adminInput"
+            maxlength="120"
+            placeholder="Escribe un mensaje..."
+        >
+
+        <button
+            id="sendMessage"
+            class="adminBtn"
+        >
+            📢 ENVIAR MENSAJE
+        </button>
+
+    </div>
+
+
+    <div class="adminSection">
+
+        <div class="adminSectionTitle">
+            🎉 EVENTOS
+        </div>
+
+        <select
+            id="eventSelect"
+            class="adminSelect"
+        >
+
+            <option>
+                🍀 2X SUERTE
+            </option>
+
+            <option>
+                🌟 4X SUERTE
+            </option>
+
+            <option>
+                🔥 10X SUERTE
+            </option>
+
+            <option>
+                ⚡ SUPER VELOCIDAD
+            </option>
+
+            <option>
+                👑 ADMIN ABUSE
+            </option>
+
+        </select>
+
+        <button
+            id="activateEvent"
+            class="adminBtn"
+        >
+            🎉 ACTIVAR EVENTO
+        </button>
+
+    </div>
+
+
+    <div class="adminSection">
+
+        <div class="adminSectionTitle">
+            👹 JEFES
+        </div>
+
+        <select
+            id="bossSelect"
+            class="adminSelect"
+        >
+
+            <option>🌿 Rey Raíz</option>
+            <option>🌲 Bestia del Bosque</option>
+            <option>🏜️ Coloso Dorado</option>
+            <option>❄️ Titán Glacial</option>
+            <option>🌋 Señor Carmesí</option>
+            <option>🌊 Leviatán Abisal</option>
+            <option>🌌 Devorador Cósmico</option>
+            <option>♾️ Guardián Eterno</option>
+            <option>✨ Dios Celestial</option>
+
+        </select>
+
+        <button
+            id="spawnBoss"
+            class="adminBtn"
+        >
+            👹 INVOCAR JEFE
+        </button>
+
+    </div>
+
+
+    <div class="adminSection">
+
+        <div class="adminSectionTitle">
+            📊 ENCUESTA
+        </div>
+
+        <input
+            id="pollInput"
+            class="adminInput"
+            maxlength="100"
+            placeholder="Pregunta de encuesta..."
+        >
+
+        <button
+            id="createPoll"
+            class="adminBtn"
+        >
+            📊 CREAR ENCUESTA
+        </button>
+
+    </div>
+
+
+    <button
+        id="closeAdmin"
+        class="adminBtn"
+    >
+        ❌ CERRAR PANEL
+    </button>
+
+</div>
+
+
+<!-- =========================
+     ANNOUNCEMENT
+========================= -->
 
 <div id="announcement"></div>
 
+
+<!-- =========================
+     INTERACT
+========================= -->
+
+<div id="interact"></div>
+
+
+<!-- =========================
+     CONTROLES
+========================= -->
+
 <div id="controls">
+
     <b>CONTROLES</b><br>
     W A S D — Moverse<br>
     SHIFT — Correr<br>
     SPACE — Saltar<br>
-    MOUSE — Cámara
+    MOUSE — Cámara<br>
+    E — Interactuar
+
 </div>
 
+
 <div id="crosshair"></div>
+
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 
 <script>
 
 /* =========================================================
-   OWNER WORLD V0.5
+   OWNER WORLD V0.6
    ========================================================= */
 
 
@@ -224,36 +675,42 @@ canvas{
    ESCENA
    ========================================================= */
 
-const scene = new THREE.Scene();
+const scene =
+    new THREE.Scene();
 
-scene.background = new THREE.Color(0x79bde8);
+scene.background =
+    new THREE.Color(0x79bde8);
 
-scene.fog = new THREE.Fog(
-    0x79bde8,
-    180,
-    1150
-);
+scene.fog =
+    new THREE.Fog(
+        0x79bde8,
+        180,
+        1200
+    );
 
 
 /* =========================================================
    CÁMARA
    ========================================================= */
 
-const camera = new THREE.PerspectiveCamera(
-    70,
-    window.innerWidth / window.innerHeight,
-    0.1,
-    2000
-);
+const camera =
+    new THREE.PerspectiveCamera(
+        70,
+        window.innerWidth /
+        window.innerHeight,
+        0.1,
+        2000
+    );
 
 
 /* =========================================================
    RENDERER
    ========================================================= */
 
-const renderer = new THREE.WebGLRenderer({
-    antialias:true
-});
+const renderer =
+    new THREE.WebGLRenderer({
+        antialias:true
+    });
 
 renderer.setSize(
     window.innerWidth,
@@ -261,15 +718,20 @@ renderer.setSize(
 );
 
 renderer.setPixelRatio(
-    Math.min(window.devicePixelRatio,2)
+    Math.min(
+        window.devicePixelRatio,
+        2
+    )
 );
 
-renderer.shadowMap.enabled = true;
+renderer.shadowMap.enabled=true;
 
 renderer.shadowMap.type =
     THREE.PCFSoftShadowMap;
 
-document.body.appendChild(renderer.domElement);
+document.body.appendChild(
+    renderer.domElement
+);
 
 
 /* =========================================================
@@ -280,10 +742,12 @@ const hemisphereLight =
     new THREE.HemisphereLight(
         0xbde8ff,
         0x4b3826,
-        2.0
+        2
     );
 
-scene.add(hemisphereLight);
+scene.add(
+    hemisphereLight
+);
 
 
 const sun =
@@ -298,85 +762,97 @@ sun.position.set(
     80
 );
 
-sun.castShadow = true;
+sun.castShadow=true;
 
-sun.shadow.mapSize.width = 2048;
-sun.shadow.mapSize.height = 2048;
+sun.shadow.mapSize.width=2048;
+sun.shadow.mapSize.height=2048;
 
-sun.shadow.camera.left = -300;
-sun.shadow.camera.right = 300;
-sun.shadow.camera.top = 300;
-sun.shadow.camera.bottom = -1300;
+sun.shadow.camera.left=-300;
+sun.shadow.camera.right=300;
+sun.shadow.camera.top=300;
+sun.shadow.camera.bottom=-1400;
 
-scene.add(sun);
+scene.add(
+    sun
+);
 
 
 /* =========================================================
-   CONFIGURACIÓN DEL MAPA
+   MAPA
    ========================================================= */
 
-const MAP_WIDTH = 230;
+const MAP_WIDTH=230;
 
-const ZONE_LENGTH = 175;
+const ZONE_LENGTH=175;
 
-const START_Z = 110;
+const START_Z=110;
 
-const TOTAL_ZONES = 9;
+const TOTAL_ZONES=9;
 
-const END_Z =
+const END_Z=
     START_Z -
-    ZONE_LENGTH * TOTAL_ZONES;
+    ZONE_LENGTH *
+    TOTAL_ZONES;
 
 
 /* =========================================================
    ZONAS
    ========================================================= */
 
-const zones = [
+const zones=[
 
     {
         name:"🌿 Pradera Inicial",
-        color:0x65bd55
+        color:0x65bd55,
+        wall:0x5b923d
     },
 
     {
         name:"🌲 Bosque Encantado",
-        color:0x327c43
+        color:0x327c43,
+        wall:0x315b38
     },
 
     {
         name:"🏜️ Desierto Dorado",
-        color:0xd9ad4d
+        color:0xd9ad4d,
+        wall:0xb4874a
     },
 
     {
         name:"❄️ Cumbres Heladas",
-        color:0xbce7f4
+        color:0xbce7f4,
+        wall:0x9ac8d4
     },
 
     {
         name:"🌋 Volcán Carmesí",
-        color:0x8d3028
+        color:0x8d3028,
+        wall:0x492724
     },
 
     {
         name:"🌊 Abismo Marino",
-        color:0x126fa5
+        color:0x126fa5,
+        wall:0x15516d
     },
 
     {
         name:"🌌 Galaxia Perdida",
-        color:0x251b69
+        color:0x251b69,
+        wall:0x29205e
     },
 
     {
         name:"♾️ Santuario Eterno",
-        color:0x4e2d82
+        color:0x4e2d82,
+        wall:0x4b356d
     },
 
     {
         name:"✨ Dominio Divino",
-        color:0xd7c76a
+        color:0xd7c76a,
+        wall:0x8c7434
     }
 
 ];
@@ -386,152 +862,128 @@ const zones = [
    TERRENO
    ========================================================= */
 
-const groundGeometry =
-    new THREE.BoxGeometry(
-        MAP_WIDTH,
-        4,
-        ZONE_LENGTH * TOTAL_ZONES + 100
-    );
-
-const groundMaterial =
-    new THREE.MeshStandardMaterial({
-        color:0x4c8f4d,
-        roughness:1
-    });
-
 const ground =
     new THREE.Mesh(
-        groundGeometry,
-        groundMaterial
+        new THREE.BoxGeometry(
+            MAP_WIDTH,
+            4,
+            ZONE_LENGTH *
+            TOTAL_ZONES +
+            100
+        ),
+        new THREE.MeshStandardMaterial({
+            color:0x4c8f4d,
+            roughness:1
+        })
     );
 
 ground.position.set(
     0,
     -2,
-    START_Z - (ZONE_LENGTH * TOTAL_ZONES)/2
+    START_Z -
+    (ZONE_LENGTH *
+    TOTAL_ZONES)/2
 );
 
-ground.receiveShadow = true;
+ground.receiveShadow=true;
 
-scene.add(ground);
+scene.add(
+    ground
+);
 
 
 /* =========================================================
-   CAMINO CENTRAL
+   CAMINO
    ========================================================= */
-
-const roadGeometry =
-    new THREE.BoxGeometry(
-        34,
-        0.15,
-        ZONE_LENGTH * TOTAL_ZONES + 20
-    );
-
-const roadMaterial =
-    new THREE.MeshStandardMaterial({
-        color:0x8a7968,
-        roughness:1
-    });
 
 const road =
     new THREE.Mesh(
-        roadGeometry,
-        roadMaterial
+        new THREE.BoxGeometry(
+            34,
+            .15,
+            ZONE_LENGTH *
+            TOTAL_ZONES +
+            20
+        ),
+        new THREE.MeshStandardMaterial({
+            color:0x8a7968,
+            roughness:1
+        })
     );
 
 road.position.set(
     0,
-    0.08,
-    START_Z - (ZONE_LENGTH * TOTAL_ZONES)/2
+    .08,
+    START_Z -
+    (ZONE_LENGTH *
+    TOTAL_ZONES)/2
 );
 
-road.receiveShadow = true;
+road.receiveShadow=true;
 
-scene.add(road);
+scene.add(
+    road
+);
 
 
 /* =========================================================
-   FRANJAS DE ZONAS
+   SUELO DE ZONAS
    ========================================================= */
-
-function createZoneGround(
-    index,
-    color
-){
-
-    const geometry =
-        new THREE.BoxGeometry(
-            MAP_WIDTH - 8,
-            0.35,
-            ZONE_LENGTH - 4
-        );
-
-    const material =
-        new THREE.MeshStandardMaterial({
-            color:color,
-            roughness:1
-        });
-
-    const mesh =
-        new THREE.Mesh(
-            geometry,
-            material
-        );
-
-    mesh.position.set(
-        0,
-        0.15,
-        START_Z -
-        index * ZONE_LENGTH -
-        ZONE_LENGTH / 2
-    );
-
-    mesh.receiveShadow = true;
-
-    scene.add(mesh);
-
-    return mesh;
-}
-
 
 zones.forEach(
     (zone,index)=>{
-        createZoneGround(
-            index,
-            zone.color
+
+        const mesh =
+            new THREE.Mesh(
+                new THREE.BoxGeometry(
+                    MAP_WIDTH-8,
+                    .35,
+                    ZONE_LENGTH-4
+                ),
+                new THREE.MeshStandardMaterial({
+                    color:zone.color,
+                    roughness:1
+                })
+            );
+
+        mesh.position.set(
+            0,
+            .15,
+            START_Z -
+            index*ZONE_LENGTH -
+            ZONE_LENGTH/2
         );
+
+        mesh.receiveShadow=true;
+
+        scene.add(mesh);
     }
 );
 
 
 /* =========================================================
-   PAREDES EXTERIORES
+   PARED EXTERIOR
    ========================================================= */
 
-function createOuterWall(
+function createWallSegment(
     x,
     z,
     width,
-    depth
+    depth,
+    color
 ){
-
-    const dirtGeometry =
-        new THREE.BoxGeometry(
-            width,
-            26,
-            depth
-        );
-
-    const dirtMaterial =
-        new THREE.MeshStandardMaterial({
-            color:0x765334,
-            roughness:1
-        });
 
     const wall =
         new THREE.Mesh(
-            dirtGeometry,
-            dirtMaterial
+            new THREE.BoxGeometry(
+                width,
+                26,
+                depth
+            ),
+            new THREE.MeshStandardMaterial({
+                color:color,
+                roughness:1
+            })
         );
 
     wall.position.set(
@@ -540,95 +992,375 @@ function createOuterWall(
         z
     );
 
-    wall.castShadow = true;
-    wall.receiveShadow = true;
+    wall.castShadow=true;
+    wall.receiveShadow=true;
 
     scene.add(wall);
 
 
-    const grassGeometry =
-        new THREE.BoxGeometry(
-            width + 2,
-            2.2,
-            depth + 2
-        );
-
-    const grassMaterial =
-        new THREE.MeshStandardMaterial({
-            color:0x4e8d3e,
-            roughness:1
-        });
-
     const grass =
         new THREE.Mesh(
-            grassGeometry,
-            grassMaterial
+            new THREE.BoxGeometry(
+                width+2,
+                2,
+                depth+2
+            ),
+            new THREE.MeshStandardMaterial({
+                color:0x4e8d3e
+            })
         );
 
     grass.position.set(
         x,
-        26.1,
+        26.2,
         z
     );
-
-    grass.castShadow = true;
 
     scene.add(grass);
 }
 
 
-/* izquierda */
-
-createOuterWall(
-    -MAP_WIDTH/2,
-    START_Z - (ZONE_LENGTH*TOTAL_ZONES)/2,
-    8,
-    ZONE_LENGTH*TOTAL_ZONES + 50
-);
-
-
-/* derecha */
-
-createOuterWall(
-    MAP_WIDTH/2,
-    START_Z - (ZONE_LENGTH*TOTAL_ZONES)/2,
-    8,
-    ZONE_LENGTH*TOTAL_ZONES + 50
-);
-
-
-/* inicio */
-
-createOuterWall(
-    0,
-    START_Z + 45,
-    MAP_WIDTH,
-    8
-);
-
-
-/* final */
-
-createOuterWall(
-    0,
-    END_Z - 45,
-    MAP_WIDTH,
-    8
-);
-
-
 /* =========================================================
-   FUNCIONES DE DECORACIÓN
+   PAREDES POR BIOMA
    ========================================================= */
 
-function randomRange(min,max){
-    return Math.random()*(max-min)+min;
+for(
+    let i=0;
+    i<TOTAL_ZONES;
+    i++
+){
+
+    const zone=zones[i];
+
+    const centerZ=
+        START_Z -
+        i*ZONE_LENGTH -
+        ZONE_LENGTH/2;
+
+
+    /*
+       Cada zona tiene su propio
+       segmento de pared y color.
+    */
+
+    createWallSegment(
+        -MAP_WIDTH/2,
+        centerZ,
+        8,
+        ZONE_LENGTH+2,
+        zone.wall
+    );
+
+    createWallSegment(
+        MAP_WIDTH/2,
+        centerZ,
+        8,
+        ZONE_LENGTH+2,
+        zone.wall
+    );
 }
 
 
 /* =========================================================
-   ÁRBOL
+   PAREDES DE INICIO Y FINAL
    ========================================================= */
+
+createWallSegment(
+    0,
+    START_Z+45,
+    MAP_WIDTH,
+    8,
+    0x5b923d
+);
+
+createWallSegment(
+    0,
+    END_Z-45,
+    MAP_WIDTH,
+    8,
+    0xd7c76a
+);
+
+
+/* =========================================================
+   DECORACIÓN DE PAREDES
+   ========================================================= */
+
+function wallDecoration(
+    index
+){
+
+    const centerZ=
+        START_Z -
+        index*ZONE_LENGTH -
+        ZONE_LENGTH/2;
+
+
+    /* PRADERA */
+
+    if(index===0){
+
+        for(
+            let i=0;
+            i<18;
+            i++
+        ){
+
+            createFlower(
+                -112,
+                centerZ+
+                randomRange(-70,70)
+            );
+
+            createFlower(
+                112,
+                centerZ+
+                randomRange(-70,70)
+            );
+        }
+    }
+
+
+    /* BOSQUE */
+
+    if(index===1){
+
+        for(
+            let i=0;
+            i<12;
+            i++
+        ){
+
+            createTree(
+                -108,
+                centerZ+
+                randomRange(-70,70),
+                .8
+            );
+
+            createTree(
+                108,
+                centerZ+
+                randomRange(-70,70),
+                .8
+            );
+        }
+    }
+
+
+    /* DESIERTO */
+
+    if(index===2){
+
+        for(
+            let i=0;
+            i<10;
+            i++
+        ){
+
+            createCactus(
+                -108,
+                centerZ+
+                randomRange(-70,70)
+            );
+
+            createCactus(
+                108,
+                centerZ+
+                randomRange(-70,70)
+            );
+        }
+    }
+
+
+    /* HIELO */
+
+    if(index===3){
+
+        for(
+            let i=0;
+            i<12;
+            i++
+        ){
+
+            createCrystal(
+                -108,
+                centerZ+
+                randomRange(-70,70),
+                0xbcefff,
+                randomRange(.8,1.5)
+            );
+
+            createCrystal(
+                108,
+                centerZ+
+                randomRange(-70,70),
+                0xbcefff,
+                randomRange(.8,1.5)
+            );
+        }
+    }
+
+
+    /* VOLCÁN */
+
+    if(index===4){
+
+        for(
+            let i=0;
+            i<8;
+            i++
+        ){
+
+            createRock(
+                -108,
+                centerZ+
+                randomRange(-70,70),
+                randomRange(.7,1.3),
+                0x33201d
+            );
+
+            createRock(
+                108,
+                centerZ+
+                randomRange(-70,70),
+                randomRange(.7,1.3),
+                0x33201d
+            );
+        }
+    }
+
+
+    /* ABISMO */
+
+    if(index===5){
+
+        for(
+            let i=0;
+            i<14;
+            i++
+        ){
+
+            createCrystal(
+                -108,
+                centerZ+
+                randomRange(-70,70),
+                0x168dff,
+                randomRange(.6,1.2)
+            );
+
+            createCrystal(
+                108,
+                centerZ+
+                randomRange(-70,70),
+                0x168dff,
+                randomRange(.6,1.2)
+            );
+        }
+    }
+
+
+    /* GALAXIA */
+
+    if(index===6){
+
+        for(
+            let i=0;
+            i<18;
+            i++
+        ){
+
+            createCrystal(
+                -108,
+                centerZ+
+                randomRange(-70,70),
+                Math.random()>.5
+                ?0x8c5cff
+                :0xff5de7,
+                randomRange(.5,1.1)
+            );
+
+            createCrystal(
+                108,
+                centerZ+
+                randomRange(-70,70),
+                Math.random()>.5
+                ?0x8c5cff
+                :0xff5de7,
+                randomRange(.5,1.1)
+            );
+        }
+    }
+
+
+    /* SANTUARIO */
+
+    if(index===7){
+
+        for(
+            let i=-2;
+            i<=2;
+            i++
+        ){
+
+            createCrystal(
+                -108,
+                centerZ+i*28,
+                0xd26cff,
+                1.3
+            );
+
+            createCrystal(
+                108,
+                centerZ+i*28,
+                0x7b5cff,
+                1.3
+            );
+        }
+    }
+
+
+    /* DIVINO */
+
+    if(index===8){
+
+        for(
+            let i=-3;
+            i<=3;
+            i++
+        ){
+
+            createCrystal(
+                -108,
+                centerZ+i*23,
+                0xffdf67,
+                1.3
+            );
+
+            createCrystal(
+                108,
+                centerZ+i*23,
+                0xffdf67,
+                1.3
+            );
+        }
+    }
+}
+
+
+/* =========================================================
+   UTILIDADES DECORATIVAS
+   ========================================================= */
+
+function randomRange(
+    min,
+    max
+){
+
+    return Math.random()*
+        (max-min)+min;
+}
+
 
 function createTree(
     x,
@@ -636,59 +1368,47 @@ function createTree(
     scale=1
 ){
 
-    const group =
+    const group=
         new THREE.Group();
 
 
-    const trunkGeometry =
-        new THREE.CylinderGeometry(
-            1.3*scale,
-            1.7*scale,
-            9*scale,
-            8
-        );
-
-    const trunkMaterial =
-        new THREE.MeshStandardMaterial({
-            color:0x704323
-        });
-
-    const trunk =
+    const trunk=
         new THREE.Mesh(
-            trunkGeometry,
-            trunkMaterial
+            new THREE.CylinderGeometry(
+                1.3*scale,
+                1.7*scale,
+                9*scale,
+                8
+            ),
+            new THREE.MeshStandardMaterial({
+                color:0x704323
+            })
         );
 
-    trunk.position.y =
+    trunk.position.y=
         4.5*scale;
 
-    trunk.castShadow = true;
+    trunk.castShadow=true;
 
     group.add(trunk);
 
 
-    const leavesGeometry =
-        new THREE.SphereGeometry(
-            5.5*scale,
-            8,
-            8
-        );
-
-    const leavesMaterial =
-        new THREE.MeshStandardMaterial({
-            color:0x26783b
-        });
-
-    const leaves =
+    const leaves=
         new THREE.Mesh(
-            leavesGeometry,
-            leavesMaterial
+            new THREE.SphereGeometry(
+                5.5*scale,
+                8,
+                8
+            ),
+            new THREE.MeshStandardMaterial({
+                color:0x26783b
+            })
         );
 
-    leaves.position.y =
+    leaves.position.y=
         10*scale;
 
-    leaves.castShadow = true;
+    leaves.castShadow=true;
 
     group.add(leaves);
 
@@ -703,10 +1423,6 @@ function createTree(
 }
 
 
-/* =========================================================
-   ROCA
-   ========================================================= */
-
 function createRock(
     x,
     z,
@@ -714,22 +1430,15 @@ function createRock(
     color=0x777777
 ){
 
-    const geometry =
-        new THREE.DodecahedronGeometry(
-            3*scale,
-            0
-        );
-
-    const material =
-        new THREE.MeshStandardMaterial({
-            color:color,
-            roughness:1
-        });
-
-    const rock =
+    const rock=
         new THREE.Mesh(
-            geometry,
-            material
+            new THREE.DodecahedronGeometry(
+                3*scale,
+                0
+            ),
+            new THREE.MeshStandardMaterial({
+                color:color
+            })
         );
 
     rock.position.set(
@@ -738,35 +1447,30 @@ function createRock(
         z
     );
 
-    rock.rotation.y =
+    rock.rotation.y=
         Math.random()*Math.PI;
 
-    rock.castShadow = true;
+    rock.castShadow=true;
 
     scene.add(rock);
 }
 
-
-/* =========================================================
-   CACTUS
-   ========================================================= */
 
 function createCactus(
     x,
     z
 ){
 
-    const group =
+    const group=
         new THREE.Group();
 
-
-    const material =
+    const material=
         new THREE.MeshStandardMaterial({
             color:0x3b9b50
         });
 
 
-    const body =
+    const body=
         new THREE.Mesh(
             new THREE.CylinderGeometry(
                 1.5,
@@ -779,12 +1483,10 @@ function createCactus(
 
     body.position.y=4.5;
 
-    body.castShadow=true;
-
     group.add(body);
 
 
-    const arm1 =
+    const arm=
         new THREE.Mesh(
             new THREE.CylinderGeometry(
                 .9,
@@ -795,39 +1497,16 @@ function createCactus(
             material
         );
 
-    arm1.position.set(
+    arm.position.set(
         3,
         4.5,
         0
     );
 
-    arm1.rotation.z =
+    arm.rotation.z=
         Math.PI/2;
 
-    group.add(arm1);
-
-
-    const arm2 =
-        new THREE.Mesh(
-            new THREE.CylinderGeometry(
-                .9,
-                1.1,
-                3.5,
-                8
-            ),
-            material
-        );
-
-    arm2.position.set(
-        -3,
-        3.5,
-        0
-    );
-
-    arm2.rotation.z =
-        Math.PI/2;
-
-    group.add(arm2);
+    group.add(arm);
 
 
     group.position.set(
@@ -840,10 +1519,6 @@ function createCactus(
 }
 
 
-/* =========================================================
-   CRISTAL
-   ========================================================= */
-
 function createCrystal(
     x,
     z,
@@ -851,23 +1526,17 @@ function createCrystal(
     scale=1
 ){
 
-    const geometry =
-        new THREE.OctahedronGeometry(
-            3*scale,
-            0
-        );
-
-    const material =
-        new THREE.MeshStandardMaterial({
-            color:color,
-            emissive:color,
-            emissiveIntensity:.25
-        });
-
-    const crystal =
+    const crystal=
         new THREE.Mesh(
-            geometry,
-            material
+            new THREE.OctahedronGeometry(
+                3*scale,
+                0
+            ),
+            new THREE.MeshStandardMaterial({
+                color:color,
+                emissive:color,
+                emissiveIntensity:.25
+            })
         );
 
     crystal.position.set(
@@ -876,25 +1545,18 @@ function createCrystal(
         z
     );
 
-    crystal.rotation.z =
-        randomRange(-.3,.3);
-
     crystal.castShadow=true;
 
     scene.add(crystal);
 }
 
 
-/* =========================================================
-   FLORES
-   ========================================================= */
-
 function createFlower(
     x,
     z
 ){
 
-    const stem =
+    const stem=
         new THREE.Mesh(
             new THREE.CylinderGeometry(
                 .12,
@@ -916,7 +1578,7 @@ function createFlower(
     scene.add(stem);
 
 
-    const flower =
+    const flower=
         new THREE.Mesh(
             new THREE.SphereGeometry(
                 .65,
@@ -941,491 +1603,14 @@ function createFlower(
 }
 
 
-/* =========================================================
-   VOLCÁN
-   ========================================================= */
-
-function createVolcano(
-    x,
-    z
-){
-
-    const geometry =
-        new THREE.ConeGeometry(
-            18,
-            26,
-            12
-        );
-
-    const material =
-        new THREE.MeshStandardMaterial({
-            color:0x4d2521
-        });
-
-    const volcano =
-        new THREE.Mesh(
-            geometry,
-            material
-        );
-
-    volcano.position.set(
-        x,
-        13,
-        z
-    );
-
-    volcano.castShadow=true;
-
-    scene.add(volcano);
-
-
-    const lava =
-        new THREE.Mesh(
-            new THREE.CylinderGeometry(
-                5,
-                5,
-                .8,
-                12
-            ),
-            new THREE.MeshStandardMaterial({
-                color:0xff431f,
-                emissive:0xff2600,
-                emissiveIntensity:1
-            })
-        );
-
-    lava.position.set(
-        x,
-        26,
-        z
-    );
-
-    scene.add(lava);
-}
-
-
-/* =========================================================
-   TEMPLO DIVINO
-   ========================================================= */
-
-function createDivineTemple(
-    x,
-    z
-){
-
-    const material =
-        new THREE.MeshStandardMaterial({
-            color:0xffdf75,
-            emissive:0x8c641d,
-            emissiveIntensity:.2
-        });
-
-
-    const base =
-        new THREE.Mesh(
-            new THREE.BoxGeometry(
-                45,
-                3,
-                35
-            ),
-            material
-        );
-
-    base.position.set(
-        x,
-        1.5,
-        z
-    );
-
-    base.castShadow=true;
-
-    scene.add(base);
-
-
-    for(
-        let i=-2;
-        i<=2;
-        i++
-    ){
-
-        const pillar =
-            new THREE.Mesh(
-                new THREE.CylinderGeometry(
-                    2.2,
-                    2.2,
-                    24,
-                    10
-                ),
-                material
-            );
-
-        pillar.position.set(
-            x + i*9,
-            13,
-            z
-        );
-
-        pillar.castShadow=true;
-
-        scene.add(pillar);
-    }
-
-
-    const roof =
-        new THREE.Mesh(
-            new THREE.ConeGeometry(
-                29,
-                18,
-                4
-            ),
-            material
-        );
-
-    roof.position.set(
-        x,
-        32,
-        z
-    );
-
-    roof.rotation.y =
-        Math.PI/4;
-
-    roof.castShadow=true;
-
-    scene.add(roof);
-}
-
-
-/* =========================================================
-   DECORAR ZONAS
-   ========================================================= */
-
-function decorateZone(
-    index
-){
-
-    const centerZ =
-        START_Z -
-        index*ZONE_LENGTH -
-        ZONE_LENGTH/2;
-
-
-    /* PRADERA */
-
-    if(index===0){
-
-        for(
-            let i=0;
-            i<24;
-            i++
-        ){
-
-            const x =
-                randomRange(
-                    -105,
-                    105
-                );
-
-            const z =
-                centerZ +
-                randomRange(
-                    -70,
-                    70
-                );
-
-            if(Math.abs(x)<28)
-                continue;
-
-            createFlower(x,z);
-
-            if(i%4===0)
-                createTree(x,z+5,.8);
-        }
-    }
-
-
-    /* BOSQUE */
-
-    if(index===1){
-
-        for(
-            let i=0;
-            i<34;
-            i++
-        ){
-
-            const x =
-                randomRange(
-                    -105,
-                    105
-                );
-
-            if(Math.abs(x)<25)
-                continue;
-
-            const z =
-                centerZ +
-                randomRange(
-                    -75,
-                    75
-                );
-
-            createTree(
-                x,
-                z,
-                randomRange(.7,1.2)
-            );
-        }
-    }
-
-
-    /* DESIERTO */
-
-    if(index===2){
-
-        for(
-            let i=0;
-            i<24;
-            i++
-        ){
-
-            const x =
-                randomRange(
-                    -105,
-                    105
-                );
-
-            if(Math.abs(x)<25)
-                continue;
-
-            const z =
-                centerZ +
-                randomRange(
-                    -75,
-                    75
-                );
-
-            createCactus(
-                x,
-                z
-            );
-        }
-
-        for(
-            let i=0;
-            i<15;
-            i++
-        ){
-
-            createRock(
-                randomRange(-105,105),
-                centerZ+randomRange(-70,70),
-                randomRange(.5,1.4),
-                0xa47d48
-            );
-        }
-    }
-
-
-    /* HIELO */
-
-    if(index===3){
-
-        for(
-            let i=0;
-            i<25;
-            i++
-        ){
-
-            const x =
-                randomRange(
-                    -105,
-                    105
-                );
-
-            if(Math.abs(x)<25)
-                continue;
-
-            const z =
-                centerZ+
-                randomRange(-75,75);
-
-            createCrystal(
-                x,
-                z,
-                0xbcefff,
-                randomRange(.7,1.5)
-            );
-        }
-    }
-
-
-    /* VOLCÁN */
-
-    if(index===4){
-
-        for(
-            let i=0;
-            i<6;
-            i++
-        ){
-
-            const x =
-                randomRange(-90,90);
-
-            if(Math.abs(x)<28)
-                continue;
-
-            createVolcano(
-                x,
-                centerZ+
-                randomRange(-65,65)
-            );
-        }
-
-        for(
-            let i=0;
-            i<15;
-            i++
-        ){
-
-            createRock(
-                randomRange(-105,105),
-                centerZ+randomRange(-70,70),
-                randomRange(.5,1.2),
-                0x36201e
-            );
-        }
-    }
-
-
-    /* ABISMO */
-
-    if(index===5){
-
-        for(
-            let i=0;
-            i<30;
-            i++
-        ){
-
-            const x =
-                randomRange(
-                    -105,
-                    105
-                );
-
-            if(Math.abs(x)<25)
-                continue;
-
-            const z =
-                centerZ+
-                randomRange(-75,75);
-
-            createCrystal(
-                x,
-                z,
-                0x208cff,
-                randomRange(.5,1.2)
-            );
-        }
-    }
-
-
-    /* GALAXIA */
-
-    if(index===6){
-
-        for(
-            let i=0;
-            i<40;
-            i++
-        ){
-
-            const x =
-                randomRange(
-                    -105,
-                    105
-                );
-
-            if(Math.abs(x)<25)
-                continue;
-
-            const z =
-                centerZ+
-                randomRange(-75,75);
-
-            createCrystal(
-                x,
-                z,
-                Math.random()>.5
-                ?0x8d6cff
-                :0xff66ee,
-                randomRange(.4,1.2)
-            );
-        }
-    }
-
-
-    /* SANTUARIO */
-
-    if(index===7){
-
-        for(
-            let i=-4;
-            i<=4;
-            i++
-        ){
-
-            createCrystal(
-                i*20,
-                centerZ-40,
-                0xd36cff,
-                1.2
-            );
-
-            createCrystal(
-                i*20,
-                centerZ+40,
-                0x7e63ff,
-                1
-            );
-        }
-    }
-
-
-    /* DOMINIO DIVINO */
-
-    if(index===8){
-
-        createDivineTemple(
-            0,
-            centerZ-5
-        );
-
-        for(
-            let i=0;
-            i<20;
-            i++
-        ){
-
-            createCrystal(
-                randomRange(-105,105),
-                centerZ+randomRange(-70,70),
-                0xffe56b,
-                randomRange(.5,1.2)
-            );
-        }
-    }
-}
-
+/* Decorar paredes */
 
 for(
     let i=0;
     i<TOTAL_ZONES;
     i++
 ){
-    decorateZone(i);
+    wallDecoration(i);
 }
 
 
@@ -1433,17 +1618,27 @@ for(
    CORRALES
    ========================================================= */
 
+const corrals=[];
+
+const corralPositions=[
+    -78,
+    -26,
+    26,
+    78
+];
+
+
 function createCorral(
     x,
     z,
     number
 ){
 
-    const group =
+    const group=
         new THREE.Group();
 
 
-    const floor =
+    const floor=
         new THREE.Mesh(
             new THREE.BoxGeometry(
                 46,
@@ -1462,7 +1657,7 @@ function createCorral(
     group.add(floor);
 
 
-    const sign =
+    const sign=
         new THREE.Mesh(
             new THREE.BoxGeometry(
                 22,
@@ -1483,28 +1678,6 @@ function createCorral(
     group.add(sign);
 
 
-    const textPole =
-        new THREE.Mesh(
-            new THREE.CylinderGeometry(
-                .5,
-                .5,
-                8,
-                8
-            ),
-            new THREE.MeshStandardMaterial({
-                color:0x54341d
-            })
-        );
-
-    textPole.position.set(
-        0,
-        4,
-        -20
-    );
-
-    group.add(textPole);
-
-
     group.position.set(
         x,
         0,
@@ -1514,9 +1687,7 @@ function createCorral(
     scene.add(group);
 
 
-    /* etiqueta 3D simple */
-
-    const label =
+    const label=
         createTextSprite(
             "🏠 CORRAL "+number
         );
@@ -1534,18 +1705,38 @@ function createCorral(
     );
 
     scene.add(label);
+
+
+    corrals.push({
+        number:number,
+        x:x,
+        z:z,
+        claimed:false,
+        group:group
+    });
 }
 
 
+corralPositions.forEach(
+    (x,index)=>{
+        createCorral(
+            x,
+            68,
+            index+1
+        );
+    }
+);
+
+
 /* =========================================================
-   TEXTO 3D
+   TEXTO SPRITE
    ========================================================= */
 
 function createTextSprite(
     text
 ){
 
-    const canvas =
+    const canvas=
         document.createElement(
             "canvas"
         );
@@ -1553,15 +1744,8 @@ function createTextSprite(
     canvas.width=512;
     canvas.height=128;
 
-    const ctx =
+    const ctx=
         canvas.getContext("2d");
-
-    ctx.clearRect(
-        0,
-        0,
-        canvas.width,
-        canvas.height
-    );
 
     ctx.fillStyle=
         "rgba(0,0,0,.65)";
@@ -1582,6 +1766,7 @@ function createTextSprite(
         "bold 50px Arial";
 
     ctx.textAlign="center";
+
     ctx.textBaseline="middle";
 
     ctx.fillText(
@@ -1590,12 +1775,12 @@ function createTextSprite(
         64
     );
 
-    const texture =
+    const texture=
         new THREE.CanvasTexture(
             canvas
         );
 
-    const material =
+    const material=
         new THREE.SpriteMaterial({
             map:texture,
             transparent:true
@@ -1608,32 +1793,10 @@ function createTextSprite(
 
 
 /* =========================================================
-   CREAR LOS 4 CORRALES
-   ========================================================= */
-
-const corralPositions=[
-    -78,
-    -26,
-    26,
-    78
-];
-
-corralPositions.forEach(
-    (x,index)=>{
-        createCorral(
-            x,
-            68,
-            index+1
-        );
-    }
-);
-
-
-/* =========================================================
    PLAZA
    ========================================================= */
 
-const plaza =
+const plaza=
     new THREE.Mesh(
         new THREE.CylinderGeometry(
             28,
@@ -1661,11 +1824,7 @@ scene.add(plaza);
    PORTAL
    ========================================================= */
 
-const portalGroup =
-    new THREE.Group();
-
-
-const portalRing =
+const portalRing=
     new THREE.Mesh(
         new THREE.TorusGeometry(
             12,
@@ -1685,40 +1844,10 @@ portalRing.rotation.x=
 
 portalRing.position.y=12;
 
-portalGroup.add(
-    portalRing
-);
-
-
-const portalCore =
-    new THREE.Mesh(
-        new THREE.CircleGeometry(
-            10,
-            32
-        ),
-        new THREE.MeshBasicMaterial({
-            color:0x27115e
-        })
-    );
-
-portalCore.rotation.x=
-    -Math.PI/2;
-
-portalCore.position.y=.1;
-
-portalGroup.add(
-    portalCore
-);
-
-
-portalGroup.position.set(
-    0,
-    0,
-    -25
-);
+portalRing.position.z=-25;
 
 scene.add(
-    portalGroup
+    portalRing
 );
 
 
@@ -1726,11 +1855,11 @@ scene.add(
    JUGADOR
    ========================================================= */
 
-const player =
+const player=
     new THREE.Group();
 
 
-const body =
+const body=
     new THREE.Mesh(
         new THREE.BoxGeometry(
             4,
@@ -1749,7 +1878,7 @@ body.castShadow=true;
 player.add(body);
 
 
-const head =
+const head=
     new THREE.Mesh(
         new THREE.BoxGeometry(
             4,
@@ -1768,7 +1897,7 @@ head.castShadow=true;
 player.add(head);
 
 
-const hair =
+const hair=
     new THREE.Mesh(
         new THREE.BoxGeometry(
             4.2,
@@ -1797,10 +1926,100 @@ scene.add(player);
 
 
 /* =========================================================
+   VARIABLES DEL JUGADOR
+   ========================================================= */
+
+let playerName="";
+
+let isOwner=false;
+
+let gameStarted=false;
+
+let claimedCorral=null;
+
+let money=0;
+
+let speed=10;
+
+let playerVelocityY=0;
+
+const gravity=-.025;
+
+const normalSpeed=.32;
+
+const sprintSpeed=.55;
+
+
+/* =========================================================
+   OWNER TAG
+   ========================================================= */
+
+let ownerTag=null;
+
+
+function createOwnerTag(){
+
+    if(ownerTag)
+        return;
+
+    ownerTag=
+        document.createElement(
+            "div"
+        );
+
+    ownerTag.className=
+        "ownerTag";
+
+    ownerTag.textContent=
+        "👑 OWNER 👑";
+
+    document.body.appendChild(
+        ownerTag
+    );
+}
+
+
+function updateOwnerTag(){
+
+    if(
+        !ownerTag ||
+        !isOwner ||
+        !gameStarted
+    )
+        return;
+
+
+    const position=
+        player.position.clone();
+
+    position.y+=16;
+
+    position.project(camera);
+
+
+    const x=
+        (position.x*.5+.5)*
+        window.innerWidth;
+
+    const y=
+        (-position.y*.5+.5)*
+        window.innerHeight;
+
+
+    ownerTag.style.left=
+        x+"px";
+
+    ownerTag.style.top=
+        y+"px";
+}
+
+
+/* =========================================================
    MOVIMIENTO
    ========================================================= */
 
 const keys={};
+
 
 document.addEventListener(
     "keydown",
@@ -1808,11 +2027,21 @@ document.addEventListener(
 
         keys[event.code]=true;
 
+
         if(
             event.code==="Space" &&
-            player.position.y<=0.05
+            player.position.y<=.05
         ){
+
             playerVelocityY=.55;
+        }
+
+
+        if(
+            event.code==="KeyE"
+        ){
+
+            interactWithCorral();
         }
     }
 );
@@ -1821,22 +2050,14 @@ document.addEventListener(
 document.addEventListener(
     "keyup",
     function(event){
+
         keys[event.code]=false;
     }
 );
 
 
-let playerVelocityY=0;
-
-const gravity=-0.025;
-
-const normalSpeed=.32;
-
-const sprintSpeed=.55;
-
-
 /* =========================================================
-   CÁMARA CON MOUSE
+   CÁMARA MOUSE
    ========================================================= */
 
 let cameraYaw=0;
@@ -1844,32 +2065,24 @@ let cameraYaw=0;
 let cameraPitch=.35;
 
 
-/*
-    La cámara responde al movimiento
-    del mouse sin usar pointer lock.
-*/
-
 document.addEventListener(
     "mousemove",
     function(event){
 
-        if(
-            !gameStarted
-        ){
+        if(!gameStarted)
             return;
-        }
 
-        cameraYaw -=
-            event.movementX *
-            0.003;
 
-        cameraPitch -=
-            event.movementY *
-            0.002;
+        cameraYaw-=
+            event.movementX*.003;
 
-        cameraPitch =
+        cameraPitch-=
+            event.movementY*.002;
+
+
+        cameraPitch=
             Math.max(
-                -0.25,
+                -.25,
                 Math.min(
                     .95,
                     cameraPitch
@@ -1887,60 +2100,53 @@ function updateCamera(){
 
     const distance=34;
 
-    const horizontalDistance =
-        Math.cos(cameraPitch) *
+
+    const horizontalDistance=
+        Math.cos(cameraPitch)*
         distance;
 
 
-    const cameraX =
-        player.position.x -
-        Math.sin(cameraYaw) *
+    const cameraX=
+        player.position.x-
+        Math.sin(cameraYaw)*
         horizontalDistance;
 
 
-    const cameraY =
-        player.position.y +
-        10 +
-        Math.sin(cameraPitch) *
+    const cameraY=
+        player.position.y+
+        10+
+        Math.sin(cameraPitch)*
         distance;
 
 
-    const cameraZ =
-        player.position.z +
-        Math.cos(cameraYaw) *
+    const cameraZ=
+        player.position.z+
+        Math.cos(cameraYaw)*
         horizontalDistance;
 
 
-    const targetPosition =
+    camera.position.lerp(
         new THREE.Vector3(
             cameraX,
             cameraY,
             cameraZ
-        );
-
-
-    camera.position.lerp(
-        targetPosition,
+        ),
         .12
     );
 
 
-    const target =
+    camera.lookAt(
         new THREE.Vector3(
             player.position.x,
             player.position.y+5,
             player.position.z
-        );
-
-
-    camera.lookAt(
-        target
+        )
     );
 }
 
 
 /* =========================================================
-   MOVIMIENTO DEL JUGADOR
+   MOVIMIENTO
    ========================================================= */
 
 function updatePlayer(){
@@ -1949,14 +2155,8 @@ function updatePlayer(){
         return;
 
 
-    let speed =
-        keys["ShiftLeft"] ||
-        keys["ShiftRight"]
-        ? sprintSpeed
-        : normalSpeed;
-
-
     let moveX=0;
+
     let moveZ=0;
 
 
@@ -1973,7 +2173,7 @@ function updatePlayer(){
         moveX+=1;
 
 
-    const length =
+    const length=
         Math.sqrt(
             moveX*moveX+
             moveZ*moveZ
@@ -1986,49 +2186,55 @@ function updatePlayer(){
         moveZ/=length;
 
 
-        const forwardX =
+        const speedMove=
+            keys["ShiftLeft"] ||
+            keys["ShiftRight"]
+            ?sprintSpeed
+            :normalSpeed;
+
+
+        const forwardX=
             -Math.sin(cameraYaw);
 
-        const forwardZ =
+        const forwardZ=
             -Math.cos(cameraYaw);
 
-
-        const rightX =
+        const rightX=
             Math.cos(cameraYaw);
 
-        const rightZ =
+        const rightZ=
             -Math.sin(cameraYaw);
 
 
-        player.position.x +=
+        player.position.x+=
             (
                 forwardX*moveZ+
                 rightX*moveX
-            ) * speed;
+            )*
+            speedMove;
 
 
-        player.position.z +=
+        player.position.z+=
             (
                 forwardZ*moveZ+
                 rightZ*moveX
-            ) * speed;
+            )*
+            speedMove;
 
 
-        player.rotation.y =
+        player.rotation.y=
             Math.atan2(
                 moveX,
                 moveZ
-            ) +
+            )+
             cameraYaw;
     }
 
 
-    /* gravedad */
-
-    playerVelocityY +=
+    playerVelocityY+=
         gravity;
 
-    player.position.y +=
+    player.position.y+=
         playerVelocityY;
 
 
@@ -2042,19 +2248,11 @@ function updatePlayer(){
     }
 
 
-    /* límites exteriores */
-
-    const limitX =
+    const limitX=
         MAP_WIDTH/2-12;
 
-    const limitStart =
-        START_Z+30;
 
-    const limitEnd =
-        END_Z-30;
-
-
-    player.position.x =
+    player.position.x=
         Math.max(
             -limitX,
             Math.min(
@@ -2064,11 +2262,11 @@ function updatePlayer(){
         );
 
 
-    player.position.z =
+    player.position.z=
         Math.max(
-            limitEnd,
+            END_Z-30,
             Math.min(
-                limitStart,
+                START_Z+30,
                 player.position.z
             )
         );
@@ -2076,24 +2274,24 @@ function updatePlayer(){
 
 
 /* =========================================================
-   ZONA ACTUAL
+   ZONA
    ========================================================= */
 
 function updateZone(){
 
-    const distanceFromStart =
-        START_Z -
+    const distance=
+        START_Z-
         player.position.z;
 
 
-    let index =
+    let index=
         Math.floor(
-            distanceFromStart /
+            distance/
             ZONE_LENGTH
         );
 
 
-    index =
+    index=
         Math.max(
             0,
             Math.min(
@@ -2111,23 +2309,338 @@ function updateZone(){
 
 
 /* =========================================================
-   DINERO
+   CORRAL MÁS CERCANO
    ========================================================= */
 
-/*
-   IMPORTANTE:
-   No se genera dinero automáticamente.
+function getNearbyCorral(){
 
-   En futuras versiones:
-   dinero += producción de mascotas.
-*/
+    let closest=null;
 
-let money=0;
+    let closestDistance=999;
 
-document.getElementById(
-    "money"
-).textContent=
-    "💰 $"+money;
+
+    corrals.forEach(
+        corral=>{
+
+            const dx=
+                player.position.x-
+                corral.x;
+
+            const dz=
+                player.position.z-
+                corral.z;
+
+
+            const distance=
+                Math.sqrt(
+                    dx*dx+
+                    dz*dz
+                );
+
+
+            if(
+                distance<closestDistance
+            ){
+
+                closestDistance=
+                    distance;
+
+                closest=
+                    corral;
+            }
+        }
+    );
+
+
+    if(
+        closest &&
+        closestDistance<28
+    )
+        return closest;
+
+
+    return null;
+}
+
+
+/* =========================================================
+   INTERACCIÓN CON CORRAL
+   ========================================================= */
+
+function interactWithCorral(){
+
+    if(!gameStarted)
+        return;
+
+
+    const corral=
+        getNearbyCorral();
+
+
+    if(!corral)
+        return;
+
+
+    if(
+        corral.claimed
+    ){
+
+        if(
+            claimedCorral===
+            corral
+        ){
+
+            showAnnouncement(
+                "🏠 Este es tu corral."
+            );
+        }
+        else{
+
+            showAnnouncement(
+                "🔒 Este corral ya está ocupado."
+            );
+        }
+
+        return;
+    }
+
+
+    if(claimedCorral){
+
+        showAnnouncement(
+            "🏠 Ya tienes un corral."
+        );
+
+        return;
+    }
+
+
+    corral.claimed=true;
+
+    claimedCorral=
+        corral;
+
+
+    showAnnouncement(
+        "🏠 ¡CORRAL "+
+        corral.number+
+        " RECLAMADO!"
+    );
+
+
+    createTreadmill(
+        corral
+    );
+}
+
+
+/* =========================================================
+   CAMINADORA
+   ========================================================= */
+
+let treadmill=null;
+
+
+function createTreadmill(
+    corral
+){
+
+    const group=
+        new THREE.Group();
+
+
+    const base=
+        new THREE.Mesh(
+            new THREE.BoxGeometry(
+                13,
+                1,
+                7
+            ),
+            new THREE.MeshStandardMaterial({
+                color:0x252b35
+            })
+        );
+
+    base.position.y=.8;
+
+    base.castShadow=true;
+
+    group.add(base);
+
+
+    const belt=
+        new THREE.Mesh(
+            new THREE.BoxGeometry(
+                11,
+                .35,
+                5
+            ),
+            new THREE.MeshStandardMaterial({
+                color:0x11151b
+            })
+        );
+
+    belt.position.y=1.45;
+
+    group.add(belt);
+
+
+    const handle=
+        new THREE.Mesh(
+            new THREE.BoxGeometry(
+                1,
+                6,
+                1
+            ),
+            new THREE.MeshStandardMaterial({
+                color:0x555c68
+            })
+        );
+
+    handle.position.set(
+        4.5,
+        4,
+        0
+    );
+
+    group.add(handle);
+
+
+    const bar=
+        new THREE.Mesh(
+            new THREE.BoxGeometry(
+                1,
+                1,
+                8
+            ),
+            new THREE.MeshStandardMaterial({
+                color:0x666e7a
+            })
+        );
+
+    bar.position.set(
+        4.5,
+        6.5,
+        0
+    );
+
+    group.add(bar);
+
+
+    group.position.set(
+        corral.x,
+        0,
+        corral.z
+    );
+
+
+    scene.add(group);
+
+    treadmill=group;
+
+
+    showAnnouncement(
+        "🏃 ¡TU CAMINADORA ESTÁ LISTA! 👟"
+    );
+}
+
+
+/* =========================================================
+   ENTRENAMIENTO
+   ========================================================= */
+
+function updateTreadmill(){
+
+    if(
+        !treadmill ||
+        !claimedCorral
+    )
+        return;
+
+
+    const dx=
+        player.position.x-
+        claimedCorral.x;
+
+    const dz=
+        player.position.z-
+        claimedCorral.z;
+
+
+    const distance=
+        Math.sqrt(
+            dx*dx+
+            dz*dz
+        );
+
+
+    /*
+       Si el jugador está encima
+       de la caminadora, gana +1.
+    */
+
+    if(
+        distance<7 &&
+        player.position.y<2
+    ){
+
+        if(
+            !updateTreadmill.last
+        )
+            updateTreadmill.last=0;
+
+
+        const now=
+            performance.now();
+
+
+        if(
+            now-
+            updateTreadmill.last>
+            1500
+        ){
+
+            speed+=1;
+
+            updateTreadmill.last=
+                now;
+
+
+            showAnnouncement(
+                "👟 ¡VELOCIDAD +1! ⚡ "+
+                speed
+            );
+        }
+    }
+}
+
+
+/* =========================================================
+   HUD
+   ========================================================= */
+
+function updateHUD(){
+
+    document.getElementById(
+        "playerNameHud"
+    ).textContent=
+        "👤 "+
+        playerName;
+
+
+    document.getElementById(
+        "money"
+    ).textContent=
+        "💰 $"+
+        money;
+
+
+    document.getElementById(
+        "speedHud"
+    ).textContent=
+        "👟 ⚡ "+
+        speed;
+}
 
 
 /* =========================================================
@@ -2138,86 +2651,545 @@ function showAnnouncement(
     text
 ){
 
-    const element =
+    const element=
         document.getElementById(
             "announcement"
         );
 
+
     element.textContent=text;
 
-    element.style.display="block";
+    element.style.display=
+        "block";
+
+
+    clearTimeout(
+        showAnnouncement.timer
+    );
+
+
+    showAnnouncement.timer=
+        setTimeout(
+            ()=>{
+                element.style.display=
+                    "none";
+            },
+            3500
+        );
+}
+
+
+/* =========================================================
+   PANEL ADMIN
+   ========================================================= */
+
+const adminButton=
+    document.getElementById(
+        "adminButton"
+    );
+
+const adminPanel=
+    document.getElementById(
+        "adminPanel"
+    );
+
+
+adminButton.addEventListener(
+    "click",
+    ()=>{
+        adminPanel.style.display=
+            adminPanel.style.display===
+            "block"
+            ?"none"
+            :"block";
+    }
+);
+
+
+document.getElementById(
+    "closeAdmin"
+).addEventListener(
+    "click",
+    ()=>{
+        adminPanel.style.display=
+            "none";
+    }
+);
+
+
+/* =========================================================
+   ALCANCE ADMIN
+   ========================================================= */
+
+let adminScope="GLOBAL";
+
+
+document.getElementById(
+    "globalScope"
+).addEventListener(
+    "click",
+    function(){
+
+        adminScope="GLOBAL";
+
+        this.classList.add("active");
+
+        document.getElementById(
+            "serverScope"
+        ).classList.remove(
+            "active"
+        );
+    }
+);
+
+
+document.getElementById(
+    "serverScope"
+).addEventListener(
+    "click",
+    function(){
+
+        adminScope=
+            "SERVER";
+
+        this.classList.add("active");
+
+        document.getElementById(
+            "globalScope"
+        ).classList.remove(
+            "active"
+        );
+    }
+);
+
+
+/* =========================================================
+   MENSAJES ADMIN
+   ========================================================= */
+
+document.getElementById(
+    "sendMessage"
+).addEventListener(
+    "click",
+    ()=>{
+
+        const input=
+            document.getElementById(
+                "messageInput"
+            );
+
+
+        const message=
+            input.value.trim();
+
+
+        if(!message){
+
+            showAnnouncement(
+                "⚠️ Escribe un mensaje."
+            );
+
+            return;
+        }
+
+
+        showAnnouncement(
+            "📢 "+
+            message
+        );
+
+
+        input.value="";
+    }
+);
+
+
+/* =========================================================
+   EVENTOS ADMIN
+   ========================================================= */
+
+document.getElementById(
+    "activateEvent"
+).addEventListener(
+    "click",
+    ()=>{
+
+        const event=
+            document.getElementById(
+                "eventSelect"
+            ).value;
+
+
+        showAnnouncement(
+            "👑 EVENTO "+
+            event+
+            " ACTIVADO — "+
+            (
+                adminScope===
+                "GLOBAL"
+                ?"🌎 GLOBAL"
+                :"🖥️ ESTE SERVIDOR"
+            )
+        );
+    }
+);
+
+
+/* =========================================================
+   JEFES ADMIN
+   ========================================================= */
+
+document.getElementById(
+    "spawnBoss"
+).addEventListener(
+    "click",
+    ()=>{
+
+        const boss=
+            document.getElementById(
+                "bossSelect"
+            ).value;
+
+
+        showAnnouncement(
+            "👹 ¡HA APARECIDO "+
+            boss+
+            "! — "+
+            (
+                adminScope===
+                "GLOBAL"
+                ?"🌎 GLOBAL"
+                :"🖥️ ESTE SERVIDOR"
+            )
+        );
+
+
+        createBossDisplay(
+            boss
+        );
+    }
+);
+
+
+/* =========================================================
+   BOSS VISUAL
+   ========================================================= */
+
+function createBossDisplay(
+    bossName
+){
+
+    const bossGroup=
+        new THREE.Group();
+
+
+    const body=
+        new THREE.Mesh(
+            new THREE.BoxGeometry(
+                12,
+                14,
+                9
+            ),
+            new THREE.MeshStandardMaterial({
+                color:0x461d66
+            })
+        );
+
+    body.position.y=7;
+
+    body.castShadow=true;
+
+    bossGroup.add(body);
+
+
+    const head=
+        new THREE.Mesh(
+            new THREE.DodecahedronGeometry(
+                7,
+                0
+            ),
+            new THREE.MeshStandardMaterial({
+                color:0x6b2990,
+                emissive:0x25102e,
+                emissiveIntensity:.3
+            })
+        );
+
+    head.position.y=17;
+
+    head.castShadow=true;
+
+    bossGroup.add(head);
+
+
+    bossGroup.position.set(
+        0,
+        0,
+        player.position.z-45
+    );
+
+
+    scene.add(
+        bossGroup
+    );
 
 
     setTimeout(
-        function(){
-
-            element.style.display=
-                "none";
-
+        ()=>{
+            scene.remove(
+                bossGroup
+            );
         },
-        3500
+        12000
     );
 }
 
 
 /* =========================================================
-   ANIMACIONES
+   ENCUESTA
    ========================================================= */
 
-const clock =
-    new THREE.Clock();
+document.getElementById(
+    "createPoll"
+).addEventListener(
+    "click",
+    ()=>{
+
+        const input=
+            document.getElementById(
+                "pollInput"
+            );
 
 
-function animateObjects(){
-
-    const time =
-        clock.getElapsedTime();
+        const question=
+            input.value.trim();
 
 
-    portalRing.rotation.z =
-        time*.8;
+        if(!question){
+
+            showAnnouncement(
+                "⚠️ Escribe una pregunta."
+            );
+
+            return;
+        }
 
 
-    portalRing.rotation.x =
-        Math.PI/2 +
-        Math.sin(time)*.1;
+        showAnnouncement(
+            "📊 ENCUESTA: "+
+            question
+        );
+
+
+        input.value="";
+    }
+);
+
+
+/* =========================================================
+   NOMBRE
+   ========================================================= */
+
+const bannedWords=[
+
+    "puta",
+    "puto",
+    "mierda",
+    "idiota",
+    "estupido",
+    "estúpido",
+    "pendejo",
+    "pendeja",
+    "culo",
+    "coño",
+    "cabron",
+    "cabrón",
+    "fuck",
+    "shit",
+    "bitch"
+
+];
+
+
+function normalizeName(
+    name
+){
+
+    return name
+        .toLowerCase()
+        .replace(
+            /[^a-z0-9áéíóúüñ]/gi,
+            ""
+        );
+}
+
+
+function validName(
+    name
+){
+
+    if(
+        name.length<3 ||
+        name.length>16
+    )
+        return false;
+
+
+    if(
+        !/^[a-zA-Z0-9áéíóúüñÁÉÍÓÚÜÑ_]+$/.test(
+            name
+        )
+    )
+        return false;
+
+
+    const normalized=
+        normalizeName(
+            name
+        );
+
+
+    for(
+        const word of bannedWords
+    ){
+
+        if(
+            normalized.includes(
+                word
+            )
+        )
+            return false;
+    }
+
+
+    return true;
 }
 
 
 /* =========================================================
-   INICIAR JUEGO
+   JUGAR
    ========================================================= */
-
-let gameStarted=false;
-
 
 document.getElementById(
     "playButton"
 ).addEventListener(
     "click",
-    function(){
+    startGame
+);
 
+
+document.getElementById(
+    "nameInput"
+).addEventListener(
+    "keydown",
+    function(event){
+
+        if(
+            event.key==="Enter"
+        ){
+            startGame();
+        }
+    }
+);
+
+
+function startGame(){
+
+    const input=
         document.getElementById(
-            "startScreen"
-        ).style.display=
-            "none";
+            "nameInput"
+        );
+
+    const error=
+        document.getElementById(
+            "errorMessage"
+        );
 
 
-        gameStarted=true;
+    const name=
+        input.value.trim();
+
+
+    error.textContent="";
+
+
+    if(!validName(name)){
+
+        error.textContent=
+            "⚠️ Nombre no válido.";
+
+        return;
+    }
+
+
+    const normalized=
+        normalizeName(name);
+
+
+    /*
+       ERICK es el nombre reservado
+       del OWNER en esta versión.
+    */
+
+    if(
+        normalized==="erick"
+    ){
+
+        playerName="ERICK";
+
+        isOwner=true;
+
+        createOwnerTag();
+
+        adminButton.style.display=
+            "block";
 
 
         showAnnouncement(
-            "🌎 ¡BIENVENIDO A OWNER WORLD! 👑"
+            "🌌👑 OWNER ERICK HA ENTRADO 👑🌌"
         );
 
-
-        camera.position.set(
-            0,
-            12,
-            58
-        );
     }
-);
+    else{
+
+        playerName=name;
+
+        isOwner=false;
+
+        adminButton.style.display=
+            "none";
+    }
+
+
+    gameStarted=true;
+
+
+    document.getElementById(
+        "startScreen"
+    ).style.display=
+        "none";
+
+
+    updateHUD();
+
+
+    camera.position.set(
+        0,
+        12,
+        58
+    );
+
+
+    if(!isOwner){
+
+        showAnnouncement(
+            "🌎 ¡BIENVENIDO A OWNER WORLD, "+
+            playerName+
+            "! 👑"
+        );
+
+    }
+}
 
 
 /* =========================================================
@@ -2229,7 +3201,7 @@ window.addEventListener(
     function(){
 
         camera.aspect=
-            window.innerWidth /
+            window.innerWidth/
             window.innerHeight;
 
         camera.updateProjectionMatrix();
@@ -2243,8 +3215,12 @@ window.addEventListener(
 
 
 /* =========================================================
-   LOOP PRINCIPAL
+   ANIMACIÓN
    ========================================================= */
+
+const clock=
+    new THREE.Clock();
+
 
 function animate(){
 
@@ -2253,13 +3229,25 @@ function animate(){
     );
 
 
+    const time=
+        clock.getElapsedTime();
+
+
+    portalRing.rotation.z=
+        time*.8;
+
+
     updatePlayer();
 
     updateCamera();
 
     updateZone();
 
-    animateObjects();
+    updateTreadmill();
+
+    updateHUD();
+
+    updateOwnerTag();
 
 
     renderer.render(
