@@ -2,1185 +2,834 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>👑 OWNER WORLD — V0.1</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OWNER WORLD</title>
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+<style>
+* {
+    box-sizing: border-box;
+}
 
-    html,
-    body {
-      margin: 0;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      font-family: Arial, sans-serif;
-      background: #87ceeb;
-    }
+body {
+    margin: 0;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+    background: #000;
+}
 
-    canvas {
-      display: block;
-    }
+canvas {
+    display: block;
+}
 
-    #hud {
-      position: fixed;
-      top: 15px;
-      left: 15px;
-      z-index: 10;
-      color: white;
-      text-shadow: 0 2px 5px black;
-      pointer-events: none;
-    }
+#hud {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 10;
+    color: white;
+    background: rgba(0,0,0,.65);
+    border: 1px solid rgba(255,255,255,.25);
+    border-radius: 14px;
+    padding: 12px 18px;
+    user-select: none;
+}
 
-    #title {
-      font-size: 24px;
-      font-weight: bold;
-    }
+#hud h1 {
+    margin: 0 0 6px;
+    font-size: 22px;
+}
 
-    #money {
-      margin-top: 8px;
-      font-size: 20px;
-      font-weight: bold;
-    }
+#hud div {
+    margin: 3px 0;
+}
 
-    #zone {
-      margin-top: 5px;
-      font-size: 16px;
-    }
+#startScreen {
+    position: fixed;
+    inset: 0;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(#07152b, #000);
+    color: white;
+}
 
-    #help {
-      position: fixed;
-      bottom: 15px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 10;
-      color: white;
-      background: rgba(0, 0, 0, 0.65);
-      padding: 10px 16px;
-      border-radius: 12px;
-      text-align: center;
-      font-size: 14px;
-      pointer-events: none;
-    }
+#startScreen h1 {
+    font-size: 60px;
+    margin: 0;
+    letter-spacing: 5px;
+    text-shadow: 0 0 25px #7b5cff;
+}
 
-    #crosshair {
-      position: fixed;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%);
-      z-index: 10;
-      color: white;
-      font-size: 22px;
-      text-shadow: 0 2px 4px black;
-      pointer-events: none;
-    }
+#startScreen p {
+    font-size: 18px;
+    opacity: .8;
+}
 
-    #startScreen {
-      position: fixed;
-      inset: 0;
-      z-index: 20;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: linear-gradient(
-        135deg,
-        rgba(20, 10, 60, 0.95),
-        rgba(5, 20, 60, 0.95)
-      );
-      color: white;
-      text-align: center;
-    }
+#playButton {
+    border: none;
+    border-radius: 14px;
+    padding: 15px 45px;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    background: white;
+    color: #111;
+}
 
-    #startBox {
-      width: min(90%, 500px);
-      padding: 35px;
-      border-radius: 25px;
-      background: rgba(0, 0, 0, 0.45);
-      border: 2px solid rgba(255, 255, 255, 0.25);
-      box-shadow: 0 0 40px rgba(120, 80, 255, 0.5);
-    }
-
-    #startBox h1 {
-      font-size: 42px;
-      margin: 0 0 10px;
-    }
-
-    #startBox p {
-      font-size: 17px;
-      opacity: 0.9;
-    }
-
-    #playButton {
-      margin-top: 20px;
-      padding: 14px 30px;
-      border: none;
-      border-radius: 15px;
-      font-size: 18px;
-      font-weight: bold;
-      cursor: pointer;
-      background: #7c3aed;
-      color: white;
-      box-shadow: 0 5px 20px rgba(124, 58, 237, 0.5);
-    }
-
-    #playButton:hover {
-      transform: scale(1.05);
-    }
-  </style>
+#playButton:hover {
+    transform: scale(1.05);
+}
+</style>
 </head>
 
 <body>
 
-  <!-- PANTALLA INICIAL -->
-  <div id="startScreen">
-    <div id="startBox">
-      <h1>👑 OWNER WORLD</h1>
-      <p>🌎 Bienvenido a la primera versión de nuestro mundo.</p>
-      <p>🎮 Muévete, explora las bases y encuentra huevos.</p>
+<div id="startScreen">
+    <h1>OWNER WORLD</h1>
+    <p>El comienzo de un mundo enorme 👑</p>
+    <button id="playButton">JUGAR</button>
+</div>
 
-      <button id="playButton">
-        🚀 JUGAR
-      </button>
-    </div>
-  </div>
+<div id="hud">
+    <h1>👑 OWNER WORLD</h1>
+    <div>💰 Dinero: <span id="money">0</span></div>
+    <div>📍 Zona: <span id="zone">Pradera Inicial</span></div>
+</div>
 
-  <!-- HUD -->
-  <div id="hud">
-    <div id="title">👑 OWNER WORLD</div>
-    <div id="money">💰 $0</div>
-    <div id="zone">📍 Pradera Inicial</div>
-  </div>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 
-  <div id="crosshair">+</div>
+<script>
+/* =========================================================
+   OWNER WORLD V0.2
+   MAPA + 9 ZONAS + 4 BASES ALINEADAS
+   ========================================================= */
 
-  <div id="help">
-    WASD = mover · SHIFT = correr · ESPACIO = saltar · Mouse = mirar
-  </div>
+const scene = new THREE.Scene();
 
-  <script type="module">
+scene.background = new THREE.Color(0x87ceeb);
+scene.fog = new THREE.Fog(0x87ceeb, 180, 950);
 
-    /*
-      ============================================
-      👑 OWNER WORLD — V0.1
-      ============================================
+const camera = new THREE.PerspectiveCamera(
+    70,
+    window.innerWidth / window.innerHeight,
+    0.1,
+    2000
+);
 
-      Esta versión todavía es local.
+const renderer = new THREE.WebGLRenderer({
+    antialias: true
+});
 
-      MÁS ADELANTE:
-      - Supabase
-      - Multijugador
-      - Datos permanentes
-      - Eventos globales
-      - Panel OWNER
-      - Huevos globales
-      - Mascotas
-      - Mutaciones
-    */
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+document.body.appendChild(renderer.domElement);
 
-    import * as THREE from
-      "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js";
+/* =========================================================
+   LUCES
+   ========================================================= */
 
+const hemiLight = new THREE.HemisphereLight(
+    0xffffff,
+    0x445566,
+    2
+);
 
-    // ==========================================
-    // ESCENA
-    // ==========================================
+scene.add(hemiLight);
 
-    const scene = new THREE.Scene();
+const sun = new THREE.DirectionalLight(0xffffff, 2.5);
+sun.position.set(100, 200, 100);
+scene.add(sun);
 
-    scene.background = new THREE.Color(0x87ceeb);
+/* =========================================================
+   GRUPO PRINCIPAL DEL MAPA
+   ========================================================= */
 
-    scene.fog = new THREE.Fog(
-      0x87ceeb,
-      60,
-      180
+const map = new THREE.Group();
+scene.add(map);
+
+/* =========================================================
+   TERRENO
+   ========================================================= */
+
+const groundGeometry = new THREE.BoxGeometry(260, 2, 1250);
+
+const groundMaterial = new THREE.MeshStandardMaterial({
+    color: 0x4c8f45
+});
+
+const ground = new THREE.Mesh(
+    groundGeometry,
+    groundMaterial
+);
+
+ground.position.set(0, -1, -420);
+map.add(ground);
+
+/* =========================================================
+   CAMINO CENTRAL
+   ========================================================= */
+
+const roadMaterial = new THREE.MeshStandardMaterial({
+    color: 0x555555
+});
+
+const roadGeometry = new THREE.BoxGeometry(34, 0.4, 1050);
+
+const road = new THREE.Mesh(
+    roadGeometry,
+    roadMaterial
+);
+
+road.position.set(0, 0.2, -420);
+map.add(road);
+
+/* =========================================================
+   ZONAS
+   De abajo hacia arriba:
+   Pradera → ... → Dominio Divino
+   ========================================================= */
+
+const zones = [
+    {
+        name: "🌿 Pradera Inicial",
+        z: 0,
+        color: 0x63b84d
+    },
+    {
+        name: "🌲 Bosque Encantado",
+        z: -120,
+        color: 0x286b3b
+    },
+    {
+        name: "🏜️ Desierto Dorado",
+        z: -240,
+        color: 0xd7a842
+    },
+    {
+        name: "❄️ Cumbres Heladas",
+        z: -360,
+        color: 0xbde8ff
+    },
+    {
+        name: "🌋 Volcán Carmesí",
+        z: -480,
+        color: 0x8f2929
+    },
+    {
+        name: "🌊 Abismo Marino",
+        z: -600,
+        color: 0x176b91
+    },
+    {
+        name: "🌌 Galaxia Perdida",
+        z: -720,
+        color: 0x352060
+    },
+    {
+        name: "♾️ Santuario Eterno",
+        z: -840,
+        color: 0x725ca8
+    },
+    {
+        name: "✨ Dominio Divino",
+        z: -960,
+        color: 0xd9c875
+    }
+];
+
+/* =========================================================
+   CREAR MARCADORES DE ZONA
+   ========================================================= */
+
+function createZone(zone) {
+
+    const platformGeometry = new THREE.BoxGeometry(
+        220,
+        0.5,
+        92
     );
 
-
-    // ==========================================
-    // CÁMARA
-    // ==========================================
-
-    const camera = new THREE.PerspectiveCamera(
-      70,
-      window.innerWidth / window.innerHeight,
-      0.1,
-      400
-    );
-
-    camera.position.set(
-      0,
-      5,
-      10
-    );
-
-
-    // ==========================================
-    // RENDERER
-    // ==========================================
-
-    const renderer = new THREE.WebGLRenderer({
-      antialias: true
-    });
-
-    renderer.setSize(
-      window.innerWidth,
-      window.innerHeight
-    );
-
-    renderer.setPixelRatio(
-      Math.min(window.devicePixelRatio, 2)
-    );
-
-    renderer.shadowMap.enabled = true;
-
-    renderer.shadowMap.type =
-      THREE.PCFSoftShadowMap;
-
-    document.body.appendChild(
-      renderer.domElement
-    );
-
-
-    // ==========================================
-    // LUCES
-    // ==========================================
-
-    const hemisphereLight =
-      new THREE.HemisphereLight(
-        0xffffff,
-        0x557755,
-        2
-      );
-
-    scene.add(
-      hemisphereLight
-    );
-
-
-    const sun =
-      new THREE.DirectionalLight(
-        0xffffff,
-        2.5
-      );
-
-    sun.position.set(
-      40,
-      70,
-      30
-    );
-
-    sun.castShadow = true;
-
-    sun.shadow.mapSize.width = 2048;
-    sun.shadow.mapSize.height = 2048;
-
-    scene.add(sun);
-
-
-    // ==========================================
-    // FUNCIÓN PARA CREAR CUBOS
-    // ==========================================
-
-    function createBox(
-      x,
-      y,
-      z,
-      width,
-      height,
-      depth,
-      color
-    ) {
-
-      const geometry =
-        new THREE.BoxGeometry(
-          width,
-          height,
-          depth
-        );
-
-      const material =
+    const platformMaterial =
         new THREE.MeshStandardMaterial({
-          color: color
+            color: zone.color
         });
 
-      const mesh =
-        new THREE.Mesh(
-          geometry,
-          material
+    const platform = new THREE.Mesh(
+        platformGeometry,
+        platformMaterial
+    );
+
+    platform.position.set(0, 0.5, zone.z);
+    map.add(platform);
+
+    /* Entrada visual de la zona */
+
+    const gateGeometry = new THREE.BoxGeometry(
+        65,
+        18,
+        3
+    );
+
+    const gateMaterial =
+        new THREE.MeshStandardMaterial({
+            color: zone.color,
+            emissive: zone.color,
+            emissiveIntensity: 0.15
+        });
+
+    const gate = new THREE.Mesh(
+        gateGeometry,
+        gateMaterial
+    );
+
+    gate.position.set(0, 9, zone.z - 43);
+    map.add(gate);
+
+    /* Pilares */
+
+    const pillarGeometry =
+        new THREE.BoxGeometry(5, 18, 5);
+
+    const leftPillar = new THREE.Mesh(
+        pillarGeometry,
+        gateMaterial
+    );
+
+    const rightPillar = new THREE.Mesh(
+        pillarGeometry,
+        gateMaterial
+    );
+
+    leftPillar.position.set(-35, 9, zone.z - 43);
+    rightPillar.position.set(35, 9, zone.z - 43);
+
+    map.add(leftPillar);
+    map.add(rightPillar);
+
+    /* Pequeños detalles laterales */
+
+    for (let i = -4; i <= 4; i++) {
+
+        const detail = new THREE.Mesh(
+            new THREE.BoxGeometry(2, 2, 2),
+            gateMaterial
         );
 
-      mesh.position.set(
-        x,
-        y,
-        z
-      );
+        detail.position.set(
+            i * 10,
+            2,
+            zone.z - 47
+        );
 
-      mesh.castShadow = true;
-      mesh.receiveShadow = true;
+        map.add(detail);
+    }
+}
 
-      scene.add(mesh);
+zones.forEach(createZone);
 
-      return mesh;
+/* =========================================================
+   BASES
+   LAS 4 ESTÁN EN UNA SOLA LÍNEA HORIZONTAL
+   ========================================================= */
+
+const basePositions = [
+    -75,
+    -25,
+    25,
+    75
+];
+
+function createBase(x, number) {
+
+    const baseMaterial =
+        new THREE.MeshStandardMaterial({
+            color: 0xdddddd
+        });
+
+    const base = new THREE.Mesh(
+        new THREE.BoxGeometry(38, 2, 32),
+        baseMaterial
+    );
+
+    base.position.set(x, 1, 45);
+    map.add(base);
+
+    /* Casa */
+
+    const houseMaterial =
+        new THREE.MeshStandardMaterial({
+            color: 0xffffff
+        });
+
+    const house = new THREE.Mesh(
+        new THREE.BoxGeometry(25, 18, 22),
+        houseMaterial
+    );
+
+    house.position.set(x, 10, 45);
+    map.add(house);
+
+    /* Techo */
+
+    const roofMaterial =
+        new THREE.MeshStandardMaterial({
+            color: 0x333333
+        });
+
+    const roof = new THREE.Mesh(
+        new THREE.ConeGeometry(18, 12, 4),
+        roofMaterial
+    );
+
+    roof.rotation.y = Math.PI / 4;
+    roof.position.set(x, 25, 45);
+    map.add(roof);
+
+    /* Nombre */
+
+    const label = createTextSprite(
+        "🏠 BASE " + number
+    );
+
+    label.position.set(x, 38, 45);
+    label.scale.set(24, 8, 1);
+    map.add(label);
+}
+
+basePositions.forEach((x, i) => {
+    createBase(x, i + 1);
+});
+
+/* =========================================================
+   PLAZA OWNER
+   Está delante/abajo de las bases
+   ========================================================= */
+
+const plazaMaterial =
+    new THREE.MeshStandardMaterial({
+        color: 0x302060,
+        emissive: 0x24124c,
+        emissiveIntensity: 0.4
+    });
+
+const plaza = new THREE.Mesh(
+    new THREE.CylinderGeometry(18, 18, 2, 32),
+    plazaMaterial
+);
+
+plaza.position.set(0, 1.5, 80);
+map.add(plaza);
+
+const plazaLabel = createTextSprite("👑 PLAZA OWNER 👑");
+
+plazaLabel.position.set(0, 12, 80);
+plazaLabel.scale.set(35, 10, 1);
+
+map.add(plazaLabel);
+
+/* =========================================================
+   ÁRBOLES
+   ========================================================= */
+
+function createTree(x, z) {
+
+    const trunk = new THREE.Mesh(
+        new THREE.CylinderGeometry(2, 2.5, 10, 8),
+        new THREE.MeshStandardMaterial({
+            color: 0x654321
+        })
+    );
+
+    trunk.position.set(x, 5, z);
+    map.add(trunk);
+
+    const leaves = new THREE.Mesh(
+        new THREE.SphereGeometry(7, 8, 8),
+        new THREE.MeshStandardMaterial({
+            color: 0x217a38
+        })
+    );
+
+    leaves.position.set(x, 12, z);
+    map.add(leaves);
+}
+
+/* Bosque */
+
+for (let x = -95; x <= 95; x += 25) {
+    createTree(x, -120);
+    createTree(x + 10, -145);
+}
+
+/* =========================================================
+   CACTUS
+   ========================================================= */
+
+function createCactus(x, z) {
+
+    const cactus = new THREE.Mesh(
+        new THREE.CylinderGeometry(2, 2, 12, 8),
+        new THREE.MeshStandardMaterial({
+            color: 0x27843d
+        })
+    );
+
+    cactus.position.set(x, 6, z);
+    map.add(cactus);
+
+    const arm = new THREE.Mesh(
+        new THREE.BoxGeometry(7, 2, 2),
+        new THREE.MeshStandardMaterial({
+            color: 0x27843d
+        })
+    );
+
+    arm.position.set(x + 3, 7, z);
+    map.add(arm);
+}
+
+for (let x = -85; x <= 85; x += 35) {
+    createCactus(x, -240);
+}
+
+/* =========================================================
+   CRISTALES DE HIELO
+   ========================================================= */
+
+function createIce(x, z) {
+
+    const crystal = new THREE.Mesh(
+        new THREE.ConeGeometry(3, 14, 6),
+        new THREE.MeshStandardMaterial({
+            color: 0xc9f3ff,
+            transparent: true,
+            opacity: .9
+        })
+    );
+
+    crystal.position.set(x, 7, z);
+    map.add(crystal);
+}
+
+for (let x = -90; x <= 90; x += 30) {
+    createIce(x, -360);
+}
+
+/* =========================================================
+   VOLCANES
+   ========================================================= */
+
+function createVolcano(x, z) {
+
+    const volcano = new THREE.Mesh(
+        new THREE.ConeGeometry(18, 28, 8),
+        new THREE.MeshStandardMaterial({
+            color: 0x421919
+        })
+    );
+
+    volcano.position.set(x, 14, z);
+    map.add(volcano);
+
+    const lava = new THREE.Mesh(
+        new THREE.CylinderGeometry(5, 5, 2, 12),
+        new THREE.MeshStandardMaterial({
+            color: 0xff3300,
+            emissive: 0xff2200,
+            emissiveIntensity: 1
+        })
+    );
+
+    lava.position.set(x, 28, z);
+    map.add(lava);
+}
+
+createVolcano(-65, -480);
+createVolcano(65, -480);
+
+/* =========================================================
+   ESTRELLAS PARA GALAXIA
+   ========================================================= */
+
+for (let i = 0; i < 70; i++) {
+
+    const star = new THREE.Mesh(
+        new THREE.SphereGeometry(.8, 6, 6),
+        new THREE.MeshStandardMaterial({
+            color: 0xffffff,
+            emissive: 0xffffff,
+            emissiveIntensity: 1
+        })
+    );
+
+    star.position.set(
+        (Math.random() - .5) * 210,
+        Math.random() * 35 + 4,
+        -720 + (Math.random() - .5) * 80
+    );
+
+    map.add(star);
+}
+
+/* =========================================================
+   DOMINIO DIVINO
+   ========================================================= */
+
+for (let i = 0; i < 8; i++) {
+
+    const pillar = new THREE.Mesh(
+        new THREE.CylinderGeometry(3, 3, 35, 12),
+        new THREE.MeshStandardMaterial({
+            color: 0xffdf6b,
+            emissive: 0xffc400,
+            emissiveIntensity: .35
+        })
+    );
+
+    pillar.position.set(
+        -85 + i * 25,
+        17,
+        -960
+    );
+
+    map.add(pillar);
+}
+
+/* =========================================================
+   TEXTO 3D SIMPLE
+   ========================================================= */
+
+function createTextSprite(text) {
+
+    const canvas = document.createElement("canvas");
+    canvas.width = 1024;
+    canvas.height = 256;
+
+    const ctx = canvas.getContext("2d");
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    ctx.font = "bold 70px Arial";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+
+    ctx.fillStyle = "white";
+    ctx.strokeStyle = "black";
+    ctx.lineWidth = 12;
+
+    ctx.strokeText(
+        text,
+        canvas.width / 2,
+        canvas.height / 2
+    );
+
+    ctx.fillText(
+        text,
+        canvas.width / 2,
+        canvas.height / 2
+    );
+
+    const texture =
+        new THREE.CanvasTexture(canvas);
+
+    const material =
+        new THREE.SpriteMaterial({
+            map: texture,
+            transparent: true
+        });
+
+    return new THREE.Sprite(material);
+}
+
+/* =========================================================
+   JUGADOR
+   ========================================================= */
+
+const player = new THREE.Group();
+
+const body = new THREE.Mesh(
+    new THREE.BoxGeometry(4, 6, 3),
+    new THREE.MeshStandardMaterial({
+        color: 0x3366ff
+    })
+);
+
+body.position.y = 5;
+player.add(body);
+
+const head = new THREE.Mesh(
+    new THREE.BoxGeometry(4, 4, 4),
+    new THREE.MeshStandardMaterial({
+        color: 0xffcc99
+    })
+);
+
+head.position.y = 10;
+player.add(head);
+
+player.position.set(0, 0, 20);
+
+scene.add(player);
+
+/* =========================================================
+   MOVIMIENTO
+   ========================================================= */
+
+const keys = {};
+
+document.addEventListener("keydown", e => {
+    keys[e.code] = true;
+});
+
+document.addEventListener("keyup", e => {
+    keys[e.code] = false;
+});
+
+let speed = 0.8;
+
+function updatePlayer() {
+
+    if (keys["ShiftLeft"] || keys["ShiftRight"]) {
+        speed = 1.5;
+    } else {
+        speed = 0.8;
     }
 
-
-    // ==========================================
-    // TERRENO PRINCIPAL
-    // ==========================================
-
-    createBox(
-      0,
-      -0.5,
-      0,
-      150,
-      1,
-      150,
-      0x4f9d45
-    );
-
-
-    // ==========================================
-    // CAMINOS
-    // ==========================================
-
-    createBox(
-      0,
-      0.02,
-      0,
-      14,
-      0.1,
-      150,
-      0x777777
-    );
-
-    createBox(
-      0,
-      0.03,
-      0,
-      150,
-      0.1,
-      14,
-      0x777777
-    );
-
-
-    // ==========================================
-    // ZONAS
-    // ==========================================
-
-    const zones = [
-
-      {
-        name: "🌿 Pradera Inicial",
-        color: 0x69b84f,
-        x: -45,
-        z: -45
-      },
-
-      {
-        name: "🌲 Bosque Encantado",
-        color: 0x2f7d4f,
-        x: 45,
-        z: -45
-      },
-
-      {
-        name: "🏜️ Desierto Dorado",
-        color: 0xd9b45b,
-        x: -45,
-        z: 45
-      },
-
-      {
-        name: "❄️ Cumbres Heladas",
-        color: 0xa9d8e8,
-        x: 45,
-        z: 45
-      }
-
-    ];
-
-
-    // ==========================================
-    // CREAR ZONAS
-    // ==========================================
-
-    for (
-      const zone of zones
-    ) {
-
-      createBox(
-        zone.x,
-        0.05,
-        zone.z,
-        42,
-        0.12,
-        42,
-        zone.color
-      );
-
+    if (keys["KeyW"]) {
+        player.position.z -= speed;
     }
 
-
-    // ==========================================
-    // ÁRBOLES
-    // ==========================================
-
-    function createTree(
-      x,
-      z
-    ) {
-
-      createBox(
-        x,
-        2,
-        z,
-        1.3,
-        4,
-        1.3,
-        0x70452b
-      );
-
-      const crown =
-        createBox(
-          x,
-          4.8,
-          z,
-          4,
-          3.5,
-          4,
-          0x236b38
-        );
-
-      crown.rotation.y =
-        Math.random();
+    if (keys["KeyS"]) {
+        player.position.z += speed;
     }
 
-
-    // Árboles del bosque
-
-    for (
-      let i = 0;
-      i < 20;
-      i++
-    ) {
-
-      const x =
-        45 +
-        (Math.random() - 0.5) * 34;
-
-      const z =
-        -45 +
-        (Math.random() - 0.5) * 34;
-
-      createTree(
-        x,
-        z
-      );
-
+    if (keys["KeyA"]) {
+        player.position.x -= speed;
     }
 
-
-    // ==========================================
-    // CACTUS
-    // ==========================================
-
-    function createCactus(
-      x,
-      z
-    ) {
-
-      createBox(
-        x,
-        1.5,
-        z,
-        1,
-        3,
-        1,
-        0x2f8f45
-      );
-
-      createBox(
-        x + 0.9,
-        1.8,
-        z,
-        0.8,
-        1.5,
-        0.8,
-        0x2f8f45
-      );
-
+    if (keys["KeyD"]) {
+        player.position.x += speed;
     }
 
+    player.position.x =
+        Math.max(-105, Math.min(105, player.position.x));
 
-    for (
-      let i = 0;
-      i < 15;
-      i++
-    ) {
+    player.position.z =
+        Math.max(-1010, Math.min(90, player.position.z));
+}
 
-      const x =
-        -45 +
-        (Math.random() - 0.5) * 34;
+/* =========================================================
+   CÁMARA TERCERA PERSONA
+   ========================================================= */
 
-      const z =
-        45 +
-        (Math.random() - 0.5) * 34;
+function updateCamera() {
 
-      createCactus(
-        x,
-        z
-      );
-
-    }
-
-
-    // ==========================================
-    // CRISTALES DE HIELO
-    // ==========================================
-
-    function createIce(
-      x,
-      z
-    ) {
-
-      const ice =
-        createBox(
-          x,
-          2,
-          z,
-          1.5,
-          4,
-          1.5,
-          0xdceeff
-        );
-
-      ice.rotation.y =
-        Math.random();
-
-    }
-
-
-    for (
-      let i = 0;
-      i < 15;
-      i++
-    ) {
-
-      const x =
-        45 +
-        (Math.random() - 0.5) * 34;
-
-      const z =
-        45 +
-        (Math.random() - 0.5) * 34;
-
-      createIce(
-        x,
-        z
-      );
-
-    }
-
-
-    // ==========================================
-    // BASES
-    // ==========================================
-
-    function createBase(
-      x,
-      z,
-      number
-    ) {
-
-      createBox(
-        x,
-        0.6,
-        z,
-        14,
-        1.2,
-        14,
-        0x334155
-      );
-
-      createBox(
-        x,
-        1.4,
-        z - 6,
-        12,
-        1.4,
-        1,
-        0x1e293b
-      );
-
-      const beacon =
-        createBox(
-          x,
-          2.5,
-          z,
-          2,
-          4,
-          2,
-          0x7c3aed
-        );
-
-      beacon.material.emissive =
-        new THREE.Color(
-          0x35127a
-        );
-
-    }
-
-
-    createBase(
-      -8,
-      -8,
-      1
-    );
-
-    createBase(
-      8,
-      -8,
-      2
-    );
-
-    createBase(
-      -8,
-      8,
-      3
-    );
-
-    createBase(
-      8,
-      8,
-      4
-    );
-
-
-    // ==========================================
-    // HUEVOS
-    // ==========================================
-
-    const eggs = [];
-
-
-    function createEgg(
-      x,
-      y,
-      z,
-      color,
-      rarity
-    ) {
-
-      const egg =
-        createBox(
-          x,
-          y,
-          z,
-          2,
-          2.5,
-          2,
-          color
-        );
-
-      egg.rotation.z =
-        0.2;
-
-      egg.userData.rarity =
-        rarity;
-
-      eggs.push(
-        egg
-      );
-
-      return egg;
-    }
-
-
-    // Huevos iniciales
-
-    for (
-      let i = 0;
-      i < 6;
-      i++
-    ) {
-
-      createEgg(
-        -25 + i * 5,
-        1.4,
-        -30,
-        0xf4f4f4,
-        "Común"
-      );
-
-    }
-
-
-    // Huevo raro
-
-    createEgg(
-      10,
-      1.4,
-      -30,
-      0x3b82f6,
-      "Raro"
-    );
-
-
-    // Huevo épico
-
-    createEgg(
-      18,
-      1.4,
-      -30,
-      0xa855f7,
-      "Épico"
-    );
-
-
-    // ==========================================
-    // JUGADOR
-    // ==========================================
-
-    const player =
-      createBox(
-        0,
-        1.2,
-        0,
-        1.2,
-        2.4,
-        1.2,
-        0x2563eb
-      );
-
-
-    const head =
-      createBox(
-        0,
-        2.9,
-        0,
-        1.3,
-        1.3,
-        1.3,
-        0xf1c27d
-      );
-
-
-    // ==========================================
-    // CONTROLES
-    // ==========================================
-
-    const keys = {};
-
-    window.addEventListener(
-      "keydown",
-      function(event) {
-
-        keys[event.code] =
-          true;
-
-      }
-    );
-
-
-    window.addEventListener(
-      "keyup",
-      function(event) {
-
-        keys[event.code] =
-          false;
-
-      }
-    );
-
-
-    // ==========================================
-    // CÁMARA
-    // ==========================================
-
-    let yaw = 0;
-
-    let pitch = -0.18;
-
-
-    document.body.addEventListener(
-      "click",
-      function() {
-
-        renderer.domElement.requestPointerLock();
-
-      }
-    );
-
-
-    window.addEventListener(
-      "mousemove",
-      function(event) {
-
-        if (
-          document.pointerLockElement ===
-          renderer.domElement
-        ) {
-
-          yaw -=
-            event.movementX *
-            0.0025;
-
-          pitch -=
-            event.movementY *
-            0.0025;
-
-          pitch =
-            Math.max(
-              -1.2,
-              Math.min(
-                0.6,
-                pitch
-              )
-            );
-
-        }
-
-      }
-    );
-
-
-    // ==========================================
-    // FÍSICA
-    // ==========================================
-
-    let velocityY = 0;
-
-    let onGround = true;
-
-
-    // ==========================================
-    // DINERO
-    // ==========================================
-
-    let money = 0;
-
-
-    // ==========================================
-    // RELOJ DEL JUEGO
-    // ==========================================
-
-    const clock =
-      new THREE.Clock();
-
-
-    // ==========================================
-    // ANIMACIÓN
-    // ==========================================
-
-    function animate() {
-
-      requestAnimationFrame(
-        animate
-      );
-
-
-      const delta =
-        Math.min(
-          clock.getDelta(),
-          0.05
-        );
-
-
-      // -------------------------------
-      // VELOCIDAD
-      // -------------------------------
-
-      let speed = 5;
-
-
-      if (
-        keys.ShiftLeft ||
-        keys.ShiftRight
-      ) {
-
-        speed = 10;
-
-      }
-
-
-      // -------------------------------
-      // DIRECCIÓN
-      // -------------------------------
-
-      const forward =
-        new THREE.Vector3(
-          Math.sin(yaw),
-          0,
-          Math.cos(yaw)
-        );
-
-
-      const right =
-        new THREE.Vector3(
-          Math.cos(yaw),
-          0,
-          -Math.sin(yaw)
-        );
-
-
-      const movement =
-        new THREE.Vector3();
-
-
-      if (
-        keys.KeyW
-      ) {
-
-        movement.add(
-          forward
-        );
-
-      }
-
-
-      if (
-        keys.KeyS
-      ) {
-
-        movement.sub(
-          forward
-        );
-
-      }
-
-
-      if (
-        keys.KeyD
-      ) {
-
-        movement.add(
-          right
-        );
-
-      }
-
-
-      if (
-        keys.KeyA
-      ) {
-
-        movement.sub(
-          right
-        );
-
-      }
-
-
-      if (
-        movement.lengthSq() > 0
-      ) {
-
-        movement
-          .normalize()
-          .multiplyScalar(
-            speed * delta
-          );
-
-      }
-
-
-      player.position.add(
-        movement
-      );
-
-
-      // -------------------------------
-      // SALTO
-      // -------------------------------
-
-      if (
-        keys.Space &&
-        onGround
-      ) {
-
-        velocityY = 8;
-
-        onGround = false;
-
-      }
-
-
-      velocityY -=
-        22 * delta;
-
-
-      player.position.y +=
-        velocityY * delta;
-
-
-      if (
-        player.position.y < 1.2
-      ) {
-
-        player.position.y =
-          1.2;
-
-        velocityY = 0;
-
-        onGround = true;
-
-      }
-
-
-      // -------------------------------
-      // CABEZA
-      // -------------------------------
-
-      head.position.x =
-        player.position.x;
-
-      head.position.y =
-        player.position.y + 1.7;
-
-      head.position.z =
-        player.position.z;
-
-
-      // -------------------------------
-      // CÁMARA
-      // -------------------------------
-
-      const cameraTarget =
-        new THREE.Vector3(
-
-          player.position.x -
-          Math.sin(yaw) * 8,
-
-          player.position.y +
-          4.2 +
-          Math.sin(pitch) * 4,
-
-          player.position.z -
-          Math.cos(yaw) * 8
-
-        );
-
-
-      camera.position.lerp(
-        cameraTarget,
-        0.12
-      );
-
-
-      camera.lookAt(
+    const target = new THREE.Vector3(
         player.position.x,
-        player.position.y + 1.2,
+        player.position.y + 6,
         player.position.z
-      );
-
-
-      // -------------------------------
-      // DINERO
-      // -------------------------------
-
-      money +=
-        delta * 0.5;
-
-
-      document.getElementById(
-        "money"
-      ).textContent =
-        Math.floor(
-          money
-        );
-
-
-      // -------------------------------
-      // ANIMACIÓN HUEVOS
-      // -------------------------------
-
-      for (
-        const egg of eggs
-      ) {
-
-        egg.rotation.y +=
-          delta;
-
-        egg.position.y =
-          1.4 +
-          Math.sin(
-            performance.now() *
-            0.002 +
-            egg.position.x
-          ) *
-          0.12;
-
-      }
-
-
-      renderer.render(
-        scene,
-        camera
-      );
-
-    }
-
-
-    // ==========================================
-    // INICIAR JUEGO
-    // ==========================================
-
-    document
-      .getElementById("playButton")
-      .addEventListener(
-        "click",
-        function() {
-
-          document
-            .getElementById(
-              "startScreen"
-            )
-            .style.display =
-            "none";
-
-          renderer.domElement
-            .requestPointerLock();
-
-        }
-      );
-
-
-    // ==========================================
-    // CAMBIO DE TAMAÑO
-    // ==========================================
-
-    window.addEventListener(
-      "resize",
-      function() {
-
-        camera.aspect =
-          window.innerWidth /
-          window.innerHeight;
-
-        camera.updateProjectionMatrix();
-
-        renderer.setSize(
-          window.innerWidth,
-          window.innerHeight
-        );
-
-      }
     );
 
+    const cameraPosition = new THREE.Vector3(
+        player.position.x,
+        player.position.y + 32,
+        player.position.z + 38
+    );
 
-    // ==========================================
-    // ARRANCAR
-    // ==========================================
+    camera.position.lerp(cameraPosition, 0.08);
+    camera.lookAt(target);
+}
 
-    animate();
+/* =========================================================
+   DETECTAR ZONA
+   ========================================================= */
 
-  </script>
+function updateZone() {
+
+    let closest = zones[0];
+    let bestDistance = Infinity;
+
+    zones.forEach(zone => {
+
+        const distance =
+            Math.abs(player.position.z - zone.z);
+
+        if (distance < bestDistance) {
+            bestDistance = distance;
+            closest = zone;
+        }
+    });
+
+    document.getElementById("zone").textContent =
+        closest.name;
+}
+
+/* =========================================================
+   DINERO
+   ========================================================= */
+
+let money = 0;
+
+setInterval(() => {
+
+    money += 1;
+
+    document.getElementById("money").textContent =
+        money;
+
+}, 1000);
+
+/* =========================================================
+   JUGAR
+   ========================================================= */
+
+document.getElementById("playButton")
+    .addEventListener("click", () => {
+
+        document.getElementById("startScreen")
+            .style.display = "none";
+
+        renderer.domElement.requestPointerLock?.();
+    });
+
+/* =========================================================
+   ANIMACIÓN
+   ========================================================= */
+
+function animate() {
+
+    requestAnimationFrame(animate);
+
+    updatePlayer();
+    updateCamera();
+    updateZone();
+
+    renderer.render(scene, camera);
+}
+
+animate();
+
+/* =========================================================
+   RESIZE
+   ========================================================= */
+
+window.addEventListener("resize", () => {
+
+    camera.aspect =
+        window.innerWidth / window.innerHeight;
+
+    camera.updateProjectionMatrix();
+
+    renderer.setSize(
+        window.innerWidth,
+        window.innerHeight
+    );
+});
+</script>
 
 </body>
 </html>
 ```
-
