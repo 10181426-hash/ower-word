@@ -7,213 +7,259 @@
 <title>OWNER WORLD V0.5</title>
 
 <style>
-    * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-    }
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
 
-    body {
-        overflow: hidden;
-        font-family: Arial, Helvetica, sans-serif;
-        background: #87ceeb;
-    }
+body{
+    overflow:hidden;
+    font-family:Arial,Helvetica,sans-serif;
+    background:#87ceeb;
+}
 
-    canvas {
-        display: block;
-    }
+canvas{
+    display:block;
+}
 
-    #hud {
-        position: fixed;
-        top: 15px;
-        left: 15px;
-        z-index: 10;
-        color: white;
-        text-shadow: 0 3px 6px #000;
-        pointer-events: none;
-    }
+#hud{
+    position:fixed;
+    top:15px;
+    left:15px;
+    z-index:10;
+    color:white;
+    text-shadow:0 3px 6px #000;
+    pointer-events:none;
+}
 
-    #title {
-        font-size: 27px;
-        font-weight: 900;
-        letter-spacing: 2px;
-    }
+#title{
+    font-size:27px;
+    font-weight:900;
+}
 
-    #money {
-        margin-top: 7px;
-        font-size: 20px;
-        font-weight: bold;
-    }
+#money{
+    margin-top:7px;
+    font-size:20px;
+    font-weight:bold;
+}
 
-    #zone {
-        margin-top: 5px;
-        font-size: 17px;
-        font-weight: bold;
-    }
+#zone{
+    margin-top:5px;
+    font-size:17px;
+    font-weight:bold;
+}
 
-    #startScreen {
-        position: fixed;
-        inset: 0;
-        z-index: 50;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        background:
-            radial-gradient(circle at center, rgba(90,60,160,.35), transparent 45%),
-            linear-gradient(#07152f, #102d55 55%, #142b25);
-        color: white;
-        text-align: center;
-    }
+#startScreen{
+    position:fixed;
+    inset:0;
+    z-index:50;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    background:
+        radial-gradient(circle at center,rgba(100,70,180,.35),transparent 45%),
+        linear-gradient(#07152f,#102d55 55%,#142b25);
+    color:white;
+    text-align:center;
+}
 
-    #startScreen h1 {
-        font-size: clamp(45px, 8vw, 90px);
-        font-weight: 1000;
-        letter-spacing: 5px;
-        text-shadow:
-            0 0 10px #8b5cff,
-            0 0 25px #4c7dff,
-            0 8px 15px #000;
-    }
+#startScreen h1{
+    font-size:clamp(45px,8vw,90px);
+    font-weight:1000;
+    letter-spacing:5px;
+    text-shadow:
+        0 0 10px #8b5cff,
+        0 0 25px #4c7dff,
+        0 8px 15px #000;
+}
 
-    #startScreen p {
-        margin-top: 10px;
-        font-size: 18px;
-        opacity: .9;
-    }
+#startScreen p{
+    margin-top:10px;
+    font-size:18px;
+}
 
-    #playButton {
-        margin-top: 30px;
-        padding: 18px 55px;
-        border: 0;
-        border-radius: 15px;
-        background: linear-gradient(135deg, #6c4cff, #00bfff);
-        color: white;
-        font-size: 23px;
-        font-weight: 900;
-        cursor: pointer;
-        box-shadow: 0 8px 25px rgba(0,0,0,.45);
-        transition: transform .15s, filter .15s;
-    }
+#playButton{
+    margin-top:30px;
+    padding:18px 55px;
+    border:0;
+    border-radius:15px;
+    background:linear-gradient(135deg,#6c4cff,#00bfff);
+    color:white;
+    font-size:23px;
+    font-weight:900;
+    cursor:pointer;
+    box-shadow:0 8px 25px rgba(0,0,0,.45);
+}
 
-    #playButton:hover {
-        transform: scale(1.08);
-        filter: brightness(1.15);
-    }
+#playButton:hover{
+    transform:scale(1.08);
+}
 
-    #version {
-        position: absolute;
-        bottom: 28px;
-        font-size: 18px;
-        font-weight: 900;
-        letter-spacing: 2px;
-        color: #d7e8ff;
-        text-shadow: 0 2px 5px #000;
-    }
+#version{
+    position:absolute;
+    bottom:28px;
+    font-size:18px;
+    font-weight:900;
+    letter-spacing:2px;
+    text-shadow:0 2px 5px #000;
+}
 
-    #help {
-        position: fixed;
-        bottom: 18px;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 10;
-        color: white;
-        font-weight: bold;
-        text-shadow: 0 2px 5px #000;
-        pointer-events: none;
-        text-align: center;
-    }
+#help{
+    position:fixed;
+    bottom:18px;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:10;
+    color:white;
+    font-weight:bold;
+    text-shadow:0 2px 5px #000;
+    pointer-events:none;
+    text-align:center;
+}
 
-    #announcement {
-        position: fixed;
-        top: 80px;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 20;
-        color: white;
-        font-size: 22px;
-        font-weight: 900;
-        text-align: center;
-        text-shadow: 0 3px 8px #000;
-        opacity: 0;
-        transition: opacity .4s;
-        pointer-events: none;
-    }
+#announcement{
+    position:fixed;
+    top:80px;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:20;
+    color:white;
+    font-size:22px;
+    font-weight:900;
+    text-align:center;
+    text-shadow:0 3px 8px #000;
+    opacity:0;
+    transition:opacity .4s;
+    pointer-events:none;
+}
 </style>
 </head>
 
 <body>
 
 <div id="startScreen">
+
     <h1>👑 OWNER WORLD 👑</h1>
-    <p>Explora las zonas. Consigue mascotas. Conviértete en el dueño.</p>
 
-    <button id="playButton">JUGAR</button>
+    <p>
+        Explora las zonas. Consigue mascotas.
+        Conviértete en el dueño.
+    </p>
 
-    <div id="version">V0.5</div>
+    <button id="playButton">
+        JUGAR
+    </button>
+
+    <div id="version">
+        V0.5
+    </div>
+
 </div>
 
 <div id="hud">
-    <div id="title">👑 OWNER WORLD</div>
-    <div id="money">💰 $0</div>
-    <div id="zone">🌿 Pradera Inicial</div>
+
+    <div id="title">
+        👑 OWNER WORLD
+    </div>
+
+    <div id="money">
+        💰 $0
+    </div>
+
+    <div id="zone">
+        🌿 Pradera Inicial
+    </div>
+
 </div>
 
 <div id="announcement"></div>
 
 <div id="help">
-    WASD = Mover &nbsp; | &nbsp; Mouse = Cámara &nbsp; | &nbsp; SPACE = Saltar
+    WASD = Mover |
+    Mouse = Cámara |
+    SPACE = Saltar
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.min.js"></script>
 
 <script>
+
 /* =========================================================
    OWNER WORLD V0.5
-   MAP + ZONAS + CORRALES + DECORACIÓN
    ========================================================= */
 
 const scene = new THREE.Scene();
 
-scene.background = new THREE.Color(0x83cfff);
-scene.fog = new THREE.Fog(0x83cfff, 250, 1450);
+scene.background =
+    new THREE.Color(0x83cfff);
 
-const camera = new THREE.PerspectiveCamera(
-    70,
-    window.innerWidth / window.innerHeight,
-    0.1,
-    2500
+scene.fog =
+    new THREE.Fog(
+        0x83cfff,
+        250,
+        1450
+    );
+
+const camera =
+    new THREE.PerspectiveCamera(
+        70,
+        window.innerWidth /
+        window.innerHeight,
+        0.1,
+        2500
+    );
+
+const renderer =
+    new THREE.WebGLRenderer({
+        antialias:true
+    });
+
+renderer.setSize(
+    window.innerWidth,
+    window.innerHeight
 );
 
-const renderer = new THREE.WebGLRenderer({
-    antialias: true
-});
+renderer.setPixelRatio(
+    Math.min(window.devicePixelRatio,2)
+);
 
-renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-document.body.appendChild(renderer.domElement);
+renderer.shadowMap.type =
+    THREE.PCFSoftShadowMap;
+
+document.body.appendChild(
+    renderer.domElement
+);
+
 
 /* =========================================================
    LUCES
    ========================================================= */
 
-const hemiLight = new THREE.HemisphereLight(
-    0xffffff,
-    0x42643c,
-    1.8
-);
+const hemiLight =
+    new THREE.HemisphereLight(
+        0xffffff,
+        0x42643c,
+        1.8
+    );
 
 scene.add(hemiLight);
 
-const sun = new THREE.DirectionalLight(
-    0xffffff,
-    2.2
+const sun =
+    new THREE.DirectionalLight(
+        0xffffff,
+        2.2
+    );
+
+sun.position.set(
+    -250,
+    400,
+    150
 );
 
-sun.position.set(-250, 400, 150);
 sun.castShadow = true;
 
 sun.shadow.mapSize.width = 2048;
@@ -226,163 +272,287 @@ sun.shadow.camera.bottom = -1200;
 
 scene.add(sun);
 
+
 /* =========================================================
    MATERIALES
    ========================================================= */
 
 const mat = {
-    grass: new THREE.MeshStandardMaterial({ color: 0x58a946 }),
-    grass2: new THREE.MeshStandardMaterial({ color: 0x76bd4c }),
-    dirt: new THREE.MeshStandardMaterial({ color: 0x7b4d2a }),
-    dirtDark: new THREE.MeshStandardMaterial({ color: 0x56351e }),
-    stone: new THREE.MeshStandardMaterial({ color: 0x747b82 }),
-    wood: new THREE.MeshStandardMaterial({ color: 0x71452a }),
-    leaves: new THREE.MeshStandardMaterial({ color: 0x25833c }),
-    leaves2: new THREE.MeshStandardMaterial({ color: 0x42a843 }),
-    sand: new THREE.MeshStandardMaterial({ color: 0xd7ad5c }),
-    sandstone: new THREE.MeshStandardMaterial({ color: 0xc9964b }),
-    snow: new THREE.MeshStandardMaterial({ color: 0xeaf8ff }),
-    ice: new THREE.MeshStandardMaterial({
-        color: 0x69d9ff,
-        transparent: true,
-        opacity: .75
-    }),
-    rock: new THREE.MeshStandardMaterial({ color: 0x30343b }),
-    lava: new THREE.MeshStandardMaterial({
-        color: 0xff4a16,
-        emissive: 0xff2600,
-        emissiveIntensity: 2
-    }),
-    water: new THREE.MeshStandardMaterial({
-        color: 0x168ed0,
-        transparent: true,
-        opacity: .72
-    }),
-    galaxy: new THREE.MeshStandardMaterial({
-        color: 0x30205d,
-        emissive: 0x160c35,
-        emissiveIntensity: .7
-    }),
-    purple: new THREE.MeshStandardMaterial({
-        color: 0x774cff,
-        emissive: 0x37118c,
-        emissiveIntensity: 1.4
-    }),
-    gold: new THREE.MeshStandardMaterial({
-        color: 0xffd447,
-        emissive: 0xff9f00,
-        emissiveIntensity: .7
-    }),
-    white: new THREE.MeshStandardMaterial({
-        color: 0xf5f5ff
-    }),
-    dark: new THREE.MeshStandardMaterial({
-        color: 0x151521
-    })
+
+    grass:
+        new THREE.MeshStandardMaterial({
+            color:0x58a946
+        }),
+
+    grass2:
+        new THREE.MeshStandardMaterial({
+            color:0x76bd4c
+        }),
+
+    dirt:
+        new THREE.MeshStandardMaterial({
+            color:0x7b4d2a
+        }),
+
+    dirtDark:
+        new THREE.MeshStandardMaterial({
+            color:0x56351e
+        }),
+
+    stone:
+        new THREE.MeshStandardMaterial({
+            color:0x747b82
+        }),
+
+    wood:
+        new THREE.MeshStandardMaterial({
+            color:0x71452a
+        }),
+
+    leaves:
+        new THREE.MeshStandardMaterial({
+            color:0x25833c
+        }),
+
+    leaves2:
+        new THREE.MeshStandardMaterial({
+            color:0x42a843
+        }),
+
+    sand:
+        new THREE.MeshStandardMaterial({
+            color:0xd7ad5c
+        }),
+
+    sandstone:
+        new THREE.MeshStandardMaterial({
+            color:0xc9964b
+        }),
+
+    snow:
+        new THREE.MeshStandardMaterial({
+            color:0xeaf8ff
+        }),
+
+    ice:
+        new THREE.MeshStandardMaterial({
+            color:0x69d9ff,
+            transparent:true,
+            opacity:.75
+        }),
+
+    rock:
+        new THREE.MeshStandardMaterial({
+            color:0x30343b
+        }),
+
+    lava:
+        new THREE.MeshStandardMaterial({
+            color:0xff4a16,
+            emissive:0xff2600,
+            emissiveIntensity:2
+        }),
+
+    water:
+        new THREE.MeshStandardMaterial({
+            color:0x168ed0,
+            transparent:true,
+            opacity:.72
+        }),
+
+    galaxy:
+        new THREE.MeshStandardMaterial({
+            color:0x30205d,
+            emissive:0x160c35,
+            emissiveIntensity:.7
+        }),
+
+    purple:
+        new THREE.MeshStandardMaterial({
+            color:0x774cff,
+            emissive:0x37118c,
+            emissiveIntensity:1.4
+        }),
+
+    gold:
+        new THREE.MeshStandardMaterial({
+            color:0xffd447,
+            emissive:0xff9f00,
+            emissiveIntensity:.7
+        }),
+
+    white:
+        new THREE.MeshStandardMaterial({
+            color:0xf5f5ff
+        }),
+
+    dark:
+        new THREE.MeshStandardMaterial({
+            color:0x151521
+        })
 };
 
+
 /* =========================================================
-   HELPERS
+   FUNCIONES
    ========================================================= */
 
 function box(
-    x, y, z,
-    sx, sy, sz,
+    x,y,z,
+    sx,sy,sz,
     material,
-    parent = scene
-) {
-    const geo = new THREE.BoxGeometry(sx, sy, sz);
-    const mesh = new THREE.Mesh(geo, material);
+    parent=scene
+){
 
-    mesh.position.set(x, y, z);
+    const geometry =
+        new THREE.BoxGeometry(
+            sx,sy,sz
+        );
+
+    const mesh =
+        new THREE.Mesh(
+            geometry,
+            material
+        );
+
+    mesh.position.set(
+        x,y,z
+    );
+
     mesh.castShadow = true;
     mesh.receiveShadow = true;
 
     parent.add(mesh);
+
     return mesh;
 }
+
 
 function cyl(
-    x, y, z,
+    x,y,z,
     radius,
     height,
     material,
-    segments = 10,
-    parent = scene
-) {
-    const geo = new THREE.CylinderGeometry(
-        radius,
-        radius,
-        height,
-        segments
+    segments=10,
+    parent=scene
+){
+
+    const geometry =
+        new THREE.CylinderGeometry(
+            radius,
+            radius,
+            height,
+            segments
+        );
+
+    const mesh =
+        new THREE.Mesh(
+            geometry,
+            material
+        );
+
+    mesh.position.set(
+        x,y,z
     );
 
-    const mesh = new THREE.Mesh(geo, material);
-
-    mesh.position.set(x, y, z);
     mesh.castShadow = true;
     mesh.receiveShadow = true;
 
     parent.add(mesh);
+
     return mesh;
 }
+
 
 function sphere(
-    x, y, z,
+    x,y,z,
     radius,
     material,
-    parent = scene
-) {
-    const geo = new THREE.SphereGeometry(radius, 12, 8);
-    const mesh = new THREE.Mesh(geo, material);
+    parent=scene
+){
 
-    mesh.position.set(x, y, z);
+    const geometry =
+        new THREE.SphereGeometry(
+            radius,
+            12,
+            8
+        );
+
+    const mesh =
+        new THREE.Mesh(
+            geometry,
+            material
+        );
+
+    mesh.position.set(
+        x,y,z
+    );
+
     mesh.castShadow = true;
     mesh.receiveShadow = true;
 
     parent.add(mesh);
+
     return mesh;
 }
 
+
 function cone(
-    x, y, z,
+    x,y,z,
     radius,
     height,
     material,
-    parent = scene
-) {
-    const geo = new THREE.ConeGeometry(
-        radius,
-        height,
-        8
+    parent=scene
+){
+
+    const geometry =
+        new THREE.ConeGeometry(
+            radius,
+            height,
+            8
+        );
+
+    const mesh =
+        new THREE.Mesh(
+            geometry,
+            material
+        );
+
+    mesh.position.set(
+        x,y,z
     );
 
-    const mesh = new THREE.Mesh(geo, material);
-
-    mesh.position.set(x, y, z);
     mesh.castShadow = true;
     mesh.receiveShadow = true;
 
     parent.add(mesh);
+
     return mesh;
 }
 
+
 /* =========================================================
-   MAP
+   MAPA
    ========================================================= */
 
 const MAP_WIDTH = 230;
-const HALF_WIDTH = MAP_WIDTH / 2;
+
+const HALF_WIDTH =
+    MAP_WIDTH / 2;
 
 const ZONE_LENGTH = 175;
 
 const START_Z = 110;
-const END_Z = START_Z - ZONE_LENGTH * 9;
+
+const END_Z =
+    START_Z -
+    ZONE_LENGTH * 9;
 
 const roadWidth = 30;
 
+
 /* =========================================================
-   TERRENO BASE
+   TERRENO
    ========================================================= */
 
 box(
@@ -395,98 +565,145 @@ box(
     mat.grass
 );
 
+
 /* =========================================================
    ZONAS
    ========================================================= */
 
 const zones = [
+
     {
-        name: "🌿 Pradera Inicial",
-        color: 0x58a946,
-        material: mat.grass
+        name:"🌿 Pradera Inicial",
+        color:0x58a946,
+        material:mat.grass
     },
+
     {
-        name: "🌲 Bosque Encantado",
-        color: 0x3c7d3a,
-        material: new THREE.MeshStandardMaterial({ color: 0x3c7d3a })
+        name:"🌲 Bosque Encantado",
+        color:0x3c7d3a,
+        material:
+            new THREE.MeshStandardMaterial({
+                color:0x3c7d3a
+            })
     },
+
     {
-        name: "🏜️ Desierto Dorado",
-        color: 0xd7ad5c,
-        material: mat.sand
+        name:"🏜️ Desierto Dorado",
+        color:0xd7ad5c,
+        material:mat.sand
     },
+
     {
-        name: "❄️ Cumbres Heladas",
-        color: 0xb8e9f7,
-        material: new THREE.MeshStandardMaterial({ color: 0xb8e9f7 })
+        name:"❄️ Cumbres Heladas",
+        color:0xb8e9f7,
+        material:
+            new THREE.MeshStandardMaterial({
+                color:0xb8e9f7
+            })
     },
+
     {
-        name: "🌋 Volcán Carmesí",
-        color: 0x351f1b,
-        material: new THREE.MeshStandardMaterial({ color: 0x351f1b })
+        name:"🌋 Volcán Carmesí",
+        color:0x351f1b,
+        material:
+            new THREE.MeshStandardMaterial({
+                color:0x351f1b
+            })
     },
+
     {
-        name: "🌊 Abismo Marino",
-        color: 0x126a9c,
-        material: new THREE.MeshStandardMaterial({ color: 0x126a9c })
+        name:"🌊 Abismo Marino",
+        color:0x126a9c,
+        material:
+            new THREE.MeshStandardMaterial({
+                color:0x126a9c
+            })
     },
+
     {
-        name: "🌌 Galaxia Perdida",
-        color: 0x30205d,
-        material: mat.galaxy
+        name:"🌌 Galaxia Perdida",
+        color:0x30205d,
+        material:mat.galaxy
     },
+
     {
-        name: "♾️ Santuario Eterno",
-        color: 0x827fa5,
-        material: new THREE.MeshStandardMaterial({ color: 0x827fa5 })
+        name:"♾️ Santuario Eterno",
+        color:0x827fa5,
+        material:
+            new THREE.MeshStandardMaterial({
+                color:0x827fa5
+            })
     },
+
     {
-        name: "✨ Dominio Divino",
-        color: 0xe5c94c,
-        material: new THREE.MeshStandardMaterial({ color: 0xc7a52d })
+        name:"✨ Dominio Divino",
+        color:0xe5c94c,
+        material:
+            new THREE.MeshStandardMaterial({
+                color:0xc7a52d
+            })
     }
 ];
 
-for (let i = 0; i < zones.length; i++) {
 
-    const top = START_Z - i * ZONE_LENGTH;
-    const bottom = top - ZONE_LENGTH;
+for(
+    let i=0;
+    i<zones.length;
+    i++
+){
+
+    const top =
+        START_Z -
+        i * ZONE_LENGTH;
+
+    const bottom =
+        top -
+        ZONE_LENGTH;
 
     box(
         0,
         .05,
-        (top + bottom) / 2,
-        MAP_WIDTH - 10,
+        (top + bottom)/2,
+        MAP_WIDTH-10,
         .2,
-        ZONE_LENGTH - 4,
+        ZONE_LENGTH-4,
         zones[i].material
     );
 }
 
+
 /* =========================================================
-   CAMINO PRINCIPAL
+   CAMINO
    ========================================================= */
 
-const roadMat = new THREE.MeshStandardMaterial({
-    color: 0x9a7955
-});
+const roadMat =
+    new THREE.MeshStandardMaterial({
+        color:0x9a7955
+    });
 
 box(
     0,
     .13,
-    (START_Z + END_Z) / 2,
+    (START_Z + END_Z)/2,
     roadWidth,
     .25,
-    START_Z - END_Z,
+    START_Z-END_Z,
     roadMat
 );
 
-/* Bordes del camino */
 
-for (let z = START_Z; z > END_Z; z -= 10) {
+/* =========================================================
+   BORDES DEL CAMINO
+   ========================================================= */
+
+for(
+    let z=START_Z;
+    z>END_Z;
+    z-=10
+){
 
     box(
-        -roadWidth / 2 - 1.3,
+        -roadWidth/2-1.3,
         .3,
         z,
         2,
@@ -496,7 +713,7 @@ for (let z = START_Z; z > END_Z; z -= 10) {
     );
 
     box(
-        roadWidth / 2 + 1.3,
+        roadWidth/2+1.3,
         .3,
         z,
         2,
@@ -506,17 +723,21 @@ for (let z = START_Z; z > END_Z; z -= 10) {
     );
 }
 
+
 /* =========================================================
-   PAREDES NATURALES
+   PAREDES DE TIERRA + CÉSPED
    ========================================================= */
 
-function makeNaturalWall(x, z, length, side) {
-
-    const yBase = 5;
+function makeNaturalWall(
+    x,
+    z,
+    length,
+    side
+){
 
     box(
         x,
-        yBase,
+        5,
         z,
         9,
         10,
@@ -530,19 +751,21 @@ function makeNaturalWall(x, z, length, side) {
         z,
         10,
         1.8,
-        length + 1,
+        length+1,
         mat.grass
     );
 
-    for (let i = -length / 2; i <= length / 2; i += 22) {
-
-        const rockX =
-            x + (side === "left" ? 1.2 : -1.2);
+    for(
+        let i=-length/2;
+        i<=length/2;
+        i+=22
+    ){
 
         box(
-            rockX,
+            x +
+            (side==="left"?1.2:-1.2),
             3.5,
-            z + i,
+            z+i,
             3,
             7,
             6,
@@ -551,30 +774,28 @@ function makeNaturalWall(x, z, length, side) {
     }
 }
 
-/* Pared izquierda */
 
 makeNaturalWall(
-    -HALF_WIDTH + 2,
-    (START_Z + END_Z) / 2,
-    START_Z - END_Z + 40,
+    -HALF_WIDTH+2,
+    (START_Z+END_Z)/2,
+    START_Z-END_Z+40,
     "left"
 );
 
-/* Pared derecha */
-
 makeNaturalWall(
-    HALF_WIDTH - 2,
-    (START_Z + END_Z) / 2,
-    START_Z - END_Z + 40,
+    HALF_WIDTH-2,
+    (START_Z+END_Z)/2,
+    START_Z-END_Z+40,
     "right"
 );
+
 
 /* Pared final */
 
 box(
     0,
     5,
-    END_Z - 8,
+    END_Z-8,
     MAP_WIDTH,
     10,
     8,
@@ -584,134 +805,107 @@ box(
 box(
     0,
     10.3,
-    END_Z - 8,
-    MAP_WIDTH + 2,
+    END_Z-8,
+    MAP_WIDTH+2,
     2,
     10,
     mat.grass
 );
 
+
 /* =========================================================
-   DECORACIÓN GENERAL
+   ÁRBOLES
    ========================================================= */
 
-function tree(x, z, scale = 1) {
-
-    const group = new THREE.Group();
+function tree(
+    x,
+    z,
+    scale=1
+){
 
     cyl(
         x,
-        3 * scale,
+        3*scale,
         z,
-        1.5 * scale,
-        6 * scale,
+        1.5*scale,
+        6*scale,
         mat.wood,
-        8,
-        group
+        8
     );
 
     sphere(
         x,
-        7 * scale,
+        7*scale,
         z,
-        4 * scale,
-        mat.leaves,
-        group
+        4*scale,
+        mat.leaves
     );
 
     sphere(
-        x + 2 * scale,
-        8 * scale,
+        x+2*scale,
+        8*scale,
         z,
-        3 * scale,
-        mat.leaves2,
-        group
+        3*scale,
+        mat.leaves2
     );
-
-    scene.add(group);
 }
 
-function rock(x, z, scale = 1, material = mat.stone) {
+
+function rock(
+    x,
+    z,
+    scale=1,
+    material=mat.stone
+){
 
     box(
         x,
-        1.3 * scale,
+        1.3*scale,
         z,
-        4 * scale,
-        2.6 * scale,
-        3 * scale,
+        4*scale,
+        2.6*scale,
+        3*scale,
         material
     );
 }
 
-function flower(x, z) {
-
-    cyl(
-        x,
-        .6,
-        z,
-        .12,
-        1.2,
-        mat.leaves,
-        6
-    );
-
-    sphere(
-        x,
-        1.3,
-        z,
-        .5,
-        new THREE.MeshStandardMaterial({
-            color: 0xffd83d
-        })
-    );
-}
 
 /* =========================================================
    PRADERA
    ========================================================= */
 
-const meadowTop = START_Z;
-const meadowBottom = START_Z - ZONE_LENGTH;
+const meadowBottom =
+    START_Z -
+    ZONE_LENGTH;
 
-for (let i = 0; i < 18; i++) {
+for(
+    let i=0;
+    i<18;
+    i++
+){
 
     const x =
-        -90 + Math.random() * 180;
+        -90 +
+        Math.random()*180;
 
     const z =
-        meadowBottom + 15 +
-        Math.random() * (ZONE_LENGTH - 30);
+        meadowBottom+15+
+        Math.random()*
+        (ZONE_LENGTH-30);
 
-    if (Math.abs(x) > 25) {
-        tree(x, z, .8 + Math.random() * .35);
+    if(
+        Math.abs(x)>25
+    ){
+
+        tree(
+            x,
+            z,
+            .8+
+            Math.random()*.35
+        );
     }
 }
 
-for (let i = 0; i < 30; i++) {
-
-    const x =
-        -95 + Math.random() * 190;
-
-    const z =
-        meadowBottom + Math.random() * ZONE_LENGTH;
-
-    if (Math.abs(x) > 22) {
-        flower(x, z);
-    }
-}
-
-/* Pequeño lago */
-
-const pond = new THREE.Mesh(
-    new THREE.CylinderGeometry(13, 13, .3, 32),
-    mat.water
-);
-
-pond.position.set(72, .3, 25);
-pond.scale.z = .65;
-
-scene.add(pond);
 
 /* =========================================================
    CORRALES
@@ -719,35 +913,50 @@ scene.add(pond);
 
 const corralZ = 68;
 
-function makeCorral(x, number) {
+function makeCorral(
+    x,
+    number
+){
 
-    const floor = new THREE.Mesh(
-        new THREE.BoxGeometry(43, .5, 42),
-        new THREE.MeshStandardMaterial({
-            color: 0x8d6945
-        })
+    const floor =
+        new THREE.Mesh(
+            new THREE.BoxGeometry(
+                43,
+                .5,
+                42
+            ),
+            new THREE.MeshStandardMaterial({
+                color:0x8d6945
+            })
+        );
+
+    floor.position.set(
+        x,
+        .25,
+        corralZ
     );
 
-    floor.position.set(x, .25, corralZ);
     floor.receiveShadow = true;
 
     scene.add(floor);
 
-    /* Postes decorativos, SIN paredes */
 
-    const postPositions = [
-        [-19, -18],
-        [19, -18],
-        [-19, 18],
-        [19, 18]
+    const positions = [
+        [-19,-18],
+        [19,-18],
+        [-19,18],
+        [19,18]
     ];
 
-    for (const [px, pz] of postPositions) {
+
+    for(
+        const p of positions
+    ){
 
         box(
-            x + px,
+            x+p[0],
             2,
-            corralZ + pz,
+            corralZ+p[1],
             1.2,
             4,
             1.2,
@@ -755,55 +964,64 @@ function makeCorral(x, number) {
         );
     }
 
-    /* Cartel */
 
     box(
         x,
         4,
-        corralZ - 21,
+        corralZ-21,
         11,
         3,
         1,
         mat.wood
     );
-
-    const label = document.createElement("div");
-
-    label.textContent = "CORRAL " + number;
-
-    label.style.position = "fixed";
-    label.style.pointerEvents = "none";
 }
 
-/* 4 corrales en una sola línea */
 
-makeCorral(-78, 1);
-makeCorral(-26, 2);
-makeCorral(26, 3);
-makeCorral(78, 4);
+makeCorral(-78,1);
+makeCorral(-26,2);
+makeCorral(26,3);
+makeCorral(78,4);
+
 
 /* =========================================================
-   PLAZA INICIAL
+   PLAZA
    ========================================================= */
 
-const plaza = new THREE.Mesh(
-    new THREE.CylinderGeometry(28, 28, .8, 32),
-    new THREE.MeshStandardMaterial({
-        color: 0x6c765f
-    })
+const plaza =
+    new THREE.Mesh(
+        new THREE.CylinderGeometry(
+            28,
+            28,
+            .8,
+            32
+        ),
+        new THREE.MeshStandardMaterial({
+            color:0x6c765f
+        })
+    );
+
+plaza.position.set(
+    0,
+    .4,
+    18
 );
 
-plaza.position.set(0, .4, 18);
-plaza.scale.z = .7;
+plaza.scale.z=.7;
 
 scene.add(plaza);
 
-/* Portal de inicio */
 
-function makePortal(x, z) {
+/* =========================================================
+   PORTAL
+   ========================================================= */
 
-    const left = box(
-        x - 12,
+function makePortal(
+    x,
+    z
+){
+
+    box(
+        x-12,
         8,
         z,
         4,
@@ -812,8 +1030,8 @@ function makePortal(x, z) {
         mat.stone
     );
 
-    const right = box(
-        x + 12,
+    box(
+        x+12,
         8,
         z,
         4,
@@ -835,82 +1053,82 @@ function makePortal(x, z) {
     box(
         x,
         8,
-        z - 1,
+        z-1,
         18,
         13,
         1,
         new THREE.MeshStandardMaterial({
-            color: 0x684cff,
-            emissive: 0x2c1188,
-            emissiveIntensity: 1.5,
-            transparent: true,
-            opacity: .55
+            color:0x684cff,
+            emissive:0x2c1188,
+            emissiveIntensity:1.5,
+            transparent:true,
+            opacity:.55
         })
     );
 }
 
-makePortal(0, -8);
+makePortal(
+    0,
+    -8
+);
+
 
 /* =========================================================
-   BOSQUE ENCANTADO
+   BOSQUE
    ========================================================= */
 
-const forestTop = START_Z - ZONE_LENGTH;
-const forestBottom = forestTop - ZONE_LENGTH;
+const forestTop =
+    START_Z-ZONE_LENGTH;
 
-for (let i = 0; i < 35; i++) {
+const forestBottom =
+    forestTop-ZONE_LENGTH;
 
-    const x =
-        -95 + Math.random() * 190;
 
-    const z =
-        forestBottom + 10 +
-        Math.random() * (ZONE_LENGTH - 20);
-
-    if (Math.abs(x) > 23) {
-        tree(x, z, .8 + Math.random() * .5);
-    }
-}
-
-for (let i = 0; i < 12; i++) {
-
-    const x = -90 + Math.random() * 180;
-    const z = forestBottom + Math.random() * ZONE_LENGTH;
-
-    rock(x, z, .7);
-}
-
-/* =========================================================
-   DESIERTO DORADO
-   ========================================================= */
-
-const desertTop = START_Z - ZONE_LENGTH * 2;
-const desertBottom = desertTop - ZONE_LENGTH;
-
-for (let i = 0; i < 18; i++) {
+for(
+    let i=0;
+    i<35;
+    i++
+){
 
     const x =
-        -90 + Math.random() * 180;
+        -95+Math.random()*190;
 
     const z =
-        desertBottom + Math.random() * ZONE_LENGTH;
+        forestBottom+10+
+        Math.random()*
+        (ZONE_LENGTH-20);
 
-    if (Math.abs(x) > 23) {
+    if(
+        Math.abs(x)>23
+    ){
 
-        cone(
+        tree(
             x,
-            3,
             z,
-            5 + Math.random() * 4,
-            6 + Math.random() * 5,
-            mat.sandstone
+            .8+
+            Math.random()*.5
         );
     }
 }
 
-/* Cactus */
 
-function cactus(x, z) {
+/* =========================================================
+   DESIERTO
+   ========================================================= */
+
+const desertTop =
+    START_Z-
+    ZONE_LENGTH*2;
+
+const desertBottom =
+    desertTop-
+    ZONE_LENGTH;
+
+
+function cactus(
+    x,
+    z
+){
 
     cyl(
         x,
@@ -923,7 +1141,7 @@ function cactus(x, z) {
     );
 
     cyl(
-        x + 2,
+        x+2,
         3.5,
         z,
         .7,
@@ -933,109 +1151,141 @@ function cactus(x, z) {
     );
 }
 
-for (let i = 0; i < 15; i++) {
+
+for(
+    let i=0;
+    i<18;
+    i++
+){
 
     const x =
-        -90 + Math.random() * 180;
+        -90+Math.random()*180;
 
     const z =
-        desertBottom + Math.random() * ZONE_LENGTH;
+        desertBottom+
+        Math.random()*ZONE_LENGTH;
 
-    if (Math.abs(x) > 23) {
-        cactus(x, z);
-    }
-}
-
-/* =========================================================
-   CUMBRES HELADAS
-   ========================================================= */
-
-const iceTop = START_Z - ZONE_LENGTH * 3;
-const iceBottom = iceTop - ZONE_LENGTH;
-
-for (let i = 0; i < 14; i++) {
-
-    const x =
-        -95 + Math.random() * 190;
-
-    const z =
-        iceBottom + Math.random() * ZONE_LENGTH;
-
-    if (Math.abs(x) > 23) {
-
-        cone(
-            x,
-            10,
-            z,
-            9 + Math.random() * 7,
-            20 + Math.random() * 15,
-            mat.snow
-        );
-    }
-}
-
-for (let i = 0; i < 18; i++) {
-
-    const x =
-        -90 + Math.random() * 180;
-
-    const z =
-        iceBottom + Math.random() * ZONE_LENGTH;
-
-    if (Math.abs(x) > 23) {
+    if(
+        Math.abs(x)>23
+    ){
 
         cone(
             x,
             3,
             z,
-            2,
-            8,
-            mat.ice
+            5+Math.random()*4,
+            6+Math.random()*5,
+            mat.sandstone
+        );
+
+        cactus(
+            x,
+            z
         );
     }
 }
 
+
 /* =========================================================
-   VOLCÁN CARMESÍ
+   CUMBRES HELADAS
    ========================================================= */
 
-const volcanoTop = START_Z - ZONE_LENGTH * 4;
-const volcanoBottom = volcanoTop - ZONE_LENGTH;
+const iceTop =
+    START_Z-
+    ZONE_LENGTH*3;
 
-/* Montañas */
+const iceBottom =
+    iceTop-
+    ZONE_LENGTH;
 
-for (let i = 0; i < 9; i++) {
+
+for(
+    let i=0;
+    i<14;
+    i++
+){
 
     const x =
-        -90 + Math.random() * 180;
+        -95+Math.random()*190;
 
     const z =
-        volcanoBottom + Math.random() * ZONE_LENGTH;
+        iceBottom+
+        Math.random()*ZONE_LENGTH;
 
-    if (Math.abs(x) > 25) {
+    if(
+        Math.abs(x)>23
+    ){
+
+        cone(
+            x,
+            10,
+            z,
+            9+Math.random()*7,
+            20+Math.random()*15,
+            mat.snow
+        );
+    }
+}
+
+
+/* =========================================================
+   VOLCÁN
+   ========================================================= */
+
+const volcanoTop =
+    START_Z-
+    ZONE_LENGTH*4;
+
+const volcanoBottom =
+    volcanoTop-
+    ZONE_LENGTH;
+
+
+for(
+    let i=0;
+    i<9;
+    i++
+){
+
+    const x =
+        -90+Math.random()*180;
+
+    const z =
+        volcanoBottom+
+        Math.random()*ZONE_LENGTH;
+
+    if(
+        Math.abs(x)>25
+    ){
 
         cone(
             x,
             9,
             z,
-            10 + Math.random() * 7,
-            18 + Math.random() * 15,
+            10+Math.random()*7,
+            18+Math.random()*15,
             mat.rock
         );
     }
 }
 
-/* Lava */
 
-for (let i = 0; i < 7; i++) {
+for(
+    let i=0;
+    i<7;
+    i++
+){
 
     const x =
-        -75 + Math.random() * 150;
+        -75+Math.random()*150;
 
     const z =
-        volcanoBottom + Math.random() * ZONE_LENGTH;
+        volcanoBottom+
+        Math.random()*ZONE_LENGTH;
 
-    if (Math.abs(x) > 24) {
+    if(
+        Math.abs(x)>24
+    ){
 
         box(
             x,
@@ -1049,19 +1299,24 @@ for (let i = 0; i < 7; i++) {
     }
 }
 
+
 /* =========================================================
    ABISMO MARINO
    ========================================================= */
 
-const oceanTop = START_Z - ZONE_LENGTH * 5;
-const oceanBottom = oceanTop - ZONE_LENGTH;
+const oceanTop =
+    START_Z-
+    ZONE_LENGTH*5;
 
-/* Agua alrededor del camino */
+const oceanBottom =
+    oceanTop-
+    ZONE_LENGTH;
+
 
 box(
     -55,
     .2,
-    (oceanTop + oceanBottom) / 2,
+    (oceanTop+oceanBottom)/2,
     70,
     .35,
     ZONE_LENGTH,
@@ -1071,14 +1326,18 @@ box(
 box(
     55,
     .2,
-    (oceanTop + oceanBottom) / 2,
+    (oceanTop+oceanBottom)/2,
     70,
     .35,
     ZONE_LENGTH,
     mat.water
 );
 
-function coral(x, z) {
+
+function coral(
+    x,
+    z
+){
 
     cyl(
         x,
@@ -1087,164 +1346,140 @@ function coral(x, z) {
         1.3,
         4,
         new THREE.MeshStandardMaterial({
-            color: 0xff4c9b
+            color:0xff4c9b
         }),
         7
     );
 
     cyl(
-        x + 2,
+        x+2,
         2.5,
         z,
         .7,
         5,
         new THREE.MeshStandardMaterial({
-            color: 0xff7148
+            color:0xff7148
         }),
         7
     );
 }
 
-for (let i = 0; i < 25; i++) {
+
+for(
+    let i=0;
+    i<25;
+    i++
+){
 
     const x =
-        -95 + Math.random() * 190;
+        -95+Math.random()*190;
 
     const z =
-        oceanBottom + Math.random() * ZONE_LENGTH;
+        oceanBottom+
+        Math.random()*ZONE_LENGTH;
 
-    if (Math.abs(x) > 25) {
-        coral(x, z);
+    if(
+        Math.abs(x)>25
+    ){
+
+        coral(
+            x,
+            z
+        );
     }
 }
 
-/* Arcos submarinos */
-
-for (let i = 0; i < 4; i++) {
-
-    const z =
-        oceanBottom + 20 + i * 38;
-
-    box(
-        -55,
-        8,
-        z,
-        5,
-        16,
-        5,
-        mat.stone
-    );
-
-    box(
-        55,
-        8,
-        z,
-        5,
-        16,
-        5,
-        mat.stone
-    );
-
-    box(
-        0,
-        16,
-        z,
-        115,
-        5,
-        5,
-        mat.stone
-    );
-}
 
 /* =========================================================
-   GALAXIA PERDIDA
+   GALAXIA
    ========================================================= */
 
-const galaxyTop = START_Z - ZONE_LENGTH * 6;
-const galaxyBottom = galaxyTop - ZONE_LENGTH;
+const galaxyTop =
+    START_Z-
+    ZONE_LENGTH*6;
 
-/* Cristales */
+const galaxyBottom =
+    galaxyTop-
+    ZONE_LENGTH;
 
-function crystal(x, z, scale = 1) {
 
-    const geo = new THREE.OctahedronGeometry(
-        2.5 * scale,
-        0
-    );
+function crystal(
+    x,
+    z,
+    scale=1
+){
 
-    const mesh = new THREE.Mesh(
-        geo,
-        mat.purple
-    );
+    const geometry =
+        new THREE.OctahedronGeometry(
+            2.5*scale,
+            0
+        );
+
+    const mesh =
+        new THREE.Mesh(
+            geometry,
+            mat.purple
+        );
 
     mesh.position.set(
         x,
-        3.5 * scale,
+        3.5*scale,
         z
     );
 
-    mesh.rotation.y = Math.random() * Math.PI;
+    mesh.rotation.y =
+        Math.random()*Math.PI;
 
     mesh.castShadow = true;
 
     scene.add(mesh);
 }
 
-for (let i = 0; i < 25; i++) {
+
+for(
+    let i=0;
+    i<25;
+    i++
+){
 
     const x =
-        -95 + Math.random() * 190;
+        -95+Math.random()*190;
 
     const z =
-        galaxyBottom + Math.random() * ZONE_LENGTH;
+        galaxyBottom+
+        Math.random()*ZONE_LENGTH;
 
-    if (Math.abs(x) > 23) {
-        crystal(x, z, .7 + Math.random());
+    if(
+        Math.abs(x)>23
+    ){
+
+        crystal(
+            x,
+            z,
+            .7+
+            Math.random()
+        );
     }
 }
 
-/* Estrellas */
-
-function star(x, y, z) {
-
-    const starMat =
-        new THREE.MeshStandardMaterial({
-            color: 0xffffff,
-            emissive: 0x8b6cff,
-            emissiveIntensity: 2
-        });
-
-    sphere(
-        x,
-        y,
-        z,
-        .7,
-        starMat
-    );
-}
-
-for (let i = 0; i < 45; i++) {
-
-    const x =
-        -100 + Math.random() * 200;
-
-    const y =
-        7 + Math.random() * 35;
-
-    const z =
-        galaxyBottom + Math.random() * ZONE_LENGTH;
-
-    star(x, y, z);
-}
 
 /* =========================================================
-   SANTUARIO ETERNO
+   SANTUARIO
    ========================================================= */
 
-const sanctuaryTop = START_Z - ZONE_LENGTH * 7;
-const sanctuaryBottom = sanctuaryTop - ZONE_LENGTH;
+const sanctuaryTop =
+    START_Z-
+    ZONE_LENGTH*7;
 
-function sanctuaryPillar(x, z) {
+const sanctuaryBottom =
+    sanctuaryTop-
+    ZONE_LENGTH;
+
+
+function sanctuaryPillar(
+    x,
+    z
+){
 
     box(
         x,
@@ -1267,60 +1502,51 @@ function sanctuaryPillar(x, z) {
     );
 }
 
-for (let i = 0; i < 5; i++) {
+
+for(
+    let i=0;
+    i<5;
+    i++
+){
 
     const z =
-        sanctuaryBottom + 25 + i * 30;
+        sanctuaryBottom+
+        25+
+        i*30;
 
-    sanctuaryPillar(-42, z);
-    sanctuaryPillar(42, z);
+    sanctuaryPillar(
+        -42,
+        z
+    );
+
+    sanctuaryPillar(
+        42,
+        z
+    );
 }
 
-/* Fuente */
-
-cyl(
-    0,
-    1,
-    sanctuaryBottom + 70,
-    13,
-    2,
-    mat.white,
-    24
-);
-
-cyl(
-    0,
-    5,
-    sanctuaryBottom + 70,
-    3,
-    8,
-    mat.gold,
-    16
-);
-
-sphere(
-    0,
-    9,
-    sanctuaryBottom + 70,
-    2,
-    mat.ice
-);
 
 /* =========================================================
    DOMINIO DIVINO
    ========================================================= */
 
-const divineTop = START_Z - ZONE_LENGTH * 8;
-const divineBottom = divineTop - ZONE_LENGTH;
+const divineTop =
+    START_Z-
+    ZONE_LENGTH*8;
 
-/* Columnas gigantes */
+const divineBottom =
+    divineTop-
+    ZONE_LENGTH;
 
-for (const x of [-65, -35, 35, 65]) {
+
+for(
+    const x of [-65,-35,35,65]
+){
 
     box(
         x,
         14,
-        divineBottom + 65,
+        divineBottom+65,
         8,
         28,
         8,
@@ -1330,7 +1556,7 @@ for (const x of [-65, -35, 35, 65]) {
     box(
         x,
         29,
-        divineBottom + 65,
+        divineBottom+65,
         11,
         3,
         11,
@@ -1338,12 +1564,13 @@ for (const x of [-65, -35, 35, 65]) {
     );
 }
 
-/* Templo final */
+
+/* Templo */
 
 box(
     0,
     10,
-    divineBottom + 70,
+    divineBottom+70,
     90,
     20,
     18,
@@ -1353,53 +1580,23 @@ box(
 box(
     0,
     21,
-    divineBottom + 70,
+    divineBottom+70,
     100,
     4,
     24,
     mat.gold
 );
 
-/* Portal divino */
-
-const divinePortalMat =
-    new THREE.MeshStandardMaterial({
-        color: 0xfff0a0,
-        emissive: 0xffc400,
-        emissiveIntensity: 2,
-        transparent: true,
-        opacity: .65
-    });
-
-box(
-    0,
-    10,
-    divineBottom + 58,
-    35,
-    17,
-    2,
-    divinePortalMat
-);
-
-/* Cristales divinos */
-
-for (let i = 0; i < 18; i++) {
-
-    const x =
-        -85 + Math.random() * 170;
-
-    const z =
-        divineBottom + 15 +
-        Math.random() * 140;
-
-    crystal(x, z, .8 + Math.random() * .7);
-}
 
 /* =========================================================
-   LETREROS DE ZONA
+   LETREROS
    ========================================================= */
 
-function zoneGate(name, z, color) {
+function zoneGate(
+    name,
+    z,
+    color
+){
 
     box(
         -25,
@@ -1431,25 +1628,29 @@ function zoneGate(name, z, color) {
         mat.stone
     );
 
-    const sign = box(
+    box(
         0,
         9,
-        z - 1.8,
+        z-1.8,
         43,
         6,
         1,
         new THREE.MeshStandardMaterial({
-            color: color
+            color:color
         })
     );
-
-    sign.userData.zoneName = name;
 }
 
-for (let i = 1; i < zones.length; i++) {
+
+for(
+    let i=1;
+    i<zones.length;
+    i++
+){
 
     const z =
-        START_Z - i * ZONE_LENGTH;
+        START_Z-
+        i*ZONE_LENGTH;
 
     zoneGate(
         zones[i].name,
@@ -1458,13 +1659,16 @@ for (let i = 1; i < zones.length; i++) {
     );
 }
 
+
 /* =========================================================
    JUGADOR
    ========================================================= */
 
-const player = new THREE.Group();
+const player =
+    new THREE.Group();
 
-const body = box(
+
+box(
     0,
     2.5,
     0,
@@ -1472,23 +1676,25 @@ const body = box(
     5,
     2.5,
     new THREE.MeshStandardMaterial({
-        color: 0x246bff
+        color:0x246bff
     }),
     player
 );
 
-const head = sphere(
+
+sphere(
     0,
     6.5,
     0,
     2,
     new THREE.MeshStandardMaterial({
-        color: 0xffc59a
+        color:0xffc59a
     }),
     player
 );
 
-const hair = box(
+
+box(
     0,
     8,
     0,
@@ -1499,7 +1705,8 @@ const hair = box(
     player
 );
 
-const leg1 = box(
+
+box(
     -1,
     -1,
     0,
@@ -1507,12 +1714,13 @@ const leg1 = box(
     2,
     1.5,
     new THREE.MeshStandardMaterial({
-        color: 0x202b44
+        color:0x202b44
     }),
     player
 );
 
-const leg2 = box(
+
+box(
     1,
     -1,
     0,
@@ -1520,14 +1728,20 @@ const leg2 = box(
     2,
     1.5,
     new THREE.MeshStandardMaterial({
-        color: 0x202b44
+        color:0x202b44
     }),
     player
 );
 
-player.position.set(0, 0, 35);
+
+player.position.set(
+    0,
+    0,
+    35
+);
 
 scene.add(player);
+
 
 /* =========================================================
    MOVIMIENTO
@@ -1535,175 +1749,235 @@ scene.add(player);
 
 const keys = {};
 
-document.addEventListener("keydown", (e) => {
-
-    keys[e.code] = true;
-
-    if (
-        e.code === "Space" &&
-        player.position.y <= 0.06
-    ) {
-        playerVelocityY = 0.58;
-    }
-});
-
-document.addEventListener("keyup", (e) => {
-    keys[e.code] = false;
-});
-
 let playerVelocityY = 0;
+
 const gravity = -0.028;
 
+
+document.addEventListener(
+    "keydown",
+    function(event){
+
+        keys[event.code] = true;
+
+        if(
+            event.code === "Space" &&
+            player.position.y <= 0.06
+        ){
+
+            playerVelocityY = 0.58;
+        }
+    }
+);
+
+
+document.addEventListener(
+    "keyup",
+    function(event){
+
+        keys[event.code] = false;
+    }
+);
+
+
 /* =========================================================
-   CÁMARA CON MOUSE
+   CÁMARA MOUSE
    ========================================================= */
 
 let cameraYaw = 0;
+
 let cameraPitch = 0.35;
 
-document.addEventListener("mousemove", (event) => {
 
-    if (
-        document.pointerLockElement !==
-        renderer.domElement
-    ) {
-        return;
+document.addEventListener(
+    "mousemove",
+    function(event){
+
+        if(
+            !document.pointerLockElement
+        ){
+            return;
+        }
+
+        cameraYaw -=
+            event.movementX * 0.0025;
+
+        cameraPitch -=
+            event.movementY * 0.002;
+
+        cameraPitch =
+            Math.max(
+                -0.2,
+                Math.min(
+                    0.9,
+                    cameraPitch
+                )
+            );
     }
+);
 
-    cameraYaw -= event.movementX * 0.0025;
-    cameraPitch -= event.movementY * 0.002;
-
-    cameraPitch = Math.max(
-        -0.2,
-        Math.min(0.9, cameraPitch)
-    );
-});
 
 /* =========================================================
    DINERO
    ========================================================= */
 
-/*
-   IMPORTANTE:
-   No se genera dinero automáticamente.
-   El jugador comienza en $0.
-   Más adelante V0.6 conectaremos mascotas
-   y generación de dinero.
-*/
-
 let money = 0;
 
-document.getElementById("money").textContent =
+document.getElementById(
+    "money"
+).textContent =
     "💰 $" + money;
 
+
 /* =========================================================
-   ZONA ACTUAL
+   ZONA
    ========================================================= */
 
-function updateZone() {
+function updateZone(){
 
     const relative =
-        START_Z - player.position.z;
+        START_Z-
+        player.position.z;
 
     let index =
-        Math.floor(relative / ZONE_LENGTH);
+        Math.floor(
+            relative /
+            ZONE_LENGTH
+        );
 
-    index = Math.max(
-        0,
-        Math.min(zones.length - 1, index)
-    );
+    index =
+        Math.max(
+            0,
+            Math.min(
+                zones.length-1,
+                index
+            )
+        );
 
-    document.getElementById("zone").textContent =
+    document.getElementById(
+        "zone"
+    ).textContent =
         zones[index].name;
 }
 
+
 /* =========================================================
-   MOVIMIENTO
+   ACTUALIZAR JUGADOR
    ========================================================= */
 
-function updatePlayer() {
+function updatePlayer(){
 
     const speed =
         keys["ShiftLeft"] ||
         keys["ShiftRight"]
-            ? 0.32
-            : 0.20;
+            ? .32
+            : .20;
 
     let dx = 0;
     let dz = 0;
 
-    if (keys["KeyW"]) dz -= 1;
-    if (keys["KeyS"]) dz += 1;
-    if (keys["KeyA"]) dx -= 1;
-    if (keys["KeyD"]) dx += 1;
+    if(keys["KeyW"])
+        dz -= 1;
 
-    if (dx !== 0 || dz !== 0) {
+    if(keys["KeyS"])
+        dz += 1;
+
+    if(keys["KeyA"])
+        dx -= 1;
+
+    if(keys["KeyD"])
+        dx += 1;
+
+
+    if(
+        dx !== 0 ||
+        dz !== 0
+    ){
 
         const length =
-            Math.sqrt(dx * dx + dz * dz);
+            Math.sqrt(
+                dx*dx+
+                dz*dz
+            );
 
         dx /= length;
         dz /= length;
 
-        player.position.x += dx * speed;
-        player.position.z += dz * speed;
+        player.position.x +=
+            dx*speed;
+
+        player.position.z +=
+            dz*speed;
     }
 
-    /* Gravedad */
 
-    playerVelocityY += gravity;
-    player.position.y += playerVelocityY;
+    playerVelocityY +=
+        gravity;
 
-    if (player.position.y < 0) {
+    player.position.y +=
+        playerVelocityY;
+
+
+    if(
+        player.position.y < 0
+    ){
 
         player.position.y = 0;
         playerVelocityY = 0;
     }
 
-    /* Límites laterales */
 
-    player.position.x = THREE.MathUtils.clamp(
-        player.position.x,
-        -HALF_WIDTH + 13,
-        HALF_WIDTH - 13
-    );
+    player.position.x =
+        THREE.MathUtils.clamp(
+            player.position.x,
+            -HALF_WIDTH+13,
+            HALF_WIDTH-13
+        );
 
-    /* Límites del mapa */
 
-    player.position.z = THREE.MathUtils.clamp(
-        player.position.z,
-        END_Z + 12,
-        START_Z + 35
-    );
+    player.position.z =
+        THREE.MathUtils.clamp(
+            player.position.z,
+            END_Z+12,
+            START_Z+35
+        );
+
 
     updateZone();
 }
+
 
 /* =========================================================
    CÁMARA
    ========================================================= */
 
-function updateCamera() {
+function updateCamera(){
 
     const distance = 38;
 
     const horizontalDistance =
-        Math.cos(cameraPitch) * distance;
+        Math.cos(cameraPitch) *
+        distance;
+
 
     const cameraX =
         player.position.x -
         Math.sin(cameraYaw) *
         horizontalDistance;
 
+
     const cameraY =
-        player.position.y +
-        12 +
-        Math.sin(cameraPitch) * distance;
+        player.position.y+
+        12+
+        Math.sin(cameraPitch) *
+        distance;
+
 
     const cameraZ =
-        player.position.z +
-        Math.cos(cameraPitch) *
+        player.position.z+
+        Math.cos(cameraYaw) *
         horizontalDistance;
+
 
     const cameraPosition =
         new THREE.Vector3(
@@ -1712,100 +1986,121 @@ function updateCamera() {
             cameraZ
         );
 
+
     camera.position.lerp(
         cameraPosition,
-        0.12
+        .12
     );
+
 
     const target =
         new THREE.Vector3(
             player.position.x,
-            player.position.y + 5,
+            player.position.y+5,
             player.position.z
         );
 
-    camera.lookAt(target);
+
+    camera.lookAt(
+        target
+    );
 }
 
+
 /* =========================================================
-   INICIO DEL JUEGO
+   BOTÓN JUGAR
    ========================================================= */
 
-document.getElementById("playButton")
-    .addEventListener("click", () => {
+/*
+   CORREGIDO:
+   NO usamos requestPointerLock aquí.
+   El juego empieza directamente.
+*/
+
+document.getElementById(
+    "playButton"
+).addEventListener(
+    "click",
+    function(){
 
         document.getElementById(
             "startScreen"
-        ).style.display = "none";
-
-        renderer.domElement.requestPointerLock();
+        ).style.display =
+            "none";
 
         showAnnouncement(
             "🌎 ¡BIENVENIDO A OWNER WORLD! 👑"
         );
-    });
+    }
+);
 
-function showAnnouncement(text) {
+
+/* =========================================================
+   MENSAJE
+   ========================================================= */
+
+function showAnnouncement(
+    text
+){
 
     const element =
-        document.getElementById("announcement");
+        document.getElementById(
+            "announcement"
+        );
 
-    element.textContent = text;
-    element.style.opacity = "1";
+    element.textContent =
+        text;
 
-    setTimeout(() => {
-        element.style.opacity = "0";
-    }, 3500);
+    element.style.opacity =
+        "1";
+
+    setTimeout(
+        function(){
+
+            element.style.opacity =
+                "0";
+
+        },
+        3500
+    );
 }
+
 
 /* =========================================================
    REDIMENSIONAR
    ========================================================= */
 
-window.addEventListener("resize", () => {
+window.addEventListener(
+    "resize",
+    function(){
 
-    camera.aspect =
-        window.innerWidth /
-        window.innerHeight;
+        camera.aspect =
+            window.innerWidth /
+            window.innerHeight;
 
-    camera.updateProjectionMatrix();
+        camera.updateProjectionMatrix();
 
-    renderer.setSize(
-        window.innerWidth,
-        window.innerHeight
-    );
-});
+        renderer.setSize(
+            window.innerWidth,
+            window.innerHeight
+        );
+    }
+);
+
 
 /* =========================================================
    ANIMACIÓN
    ========================================================= */
 
-const clock = new THREE.Clock();
+function animate(){
 
-function animate() {
-
-    requestAnimationFrame(animate);
-
-    const time = clock.getElapsedTime();
+    requestAnimationFrame(
+        animate
+    );
 
     updatePlayer();
+
     updateCamera();
-
-    /* Animación suave de cristales */
-
-    scene.traverse((object) => {
-
-        if (
-            object.isMesh &&
-            object.material &&
-            object.material === mat.purple
-        ) {
-            object.rotation.y += 0.006;
-            object.position.y +=
-                Math.sin(time * 2 + object.position.x) *
-                0.002;
-        }
-    });
 
     renderer.render(
         scene,
