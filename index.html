@@ -7,80 +7,117 @@
 <title>OWNER WORLD</title>
 
 <style>
-* {
-    box-sizing: border-box;
+*{
+    box-sizing:border-box;
 }
 
-body {
-    margin: 0;
-    overflow: hidden;
-    font-family: Arial, sans-serif;
-    background: #000;
+html,body{
+    margin:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    font-family:Arial,Helvetica,sans-serif;
+    background:#07111d;
 }
 
-canvas {
-    display: block;
+canvas{
+    display:block;
 }
 
-#hud {
-    position: fixed;
-    top: 15px;
-    left: 15px;
-    z-index: 10;
-    color: white;
-    background: rgba(0,0,0,.65);
-    border: 1px solid rgba(255,255,255,.25);
-    border-radius: 14px;
-    padding: 12px 18px;
-    user-select: none;
+#hud{
+    position:fixed;
+    top:15px;
+    left:15px;
+    z-index:10;
+    color:white;
+    background:rgba(5,10,20,.72);
+    border:1px solid rgba(255,255,255,.18);
+    border-radius:14px;
+    padding:12px 16px;
+    backdrop-filter:blur(8px);
+    box-shadow:0 8px 30px rgba(0,0,0,.3);
 }
 
-#hud h1 {
-    margin: 0 0 6px;
-    font-size: 22px;
+#title{
+    font-size:20px;
+    font-weight:900;
+    letter-spacing:2px;
 }
 
-#hud div {
-    margin: 3px 0;
+#money{
+    margin-top:5px;
+    font-size:16px;
+    color:#7dff9d;
+    font-weight:bold;
 }
 
-#startScreen {
-    position: fixed;
-    inset: 0;
-    z-index: 20;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background: linear-gradient(#07152b, #000);
-    color: white;
+#zone{
+    margin-top:4px;
+    font-size:14px;
+    color:#d9e6ff;
 }
 
-#startScreen h1 {
-    font-size: 60px;
-    margin: 0;
-    letter-spacing: 5px;
-    text-shadow: 0 0 25px #7b5cff;
+#startScreen{
+    position:fixed;
+    inset:0;
+    z-index:50;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:
+        radial-gradient(circle at center,#18345c 0%,#07111d 55%,#02060b 100%);
 }
 
-#startScreen p {
-    font-size: 18px;
-    opacity: .8;
+.startBox{
+    text-align:center;
+    color:white;
+    padding:40px;
 }
 
-#playButton {
-    border: none;
-    border-radius: 14px;
-    padding: 15px 45px;
-    font-size: 20px;
-    font-weight: bold;
-    cursor: pointer;
-    background: white;
-    color: #111;
+.startBox h1{
+    margin:0;
+    font-size:58px;
+    letter-spacing:5px;
+    text-shadow:
+        0 0 12px #5e8cff,
+        0 0 35px #395eff;
 }
 
-#playButton:hover {
-    transform: scale(1.05);
+.startBox p{
+    color:#b8c8e8;
+    margin:12px 0 25px;
+}
+
+#playButton{
+    border:0;
+    border-radius:14px;
+    padding:15px 42px;
+    font-size:20px;
+    font-weight:900;
+    color:white;
+    cursor:pointer;
+    background:linear-gradient(135deg,#315eff,#7a42ff);
+    box-shadow:0 0 25px rgba(90,90,255,.55);
+}
+
+#playButton:hover{
+    transform:scale(1.05);
+}
+
+#message{
+    position:fixed;
+    top:20px;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:20;
+    color:white;
+    background:rgba(5,10,20,.8);
+    border:1px solid rgba(255,255,255,.2);
+    border-radius:12px;
+    padding:10px 18px;
+    opacity:0;
+    transition:.3s;
+    pointer-events:none;
 }
 </style>
 </head>
@@ -88,858 +125,1088 @@ canvas {
 <body>
 
 <div id="startScreen">
-    <h1>OWNER WORLD</h1>
-    <p>El comienzo de un mundo enorme 👑</p>
-    <button id="playButton">JUGAR</button>
+    <div class="startBox">
+        <h1>OWNER WORLD</h1>
+        <p>Explora las 9 zonas y descubre lo que hay más adelante.</p>
+        <button id="playButton">JUGAR</button>
+    </div>
 </div>
 
 <div id="hud">
-    <h1>👑 OWNER WORLD</h1>
-    <div>💰 Dinero: <span id="money">0</span></div>
-    <div>📍 Zona: <span id="zone">Pradera Inicial</span></div>
+    <div id="title">👑 OWNER WORLD</div>
+    <div id="money">💰 $0</div>
+    <div id="zone">🌿 Pradera Inicial</div>
 </div>
+
+<div id="message"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 
 <script>
+
 /* =========================================================
-   OWNER WORLD V0.3
-   MAPA + ZONAS + CORRALES + MUROS + SALTO + CÁMARA
-   ========================================================= */
+   ESCENA
+========================================================= */
 
 const scene = new THREE.Scene();
 
-scene.background = new THREE.Color(0x87ceeb);
-scene.fog = new THREE.Fog(0x87ceeb, 180, 1100);
+scene.background = new THREE.Color(0x91c9f5);
+
+scene.fog = new THREE.Fog(
+    0x91c9f5,
+    100,
+    900
+);
 
 const camera = new THREE.PerspectiveCamera(
     70,
-    window.innerWidth / window.innerHeight,
+    innerWidth / innerHeight,
     0.1,
-    2200
+    2500
 );
 
 const renderer = new THREE.WebGLRenderer({
-    antialias: true
+    antialias:true
 });
 
-renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setSize(innerWidth,innerHeight);
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
 document.body.appendChild(renderer.domElement);
+
 
 /* =========================================================
    LUCES
-   ========================================================= */
+========================================================= */
 
-const hemiLight = new THREE.HemisphereLight(
-    0xffffff,
-    0x445566,
-    2
+const hemi = new THREE.HemisphereLight(
+    0xdff4ff,
+    0x4b6b45,
+    1.7
 );
 
-scene.add(hemiLight);
+scene.add(hemi);
 
-const sun = new THREE.DirectionalLight(0xffffff, 2.5);
-sun.position.set(100, 200, 100);
+const sun = new THREE.DirectionalLight(
+    0xffffff,
+    2.2
+);
+
+sun.position.set(
+    -120,
+    220,
+    100
+);
+
+sun.castShadow = true;
+
+sun.shadow.mapSize.width = 2048;
+sun.shadow.mapSize.height = 2048;
+
+sun.shadow.camera.left = -180;
+sun.shadow.camera.right = 180;
+sun.shadow.camera.top = 200;
+sun.shadow.camera.bottom = -1400;
+
 scene.add(sun);
+
 
 /* =========================================================
    MAPA
-   ========================================================= */
+========================================================= */
 
-const map = new THREE.Group();
-scene.add(map);
+const MAP_WIDTH = 235;
+const ZONE_LENGTH = 155;
 
-/* =========================================================
-   TERRENO
-   ========================================================= */
-
-const MAP_WIDTH = 260;
-const MAP_LENGTH = 1250;
+const START_Z = 95;
+const END_Z = START_Z - (ZONE_LENGTH * 9);
 
 const ground = new THREE.Mesh(
-    new THREE.BoxGeometry(MAP_WIDTH, 2, MAP_LENGTH),
+    new THREE.BoxGeometry(
+        MAP_WIDTH,
+        2,
+        Math.abs(END_Z - START_Z) + 60
+    ),
     new THREE.MeshStandardMaterial({
-        color: 0x4c8f45
+        color:0x5c9b54,
+        roughness:1
     })
 );
 
-ground.position.set(0, -1, -430);
-map.add(ground);
+ground.position.set(
+    0,
+    -1,
+    (START_Z + END_Z) / 2
+);
+
+ground.receiveShadow = true;
+
+scene.add(ground);
+
+
+/* =========================================================
+   UTILIDADES
+========================================================= */
+
+function box(
+    w,
+    h,
+    d,
+    color,
+    x,
+    y,
+    z
+){
+    const mesh = new THREE.Mesh(
+        new THREE.BoxGeometry(w,h,d),
+        new THREE.MeshStandardMaterial({
+            color,
+            roughness:.9
+        })
+    );
+
+    mesh.position.set(x,y,z);
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
+
+    scene.add(mesh);
+
+    return mesh;
+}
+
+function cylinder(
+    radius,
+    height,
+    color,
+    x,
+    y,
+    z
+){
+    const mesh = new THREE.Mesh(
+        new THREE.CylinderGeometry(
+            radius,
+            radius,
+            height,
+            10
+        ),
+        new THREE.MeshStandardMaterial({
+            color,
+            roughness:.9
+        })
+    );
+
+    mesh.position.set(x,y,z);
+    mesh.castShadow = true;
+
+    scene.add(mesh);
+
+    return mesh;
+}
+
+function sphere(
+    radius,
+    color,
+    x,
+    y,
+    z
+){
+    const mesh = new THREE.Mesh(
+        new THREE.SphereGeometry(
+            radius,
+            12,
+            10
+        ),
+        new THREE.MeshStandardMaterial({
+            color,
+            roughness:.8
+        })
+    );
+
+    mesh.position.set(x,y,z);
+    mesh.castShadow = true;
+
+    scene.add(mesh);
+
+    return mesh;
+}
+
 
 /* =========================================================
    CAMINO CENTRAL
-   ========================================================= */
+========================================================= */
 
 const road = new THREE.Mesh(
-    new THREE.BoxGeometry(34, 0.4, 1150),
+    new THREE.BoxGeometry(
+        34,
+        .25,
+        Math.abs(END_Z - START_Z)
+    ),
     new THREE.MeshStandardMaterial({
-        color: 0x555555
+        color:0x4b4b4b,
+        roughness:.95
     })
 );
 
-road.position.set(0, 0.2, -430);
-map.add(road);
+road.position.set(
+    0,
+    .12,
+    (START_Z + END_Z) / 2
+);
+
+road.receiveShadow = true;
+
+scene.add(road);
+
+
+/* Bordes del camino */
+
+for(let z=START_Z;z>END_Z;z-=8){
+
+    box(
+        1.4,
+        .3,
+        5.5,
+        0xd6c79c,
+        -17.8,
+        .28,
+        z
+    );
+
+    box(
+        1.4,
+        .3,
+        5.5,
+        0xd6c79c,
+        17.8,
+        .28,
+        z
+    );
+}
+
 
 /* =========================================================
    ZONAS
-   Ahora son un poco más largas.
-   ========================================================= */
+========================================================= */
 
 const zones = [
     {
-        name: "🌿 Pradera Inicial",
-        z: 0,
-        length: 115,
-        color: 0x63b84d
+        name:"🌿 Pradera Inicial",
+        color:0x63ad58
     },
     {
-        name: "🌲 Bosque Encantado",
-        z: -135,
-        length: 115,
-        color: 0x286b3b
+        name:"🌲 Bosque Encantado",
+        color:0x347347
     },
     {
-        name: "🏜️ Desierto Dorado",
-        z: -270,
-        length: 115,
-        color: 0xd7a842
+        name:"🏜️ Desierto Dorado",
+        color:0xc99b48
     },
     {
-        name: "❄️ Cumbres Heladas",
-        z: -405,
-        length: 115,
-        color: 0xbde8ff
+        name:"❄️ Cumbres Heladas",
+        color:0xb9e5f5
     },
     {
-        name: "🌋 Volcán Carmesí",
-        z: -540,
-        length: 115,
-        color: 0x8f2929
+        name:"🌋 Volcán Carmesí",
+        color:0x7e302b
     },
     {
-        name: "🌊 Abismo Marino",
-        z: -675,
-        length: 115,
-        color: 0x176b91
+        name:"🌊 Abismo Marino",
+        color:0x237fa0
     },
     {
-        name: "🌌 Galaxia Perdida",
-        z: -810,
-        length: 115,
-        color: 0x352060
+        name:"🌌 Galaxia Perdida",
+        color:0x252052
     },
     {
-        name: "♾️ Santuario Eterno",
-        z: -945,
-        length: 115,
-        color: 0x725ca8
+        name:"♾️ Santuario Eterno",
+        color:0x513a86
     },
     {
-        name: "✨ Dominio Divino",
-        z: -1080,
-        length: 115,
-        color: 0xd9c875
+        name:"✨ Dominio Divino",
+        color:0xe8d68b
     }
 ];
 
-/* =========================================================
-   CREAR ZONAS
-   ========================================================= */
 
-function createZone(zone) {
+/* =========================================================
+   TERRENO DE CADA ZONA
+========================================================= */
+
+for(let i=0;i<zones.length;i++){
+
+    const centerZ =
+        START_Z -
+        i * ZONE_LENGTH -
+        ZONE_LENGTH / 2;
 
     const platform = new THREE.Mesh(
         new THREE.BoxGeometry(
-            220,
-            0.5,
-            zone.length
+            MAP_WIDTH - 14,
+            .35,
+            ZONE_LENGTH - 3
         ),
         new THREE.MeshStandardMaterial({
-            color: zone.color
+            color:zones[i].color,
+            roughness:1
         })
     );
 
-    platform.position.set(0, 0.5, zone.z);
-    map.add(platform);
-
-    const gate = new THREE.Mesh(
-        new THREE.BoxGeometry(65, 18, 3),
-        new THREE.MeshStandardMaterial({
-            color: zone.color,
-            emissive: zone.color,
-            emissiveIntensity: 0.15
-        })
-    );
-
-    gate.position.set(
+    platform.position.set(
         0,
-        9,
-        zone.z - zone.length / 2
+        .25,
+        centerZ
     );
 
-    map.add(gate);
+    platform.receiveShadow = true;
+
+    scene.add(platform);
 }
 
-zones.forEach(createZone);
 
 /* =========================================================
-   MUROS ALREDEDOR DEL MAPA
-   SOLO AQUÍ.
-   ========================================================= */
+   MUROS EXTERIORES
+========================================================= */
 
-const wallMaterial =
-    new THREE.MeshStandardMaterial({
-        color: 0x30343b
-    });
+const WALL_X = 120;
 
-/* Muro izquierdo */
+function createWall(x){
 
-const leftWall = new THREE.Mesh(
-    new THREE.BoxGeometry(5, 35, MAP_LENGTH + 40),
-    wallMaterial
+    const wall = box(
+        5,
+        30,
+        Math.abs(END_Z - START_Z) + 35,
+        0x26354d,
+        x,
+        15,
+        (START_Z + END_Z) / 2
+    );
+
+    wall.castShadow = true;
+}
+
+createWall(-WALL_X);
+createWall(WALL_X);
+
+
+/* Puerta inicial */
+
+box(
+    5,
+    30,
+    8,
+    0x26354d,
+    -120,
+    15,
+    START_Z + 10
 );
 
-leftWall.position.set(
-    -MAP_WIDTH / 2,
-    17.5,
-    -430
+box(
+    5,
+    30,
+    8,
+    0x26354d,
+    120,
+    15,
+    START_Z + 10
 );
 
-map.add(leftWall);
-
-/* Muro derecho */
-
-const rightWall = new THREE.Mesh(
-    new THREE.BoxGeometry(5, 35, MAP_LENGTH + 40),
-    wallMaterial
-);
-
-rightWall.position.set(
-    MAP_WIDTH / 2,
-    17.5,
-    -430
-);
-
-map.add(rightWall);
-
-/* Muro final */
-
-const endWall = new THREE.Mesh(
-    new THREE.BoxGeometry(MAP_WIDTH + 10, 35, 5),
-    wallMaterial
-);
-
-endWall.position.set(
-    0,
-    17.5,
-    -1085
-);
-
-map.add(endWall);
-
-/* Muro inicial */
-
-const startWall = new THREE.Mesh(
-    new THREE.BoxGeometry(MAP_WIDTH + 10, 35, 5),
-    wallMaterial
-);
-
-startWall.position.set(
-    0,
-    17.5,
-    90
-);
-
-map.add(startWall);
 
 /* =========================================================
    CORRALES
-   4 bases en una sola línea.
-   SIN MUROS.
-   ========================================================= */
+========================================================= */
 
-const basePositions = [
-    -90,
-    -30,
-    30,
-    90
-];
-
-function createCorral(x, number) {
+function createCorral(x){
 
     const floor = new THREE.Mesh(
-        new THREE.BoxGeometry(48, 2, 40),
+        new THREE.BoxGeometry(
+            48,
+            .35,
+            42
+        ),
         new THREE.MeshStandardMaterial({
-            color: 0xc99a5a
+            color:0x8fbd73,
+            roughness:1
         })
     );
 
-    floor.position.set(x, 1, 45);
-    map.add(floor);
-
-    /* Poste decorativo */
-
-    const postMaterial =
-        new THREE.MeshStandardMaterial({
-            color: 0x754c24
-        });
-
-    const postPositions = [
-        [-20, -15],
-        [20, -15],
-        [-20, 15],
-        [20, 15]
-    ];
-
-    postPositions.forEach(([px, pz]) => {
-
-        const post = new THREE.Mesh(
-            new THREE.BoxGeometry(2, 7, 2),
-            postMaterial
-        );
-
-        post.position.set(
-            x + px,
-            4.5,
-            45 + pz
-        );
-
-        map.add(post);
-    });
-
-    const label = createTextSprite(
-        "🏠 CORRAL " + number
+    floor.position.set(
+        x,
+        .45,
+        52
     );
 
-    label.position.set(x, 12, 45);
-    label.scale.set(25, 7, 1);
+    floor.receiveShadow = true;
 
-    map.add(label);
+    scene.add(floor);
+
+
+    /* postes decorativos, SIN paredes */
+
+    const posts = [
+        [-21,31],
+        [21,31],
+        [-21,73],
+        [21,73]
+    ];
+
+    posts.forEach(p=>{
+        cylinder(
+            .45,
+            3,
+            0x70492e,
+            x+p[0],
+            2,
+            p[1]
+        );
+    });
+
+
+    /* cartel */
+
+    box(
+        7,
+        3,
+        .35,
+        0x2b3544,
+        x,
+        4.8,
+        31
+    );
 }
 
-basePositions.forEach((x, i) => {
-    createCorral(x, i + 1);
-});
+createCorral(-78);
+createCorral(-26);
+createCorral(26);
+createCorral(78);
+
 
 /* =========================================================
-   PLAZA OWNER
-   ========================================================= */
+   PLAZA INICIAL
+========================================================= */
 
 const plaza = new THREE.Mesh(
-    new THREE.CylinderGeometry(18, 18, 2, 32),
+    new THREE.CylinderGeometry(
+        26,
+        26,
+        1,
+        32
+    ),
     new THREE.MeshStandardMaterial({
-        color: 0x302060,
-        emissive: 0x24124c,
-        emissiveIntensity: 0.4
+        color:0x79889c,
+        roughness:.8
     })
 );
 
-plaza.position.set(0, 1.5, 80);
-map.add(plaza);
+plaza.position.set(
+    0,
+    .5,
+    10
+);
 
-const plazaLabel =
-    createTextSprite("👑 PLAZA OWNER 👑");
+plaza.receiveShadow = true;
 
-plazaLabel.position.set(0, 12, 80);
-plazaLabel.scale.set(35, 10, 1);
+scene.add(plaza);
 
-map.add(plazaLabel);
 
-/* =========================================================
-   ÁRBOLES
-   ========================================================= */
+/* Centro de plaza */
 
-function createTree(x, z) {
+cylinder(
+    7,
+    1.8,
+    0x344b73,
+    0,
+    1.4,
+    10
+);
 
-    const trunk = new THREE.Mesh(
-        new THREE.CylinderGeometry(2, 2.5, 10, 8),
-        new THREE.MeshStandardMaterial({
-            color: 0x654321
-        })
-    );
+sphere(
+    4,
+    0x7ba7ff,
+    0,
+    4,
+    10
+);
 
-    trunk.position.set(x, 5, z);
-    map.add(trunk);
-
-    const leaves = new THREE.Mesh(
-        new THREE.SphereGeometry(7, 8, 8),
-        new THREE.MeshStandardMaterial({
-            color: 0x217a38
-        })
-    );
-
-    leaves.position.set(x, 12, z);
-    map.add(leaves);
-}
-
-for (let x = -95; x <= 95; x += 25) {
-    createTree(x, -135);
-    createTree(x + 10, -165);
-}
 
 /* =========================================================
-   CACTUS
-   ========================================================= */
+   PRADERA
+========================================================= */
 
-function createCactus(x, z) {
+function createTree(x,z,scale=1){
 
-    const cactus = new THREE.Mesh(
-        new THREE.CylinderGeometry(2, 2, 12, 8),
-        new THREE.MeshStandardMaterial({
-            color: 0x27843d
-        })
+    const trunk = cylinder(
+        1.3*scale,
+        7*scale,
+        0x684329,
+        x,
+        3.5*scale,
+        z
     );
 
-    cactus.position.set(x, 6, z);
-    map.add(cactus);
-
-    const arm = new THREE.Mesh(
-        new THREE.BoxGeometry(7, 2, 2),
-        new THREE.MeshStandardMaterial({
-            color: 0x27843d
-        })
+    sphere(
+        4.5*scale,
+        0x2f8b4a,
+        x,
+        8*scale,
+        z
     );
 
-    arm.position.set(x + 3, 7, z);
-    map.add(arm);
+    sphere(
+        3.2*scale,
+        0x3ca85b,
+        x-2*scale,
+        9*scale,
+        z
+    );
+
+    sphere(
+        3.2*scale,
+        0x27763d,
+        x+2*scale,
+        8.5*scale,
+        z
+    );
 }
 
-for (let x = -85; x <= 85; x += 35) {
-    createCactus(x, -270);
+function createRock(x,z,s=1){
+
+    const r = box(
+        3*s,
+        2*s,
+        2.5*s,
+        0x777b78,
+        x,
+        1*s,
+        z
+    );
+
+    r.rotation.y = Math.random()*Math.PI;
 }
+
+
+for(let i=0;i<22;i++){
+
+    const x =
+        (Math.random()>.5 ? 1 : -1) *
+        (28 + Math.random()*70);
+
+    const z =
+        5 -
+        Math.random()*125;
+
+    createTree(
+        x,
+        z,
+        .7+Math.random()*.55
+    );
+}
+
+for(let i=0;i<18;i++){
+
+    const x =
+        (Math.random()>.5 ? 1 : -1) *
+        (25+Math.random()*75);
+
+    const z =
+        0-Math.random()*145;
+
+    createRock(x,z,.5+Math.random());
+}
+
 
 /* =========================================================
-   HIELO
-   ========================================================= */
+   BOSQUE
+========================================================= */
 
-function createIce(x, z) {
+for(let i=0;i<42;i++){
+
+    const x =
+        (Math.random()>.5 ? 1 : -1) *
+        (27+Math.random()*76);
+
+    const z =
+        -ZONE_LENGTH -
+        Math.random()*130;
+
+    createTree(
+        x,
+        z,
+        .8+Math.random()*.8
+    );
+}
+
+
+/* =========================================================
+   DESIERTO
+========================================================= */
+
+function createCactus(x,z){
+
+    cylinder(
+        1.3,
+        7,
+        0x3e8a45,
+        x,
+        3.5,
+        z
+    );
+
+    cylinder(
+        .9,
+        3.5,
+        0x3e8a45,
+        x+2,
+        4.2,
+        z
+    );
+}
+
+for(let i=0;i<26;i++){
+
+    const x =
+        (Math.random()>.5 ? 1 : -1) *
+        (28+Math.random()*75);
+
+    const z =
+        START_Z -
+        ZONE_LENGTH*2 -
+        10 -
+        Math.random()*130;
+
+    createCactus(x,z);
+}
+
+
+/* =========================================================
+   CUMBRES HELADAS
+========================================================= */
+
+function createIce(x,z){
 
     const crystal = new THREE.Mesh(
-        new THREE.ConeGeometry(3, 14, 6),
+        new THREE.ConeGeometry(
+            2.5,
+            10,
+            6
+        ),
         new THREE.MeshStandardMaterial({
-            color: 0xc9f3ff,
-            transparent: true,
-            opacity: .9
+            color:0xb9efff,
+            transparent:true,
+            opacity:.82,
+            roughness:.2
         })
     );
 
-    crystal.position.set(x, 7, z);
-    map.add(crystal);
+    crystal.position.set(
+        x,
+        5,
+        z
+    );
+
+    crystal.rotation.y=Math.random();
+
+    crystal.castShadow=true;
+
+    scene.add(crystal);
 }
 
-for (let x = -90; x <= 90; x += 30) {
-    createIce(x, -405);
+for(let i=0;i<28;i++){
+
+    const x =
+        (Math.random()>.5 ? 1 : -1) *
+        (28+Math.random()*75);
+
+    const z =
+        START_Z -
+        ZONE_LENGTH*3 -
+        10 -
+        Math.random()*130;
+
+    createIce(x,z);
 }
+
 
 /* =========================================================
-   VOLCANES
-   ========================================================= */
+   VOLCÁN
+========================================================= */
 
-function createVolcano(x, z) {
+function createVolcano(x,z){
 
-    const volcano = new THREE.Mesh(
-        new THREE.ConeGeometry(18, 28, 8),
+    const mountain = new THREE.Mesh(
+        new THREE.ConeGeometry(
+            14,
+            25,
+            8
+        ),
         new THREE.MeshStandardMaterial({
-            color: 0x421919
+            color:0x542d2a,
+            roughness:1
         })
     );
 
-    volcano.position.set(x, 14, z);
-    map.add(volcano);
-
-    const lava = new THREE.Mesh(
-        new THREE.CylinderGeometry(5, 5, 2, 12),
-        new THREE.MeshStandardMaterial({
-            color: 0xff3300,
-            emissive: 0xff2200,
-            emissiveIntensity: 1
-        })
+    mountain.position.set(
+        x,
+        12,
+        z
     );
 
-    lava.position.set(x, 28, z);
-    map.add(lava);
+    mountain.castShadow=true;
+
+    scene.add(mountain);
+
+    cylinder(
+        5,
+        1,
+        0xff5a24,
+        x,
+        25,
+        z
+    );
 }
 
-createVolcano(-65, -540);
-createVolcano(65, -540);
+for(let i=0;i<7;i++){
+
+    const x =
+        (Math.random()>.5 ? 1 : -1) *
+        (38+Math.random()*55);
+
+    const z =
+        START_Z -
+        ZONE_LENGTH*4 -
+        15 -
+        Math.random()*120;
+
+    createVolcano(x,z);
+}
+
 
 /* =========================================================
-   ESTRELLAS
-   ========================================================= */
+   ABISMO MARINO
+========================================================= */
 
-for (let i = 0; i < 70; i++) {
+const oceanZone = new THREE.Mesh(
+    new THREE.BoxGeometry(
+        175,
+        .4,
+        ZONE_LENGTH-10
+    ),
+    new THREE.MeshStandardMaterial({
+        color:0x167da4,
+        roughness:.25,
+        metalness:.05
+    })
+);
 
-    const star = new THREE.Mesh(
-        new THREE.SphereGeometry(.8, 6, 6),
+oceanZone.position.set(
+    0,
+    .7,
+    START_Z-ZONE_LENGTH*5-ZONE_LENGTH/2
+);
+
+scene.add(oceanZone);
+
+for(let i=0;i<25;i++){
+
+    const x =
+        (Math.random()>.5 ? 1 : -1) *
+        (25+Math.random()*70);
+
+    const z =
+        START_Z -
+        ZONE_LENGTH*5 -
+        Math.random()*140;
+
+    cylinder(
+        .8,
+        4+Math.random()*7,
+        0x36b7c9,
+        x,
+        2,
+        z
+    );
+}
+
+
+/* =========================================================
+   GALAXIA
+========================================================= */
+
+function createStar(x,y,z,s=1){
+
+    sphere(
+        .6*s,
+        0xd9ddff,
+        x,
+        y,
+        z
+    );
+}
+
+for(let i=0;i<90;i++){
+
+    const x =
+        -105+
+        Math.random()*210;
+
+    const y =
+        18+
+        Math.random()*55;
+
+    const z =
+        START_Z -
+        ZONE_LENGTH*6 -
+        Math.random()*145;
+
+    createStar(x,y,z,.4+Math.random());
+}
+
+
+/* cristales galácticos */
+
+for(let i=0;i<22;i++){
+
+    const x =
+        (Math.random()>.5 ? 1 : -1) *
+        (30+Math.random()*72);
+
+    const z =
+        START_Z -
+        ZONE_LENGTH*6 -
+        Math.random()*145;
+
+    const crystal = new THREE.Mesh(
+        new THREE.OctahedronGeometry(3+Math.random()*3),
         new THREE.MeshStandardMaterial({
-            color: 0xffffff,
-            emissive: 0xffffff,
-            emissiveIntensity: 1
+            color:0x795cff,
+            emissive:0x251060,
+            emissiveIntensity:.7
         })
     );
 
-    star.position.set(
-        (Math.random() - .5) * 210,
-        Math.random() * 35 + 4,
-        -810 + (Math.random() - .5) * 80
+    crystal.position.set(
+        x,
+        3,
+        z
     );
 
-    map.add(star);
+    crystal.castShadow=true;
+
+    scene.add(crystal);
 }
+
+
+/* =========================================================
+   SANTUARIO ETERNO
+========================================================= */
+
+const sanctuaryZ =
+    START_Z -
+    ZONE_LENGTH*7 -
+    ZONE_LENGTH/2;
+
+for(let side of [-1,1]){
+
+    for(let i=0;i<7;i++){
+
+        const z =
+            sanctuaryZ -
+            60 +
+            i*20;
+
+        box(
+            5,
+            18,
+            5,
+            0x8d73c7,
+            side*72,
+            9,
+            z
+        );
+
+        sphere(
+            3,
+            0xc7b8ff,
+            side*72,
+            19,
+            z
+        );
+    }
+}
+
 
 /* =========================================================
    DOMINIO DIVINO
-   ========================================================= */
+========================================================= */
 
-for (let i = 0; i < 8; i++) {
+const divineZ =
+    START_Z -
+    ZONE_LENGTH*8 -
+    ZONE_LENGTH/2;
 
-    const pillar = new THREE.Mesh(
-        new THREE.CylinderGeometry(3, 3, 35, 12),
-        new THREE.MeshStandardMaterial({
-            color: 0xffdf6b,
-            emissive: 0xffc400,
-            emissiveIntensity: .35
-        })
+for(let i=0;i<11;i++){
+
+    const x =
+        -85+i*17;
+
+    box(
+        5,
+        28,
+        5,
+        0xf1d978,
+        x,
+        14,
+        divineZ
     );
 
-    pillar.position.set(
-        -85 + i * 25,
-        17,
-        -1080
+    sphere(
+        3,
+        0xffffd0,
+        x,
+        29,
+        divineZ
     );
-
-    map.add(pillar);
 }
+
 
 /* =========================================================
-   TEXTO
-   ========================================================= */
+   PORTALES ENTRE ZONAS
+========================================================= */
 
-function createTextSprite(text) {
+function createGate(z,color){
 
-    const canvas = document.createElement("canvas");
-
-    canvas.width = 1024;
-    canvas.height = 256;
-
-    const ctx = canvas.getContext("2d");
-
-    ctx.clearRect(
+    box(
+        42,
+        3,
+        3,
+        color,
         0,
-        0,
-        canvas.width,
-        canvas.height
+        18,
+        z
     );
 
-    ctx.font = "bold 70px Arial";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-
-    ctx.fillStyle = "white";
-    ctx.strokeStyle = "black";
-    ctx.lineWidth = 12;
-
-    ctx.strokeText(
-        text,
-        canvas.width / 2,
-        canvas.height / 2
+    box(
+        3,
+        18,
+        3,
+        color,
+        -20,
+        9,
+        z
     );
 
-    ctx.fillText(
-        text,
-        canvas.width / 2,
-        canvas.height / 2
+    box(
+        3,
+        18,
+        3,
+        color,
+        20,
+        9,
+        z
     );
-
-    const texture =
-        new THREE.CanvasTexture(canvas);
-
-    const material =
-        new THREE.SpriteMaterial({
-            map: texture,
-            transparent: true
-        });
-
-    return new THREE.Sprite(material);
 }
+
+for(let i=1;i<9;i++){
+
+    createGate(
+        START_Z-i*ZONE_LENGTH+3,
+        zones[i].color
+    );
+}
+
 
 /* =========================================================
    JUGADOR
-   ========================================================= */
+========================================================= */
 
 const player = new THREE.Group();
 
-const body = new THREE.Mesh(
-    new THREE.BoxGeometry(4, 6, 3),
-    new THREE.MeshStandardMaterial({
-        color: 0x3366ff
-    })
+const body = box(
+    3,
+    5,
+    2.5,
+    0x3e65ff,
+    0,
+    2.5,
+    0
 );
 
-body.position.y = 5;
+body.position.set(0,2.5,0);
 player.add(body);
 
-const head = new THREE.Mesh(
-    new THREE.BoxGeometry(4, 4, 4),
-    new THREE.MeshStandardMaterial({
-        color: 0xffcc99
-    })
+const head = box(
+    3.2,
+    3.2,
+    3.2,
+    0xffc39a,
+    0,
+    6.6,
+    0
 );
 
-head.position.y = 10;
+head.position.set(0,6.6,0);
 player.add(head);
 
-player.position.set(0, 0, 20);
+player.position.set(
+    0,
+    0,
+    24
+);
 
 scene.add(player);
 
-/* =========================================================
-   MOVIMIENTO + SALTO
-   ========================================================= */
-
-const keys = {};
-
-document.addEventListener("keydown", e => {
-
-    keys[e.code] = true;
-
-    if (
-        e.code === "Space" &&
-        player.position.y <= 0.05
-    ) {
-        playerVelocityY = 0.55;
-    }
-});
-
-document.addEventListener("keyup", e => {
-    keys[e.code] = false;
-});
-
-let speed = 0.8;
-let playerVelocityY = 0;
-
-const gravity = -0.025;
-
-function updatePlayer() {
-
-    if (keys["ShiftLeft"] || keys["ShiftRight"]) {
-        speed = 1.5;
-    } else {
-        speed = 0.8;
-    }
-
-    if (keys["KeyW"]) {
-        player.position.z -= speed;
-    }
-
-    if (keys["KeyS"]) {
-        player.position.z += speed;
-    }
-
-    if (keys["KeyA"]) {
-        player.position.x -= speed;
-    }
-
-    if (keys["KeyD"]) {
-        player.position.x += speed;
-    }
-
-    /* Salto */
-
-    playerVelocityY += gravity;
-    player.position.y += playerVelocityY;
-
-    if (player.position.y < 0) {
-        player.position.y = 0;
-        playerVelocityY = 0;
-    }
-
-    /* Límites del mapa */
-
-    player.position.x =
-        Math.max(
-            -MAP_WIDTH / 2 + 5,
-            Math.min(
-                MAP_WIDTH / 2 - 5,
-                player.position.x
-            )
-        );
-
-    player.position.z =
-        Math.max(
-            -1080,
-            Math.min(
-                80,
-                player.position.z
-            )
-        );
-}
 
 /* =========================================================
-   CÁMARA + MOUSE
-   ========================================================= */
+   MOVIMIENTO
+========================================================= */
 
-let cameraYaw = 0;
-let cameraPitch = 0.35;
+const keys={};
 
-document.addEventListener("mousemove", event => {
+document.addEventListener(
+    "keydown",
+    e=>{
+        keys[e.code]=true;
 
-    if (
-        document.pointerLockElement !==
-        renderer.domElement
-    ) {
-        return;
-    }
-
-    cameraYaw -= event.movementX * 0.0025;
-    cameraPitch -= event.movementY * 0.002;
-
-    cameraPitch = Math.max(
-        -0.2,
-        Math.min(0.9, cameraPitch)
-    );
-});
-
-function updateCamera() {
-
-    const distance = 38;
-
-    const horizontalDistance =
-        Math.cos(cameraPitch) * distance;
-
-    const cameraX =
-        player.position.x -
-        Math.sin(cameraYaw) *
-        horizontalDistance;
-
-    const cameraY =
-        player.position.y +
-        12 +
-        Math.sin(cameraPitch) *
-        distance;
-
-    const cameraZ =
-        player.position.z +
-        Math.cos(cameraYaw) *
-        horizontalDistance;
-
-    const cameraPosition =
-        new THREE.Vector3(
-            cameraX,
-            cameraY,
-            cameraZ
-        );
-
-    camera.position.lerp(
-        cameraPosition,
-        0.12
-    );
-
-    const target =
-        new THREE.Vector3(
-            player.position.x,
-            player.position.y + 6,
-            player.position.z
-        );
-
-    camera.lookAt(target);
-}
-
-/* =========================================================
-   ZONA ACTUAL
-   ========================================================= */
-
-function updateZone() {
-
-    let closest = zones[0];
-    let bestDistance = Infinity;
-
-    zones.forEach(zone => {
-
-        const distance =
-            Math.abs(
-                player.position.z - zone.z
-            );
-
-        if (distance < bestDistance) {
-            bestDistance = distance;
-            closest = zone;
+        if(
+            e.code==="Space" &&
+            player.position.y<=.05
+        ){
+            playerVelocityY=.55;
         }
-    });
+    }
+);
 
-    document.getElementById("zone")
-        .textContent = closest.name;
-}
+document.addEventListener(
+    "keyup",
+    e=>{
+        keys[e.code]=false;
+    }
+);
 
-/* =========================================================
-   DINERO
-   SIN MASCOTAS = $0
-   ========================================================= */
+let playerVelocityY=0;
 
-let money = 0;
+const gravity=-.025;
 
-/*
-   Más adelante:
-   money += dineroGeneradoPorMascotas;
-*/
-
-document.getElementById("money")
-    .textContent = "0";
 
 /* =========================================================
-   JUGAR
-   ========================================================= */
+   CÁMARA CON MOUSE
+========================================================= */
 
-document.getElementById("playButton")
-    .addEventListener("click", () => {
+let cameraYaw=0;
+let cameraPitch=.35;
 
-        document.getElementById("startScreen")
-            .style.display = "none";
+document.addEventListener(
+    "mousemove",
+    event=>{
 
-        renderer.domElement
-            .requestPointerLock?.();
-    });
+        if(
+            document.pointerLockElement !==
+            renderer.domElement
+        ){
+            return;
+        }
 
-/* =========================================================
-   ANIMACIÓN
-   ========================================================= */
-
-function animate() {
-
-    requestAnimationFrame(animate);
-
-    updatePlayer();
-    updateCamera();
-    updateZone();
-
-    renderer.render(
-        scene,
-        camera
-    );
-}
-
-animate();
-
-/* =========================================================
-   RESIZE
-   ========================================================= */
-
-window.addEventListener("resize", () => {
-
-    camera.aspect =
-        window.innerWidth /
-        window.innerHeight;
-
-    camera.updateProjectionMatrix();
-
-    renderer.setSize(
-        window.innerWidth,
-        window.innerHeight
-    );
-});
-</script>
-
-</body>
-</html>
+        cameraYaw -= event.movementX*.0025;
 ```
