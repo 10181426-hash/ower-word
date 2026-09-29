@@ -3,30 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>OWNER WORLD V0.6</title>
+<title>OWNER WORLD V0.8</title>
 
 <style>
 *{
     box-sizing:border-box;
-    margin:0;
-    padding:0;
 }
 
 html,body{
+    margin:0;
     width:100%;
     height:100%;
     overflow:hidden;
     font-family:Arial,Helvetica,sans-serif;
-    background:#79bde8;
+    background:#050711;
 }
 
 canvas{
     display:block;
 }
-
-/* =========================
-   HUD
-========================= */
 
 #hud{
     position:fixed;
@@ -34,374 +29,350 @@ canvas{
     left:15px;
     z-index:20;
     color:white;
-    text-shadow:0 3px 8px #000;
     pointer-events:none;
 }
 
-#title{
-    font-size:28px;
+.logo{
+    font-size:25px;
     font-weight:900;
-    letter-spacing:2px;
+    text-shadow:
+        0 0 8px #6d5cff,
+        0 0 18px #9b5cff;
 }
 
-#version{
-    font-size:14px;
-    opacity:.8;
-    margin-top:3px;
+.version{
+    font-size:13px;
+    opacity:.75;
+    margin-top:2px;
 }
 
-#playerNameHud{
-    margin-top:8px;
-    font-size:19px;
+.money{
+    margin-top:10px;
+    font-size:20px;
     font-weight:bold;
 }
 
-#money{
-    margin-top:6px;
-    font-size:20px;
+.zone{
+    margin-top:5px;
+    font-size:15px;
 }
 
-#zone{
-    margin-top:5px;
+.speed{
+    margin-top:7px;
     font-size:17px;
 }
 
-#speedHud{
-    margin-top:5px;
-    font-size:20px;
+#interaction{
+    position:fixed;
+    bottom:28px;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:30;
+    color:white;
+    background:rgba(0,0,0,.55);
+    border:1px solid rgba(255,255,255,.25);
+    padding:10px 18px;
+    border-radius:12px;
+    display:none;
+    font-weight:bold;
 }
-
-/* =========================
-   START SCREEN
-========================= */
 
 #startScreen{
     position:fixed;
     inset:0;
     z-index:100;
+    background:
+        radial-gradient(circle at center,#171642 0%,#070817 45%,#02030a 100%);
     display:flex;
     justify-content:center;
     align-items:center;
-    background:
-        radial-gradient(
-            circle at center,
-            #1c3670 0%,
-            #081226 48%,
-            #02050c 100%
-        );
+    color:white;
 }
 
 .startBox{
-    width:min(92%,520px);
-    padding:40px 30px;
-    border-radius:28px;
+    width:min(440px,90%);
+    padding:35px;
     text-align:center;
-    color:white;
-    background:rgba(8,18,42,.9);
-    border:2px solid rgba(120,180,255,.35);
+    border-radius:25px;
+    background:rgba(12,14,35,.88);
+    border:1px solid rgba(150,120,255,.5);
     box-shadow:
-        0 0 45px rgba(70,130,255,.4),
-        inset 0 0 35px rgba(70,130,255,.08);
+        0 0 35px rgba(100,80,255,.25),
+        inset 0 0 30px rgba(120,90,255,.05);
 }
 
-.logo{
-    font-size:45px;
-    font-weight:900;
-    letter-spacing:3px;
+.startLogo{
+    font-size:42px;
+    font-weight:1000;
+    letter-spacing:2px;
     text-shadow:
-        0 0 10px white,
-        0 0 25px #5d8cff,
-        0 0 45px #8b4dff;
+        0 0 10px #6e63ff,
+        0 0 30px #9e72ff;
 }
 
 .startVersion{
-    margin-top:8px;
-    font-size:20px;
-    color:#9ec5ff;
-    font-weight:bold;
+    margin-top:5px;
+    opacity:.7;
 }
 
-.startText{
-    margin-top:22px;
-    color:#dbe8ff;
-    line-height:1.5;
-}
-
-.nameLabel{
-    display:block;
+.startBox input{
+    width:100%;
     margin-top:25px;
-    margin-bottom:8px;
-    font-weight:bold;
-}
-
-#nameInput{
-    width:90%;
     padding:14px;
-    border:none;
-    outline:none;
     border-radius:12px;
-    text-align:center;
-    font-size:19px;
-    font-weight:bold;
-    background:#edf4ff;
-    color:#10182b;
+    border:1px solid #6257c9;
+    background:#090b1d;
+    color:white;
+    font-size:16px;
+    outline:none;
 }
 
-#playButton{
-    margin-top:20px;
-    padding:14px 42px;
+.startBox button{
+    width:100%;
+    margin-top:15px;
+    padding:14px;
     border:0;
-    border-radius:14px;
-    font-size:21px;
-    font-weight:bold;
+    border-radius:12px;
     color:white;
-    background:linear-gradient(
-        135deg,
-        #3c75ff,
-        #793dff
-    );
-    box-shadow:0 8px 25px rgba(70,80,255,.45);
+    background:linear-gradient(90deg,#5547d9,#874fff);
+    font-size:17px;
+    font-weight:bold;
     cursor:pointer;
 }
 
-#playButton:hover{
-    transform:scale(1.05);
-}
-
-#errorMessage{
-    min-height:22px;
+#error{
+    min-height:20px;
     margin-top:10px;
-    color:#ff6f7d;
-    font-weight:bold;
+    color:#ff7777;
+    font-size:14px;
 }
-
-/* =========================
-   OWNER ADMIN
-========================= */
 
 #adminButton{
     position:fixed;
-    top:18px;
-    right:18px;
-    z-index:30;
+    top:15px;
+    right:15px;
+    z-index:50;
     display:none;
-    padding:11px 17px;
-    border:1px solid rgba(255,255,255,.3);
-    border-radius:12px;
+    border:1px solid rgba(180,150,255,.7);
+    background:rgba(15,10,40,.82);
     color:white;
-    font-size:15px;
+    border-radius:12px;
+    padding:10px 14px;
     font-weight:bold;
-    background:linear-gradient(
-        135deg,
-        #4c2eff,
-        #a02cff
-    );
-    box-shadow:0 0 20px rgba(110,60,255,.5);
     cursor:pointer;
+    box-shadow:0 0 15px rgba(120,80,255,.25);
 }
 
 #adminPanel{
     position:fixed;
-    top:75px;
-    right:18px;
-    z-index:40;
-    width:330px;
-    max-height:80vh;
-    overflow-y:auto;
+    top:65px;
+    right:15px;
+    z-index:60;
+    width:320px;
+    max-height:calc(100vh - 85px);
+    overflow:auto;
     display:none;
     padding:18px;
-    border-radius:18px;
     color:white;
-    background:rgba(8,10,30,.96);
-    border:1px solid rgba(130,100,255,.6);
-    box-shadow:0 0 35px rgba(90,60,255,.45);
+    border-radius:18px;
+    background:rgba(8,8,25,.95);
+    border:1px solid rgba(150,120,255,.55);
+    box-shadow:0 0 30px rgba(110,80,255,.3);
 }
 
-.adminTitle{
-    text-align:center;
-    font-size:22px;
-    font-weight:900;
-    margin-bottom:15px;
+#adminPanel h2{
+    margin:0 0 15px;
+    color:#fff;
+    text-shadow:0 0 10px #927cff;
 }
 
 .adminSection{
-    margin-top:13px;
-    padding:12px;
-    border-radius:12px;
-    background:rgba(255,255,255,.06);
+    margin-top:14px;
+    padding-top:12px;
+    border-top:1px solid rgba(255,255,255,.12);
 }
 
-.adminSectionTitle{
-    margin-bottom:8px;
-    font-weight:bold;
+.adminPanel label{
+    display:block;
+    margin:8px 0 5px;
+    font-size:13px;
+    opacity:.8;
 }
 
-.adminInput,
-.adminSelect{
+#adminPanel input,
+#adminPanel select,
+#adminPanel textarea{
     width:100%;
-    margin-top:7px;
-    padding:9px;
-    border:0;
-    border-radius:8px;
+    padding:10px;
+    border-radius:9px;
+    border:1px solid rgba(150,130,255,.35);
+    background:#11132a;
+    color:white;
     outline:none;
 }
 
-.adminBtn{
+#adminPanel button{
     width:100%;
-    margin-top:7px;
-    padding:9px;
+    margin-top:8px;
+    padding:10px;
     border:0;
-    border-radius:8px;
+    border-radius:9px;
+    background:#6655df;
     color:white;
-    background:#4435a8;
-    cursor:pointer;
     font-weight:bold;
-}
-
-.adminBtn:hover{
-    background:#604ce0;
-}
-
-.scopeButtons{
-    display:flex;
-    gap:6px;
-}
-
-.scopeButtons button{
-    flex:1;
-    padding:8px;
-    border:0;
-    border-radius:8px;
-    color:white;
-    background:#252a4c;
     cursor:pointer;
 }
 
-.scopeButtons button.active{
-    background:#684cff;
+.scope{
+    display:flex;
+    gap:8px;
 }
 
-/* =========================
-   ANNOUNCEMENT
-========================= */
+.scope button{
+    flex:1;
+}
 
-#announcement{
+.scope .active{
+    background:#9a62ff !important;
+}
+
+#adminStatus{
+    margin-top:10px;
+    font-size:13px;
+    color:#a99cff;
+}
+
+#messageContainer{
     position:fixed;
-    top:25px;
+    top:95px;
     left:50%;
     transform:translateX(-50%);
-    z-index:50;
-    display:none;
-    max-width:85%;
-    padding:14px 24px;
-    border-radius:15px;
-    background:rgba(8,10,25,.93);
-    color:white;
-    font-size:19px;
-    font-weight:bold;
-    text-align:center;
-    box-shadow:0 5px 25px rgba(0,0,0,.5);
+    z-index:40;
     pointer-events:none;
+    width:min(700px,90%);
 }
 
-/* =========================
-   CONTROLES
-========================= */
+.adminMessage{
+    text-align:center;
+    margin-bottom:10px;
+    animation:messageIn .35s ease-out;
+}
 
-#controls{
+.adminMessage .adminName{
+    color:white;
+    font-size:15px;
+    font-weight:900;
+    letter-spacing:2px;
+}
+
+.adminMessage .messageText{
+    color:white;
+    font-size:20px;
+    font-weight:bold;
+    text-shadow:0 0 8px rgba(255,255,255,.4);
+}
+
+@keyframes messageIn{
+    from{
+        opacity:0;
+        transform:translateY(-15px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+#music{
     position:fixed;
     bottom:15px;
-    left:15px;
-    z-index:20;
-    padding:10px 14px;
-    border-radius:12px;
-    background:rgba(0,0,0,.55);
+    right:15px;
+    z-index:30;
     color:white;
-    font-size:13px;
-    line-height:1.6;
-    pointer-events:none;
-}
-
-#interact{
-    position:fixed;
-    bottom:25px;
-    left:50%;
-    transform:translateX(-50%);
-    z-index:20;
-    display:none;
-    padding:12px 22px;
-    border-radius:13px;
-    background:rgba(0,0,0,.8);
-    color:white;
-    font-weight:bold;
-    font-size:17px;
-    pointer-events:none;
-}
-
-#crosshair{
-    position:fixed;
-    left:50%;
-    top:50%;
-    width:7px;
-    height:7px;
-    margin-left:-3px;
-    margin-top:-3px;
-    border-radius:50%;
-    background:white;
-    box-shadow:0 0 8px black;
-    z-index:8;
-    pointer-events:none;
-    opacity:.7;
-}
-
-/* =========================
-   OWNER TAG
-========================= */
-
-.ownerTag{
-    position:fixed;
-    z-index:15;
-    color:white;
-    font-size:18px;
-    font-weight:900;
-    text-shadow:
-        0 0 5px #fff,
-        0 0 12px #694cff,
-        0 0 22px #a64cff;
-    pointer-events:none;
-    transform:translate(-50%,-50%);
+    background:rgba(0,0,0,.5);
+    border:1px solid rgba(255,255,255,.2);
+    padding:8px 12px;
+    border-radius:10px;
+    font-size:12px;
 }
 </style>
 </head>
 
 <body>
 
-<!-- =========================
-     START
-========================= -->
+<div id="hud">
+    <div class="logo">👑 OWNER WORLD</div>
+    <div class="version">V0.8</div>
+    <div class="money">💰 <span id="money">0</span></div>
+    <div class="zone">📍 <span id="zone">Pradera Inicial</span></div>
+    <div class="speed">👟 ⚡ <span id="speed">10</span></div>
+</div>
+
+<button id="adminButton">👑 ADMIN</button>
+
+<div id="adminPanel">
+    <h2>🌌 ADMIN PANEL</h2>
+
+    <div class="adminSection">
+        <b>Alcance</b>
+        <div class="scope">
+            <button id="globalBtn" class="active">🌎 GLOBAL</button>
+            <button id="serverBtn">🖥️ ESTE SERVIDOR</button>
+        </div>
+    </div>
+
+    <div class="adminSection">
+        <label>📢 Mensaje ADMIN</label>
+        <textarea id="adminMessageInput" rows="3"
+            placeholder="Escribe un mensaje..."></textarea>
+        <button id="sendMessage">ENVIAR MENSAJE</button>
+    </div>
+
+    <div class="adminSection">
+        <label>🎉 Evento</label>
+        <select id="eventSelect">
+            <option value="none">Sin evento</option>
+            <option value="galaxy">🌌 EVENTO GALAXY</option>
+        </select>
+        <button id="activateEvent">ACTIVAR EVENTO</button>
+        <button id="stopEvent">DETENER EVENTO</button>
+    </div>
+
+    <div class="adminSection">
+        <label>👹 Boss</label>
+        <select id="bossSelect">
+            <option>Gallina Gigante</option>
+            <option>Tigre</option>
+            <option>Coloso Dorado</option>
+            <option>Titán Glacial</option>
+            <option>Cerberus</option>
+            <option>Ballena Gigante</option>
+            <option>Devorador Cósmico</option>
+            <option>Guardián Eterno</option>
+            <option>Dios Celestial</option>
+        </select>
+        <button id="bossInfo">VER JEFE DE SU ZONA</button>
+    </div>
+
+    <div class="adminSection">
+        <label>📊 Encuesta</label>
+        <input id="pollInput" placeholder="Pregunta de encuesta">
+        <button id="sendPoll">PUBLICAR ENCUESTA</button>
+    </div>
+
+    <div id="adminStatus"></div>
+</div>
+
+<div id="interaction"></div>
+
+<div id="messageContainer"></div>
+
+<div id="music">🎹 Piano elegante</div>
 
 <div id="startScreen">
-
     <div class="startBox">
-
-        <div class="logo">
-            OWNER WORLD
-        </div>
-
-        <div class="startVersion">
-            V0.6
-        </div>
-
-        <div class="startText">
-            🌎 Bienvenido a OWNER WORLD<br>
-            🏠 Reclama tu corral<br>
-            🏃 Entrena tu velocidad<br>
-            👹 Enfrenta a los jefes
-        </div>
-
-        <label class="nameLabel">
-            👤 CREA TU NOMBRE
-        </label>
+        <div class="startLogo">OWNER WORLD</div>
+        <div class="startVersion">V0.8</div>
 
         <input
             id="nameInput"
@@ -410,2210 +381,1827 @@ canvas{
             autocomplete="off"
         >
 
-        <div id="errorMessage"></div>
+        <button id="playButton">JUGAR</button>
 
-        <button id="playButton">
-            JUGAR
-        </button>
-
+        <div id="error"></div>
     </div>
-
 </div>
-
-
-<!-- =========================
-     HUD
-========================= -->
-
-<div id="hud">
-
-    <div id="title">
-        👑 OWNER WORLD
-    </div>
-
-    <div id="version">
-        V0.6
-    </div>
-
-    <div id="playerNameHud">
-        👤 ---
-    </div>
-
-    <div id="money">
-        💰 $0
-    </div>
-
-    <div id="zone">
-        🌿 Pradera Inicial
-    </div>
-
-    <div id="speedHud">
-        👟 ⚡ 10
-    </div>
-
-</div>
-
-
-<!-- =========================
-     ADMIN BUTTON
-========================= -->
-
-<button id="adminButton">
-    👑 ADMIN
-</button>
-
-
-<!-- =========================
-     ADMIN PANEL
-========================= -->
-
-<div id="adminPanel">
-
-    <div class="adminTitle">
-        👑 OWNER PANEL 👑
-    </div>
-
-    <div class="adminSection">
-
-        <div class="adminSectionTitle">
-            🌎 ALCANCE
-        </div>
-
-        <div class="scopeButtons">
-
-            <button
-                id="globalScope"
-                class="active"
-            >
-                🌎 GLOBAL
-            </button>
-
-            <button id="serverScope">
-                🖥️ ESTE SERVIDOR
-            </button>
-
-        </div>
-
-    </div>
-
-
-    <div class="adminSection">
-
-        <div class="adminSectionTitle">
-            📢 MENSAJE
-        </div>
-
-        <input
-            id="messageInput"
-            class="adminInput"
-            maxlength="120"
-            placeholder="Escribe un mensaje..."
-        >
-
-        <button
-            id="sendMessage"
-            class="adminBtn"
-        >
-            📢 ENVIAR MENSAJE
-        </button>
-
-    </div>
-
-
-    <div class="adminSection">
-
-        <div class="adminSectionTitle">
-            🎉 EVENTOS
-        </div>
-
-        <select
-            id="eventSelect"
-            class="adminSelect"
-        >
-
-            <option>
-                🍀 2X SUERTE
-            </option>
-
-            <option>
-                🌟 4X SUERTE
-            </option>
-
-            <option>
-                🔥 10X SUERTE
-            </option>
-
-            <option>
-                ⚡ SUPER VELOCIDAD
-            </option>
-
-            <option>
-                👑 ADMIN ABUSE
-            </option>
-
-        </select>
-
-        <button
-            id="activateEvent"
-            class="adminBtn"
-        >
-            🎉 ACTIVAR EVENTO
-        </button>
-
-    </div>
-
-
-    <div class="adminSection">
-
-        <div class="adminSectionTitle">
-            👹 JEFES
-        </div>
-
-        <select
-            id="bossSelect"
-            class="adminSelect"
-        >
-
-            <option>🌿 Rey Raíz</option>
-            <option>🌲 Bestia del Bosque</option>
-            <option>🏜️ Coloso Dorado</option>
-            <option>❄️ Titán Glacial</option>
-            <option>🌋 Señor Carmesí</option>
-            <option>🌊 Leviatán Abisal</option>
-            <option>🌌 Devorador Cósmico</option>
-            <option>♾️ Guardián Eterno</option>
-            <option>✨ Dios Celestial</option>
-
-        </select>
-
-        <button
-            id="spawnBoss"
-            class="adminBtn"
-        >
-            👹 INVOCAR JEFE
-        </button>
-
-    </div>
-
-
-    <div class="adminSection">
-
-        <div class="adminSectionTitle">
-            📊 ENCUESTA
-        </div>
-
-        <input
-            id="pollInput"
-            class="adminInput"
-            maxlength="100"
-            placeholder="Pregunta de encuesta..."
-        >
-
-        <button
-            id="createPoll"
-            class="adminBtn"
-        >
-            📊 CREAR ENCUESTA
-        </button>
-
-    </div>
-
-
-    <button
-        id="closeAdmin"
-        class="adminBtn"
-    >
-        ❌ CERRAR PANEL
-    </button>
-
-</div>
-
-
-<!-- =========================
-     ANNOUNCEMENT
-========================= -->
-
-<div id="announcement"></div>
-
-
-<!-- =========================
-     INTERACT
-========================= -->
-
-<div id="interact"></div>
-
-
-<!-- =========================
-     CONTROLES
-========================= -->
-
-<div id="controls">
-
-    <b>CONTROLES</b><br>
-    W A S D — Moverse<br>
-    SHIFT — Correr<br>
-    SPACE — Saltar<br>
-    MOUSE — Cámara<br>
-    E — Interactuar
-
-</div>
-
-
-<div id="crosshair"></div>
-
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 
 <script>
 
 /* =========================================================
-   OWNER WORLD V0.6
+   OWNER WORLD V0.8
    ========================================================= */
 
+const VERSION = "V0.8";
+
+const zones = [
+    {
+        name:"Pradera Inicial",
+        emoji:"🌿",
+        color:0x65b84a,
+        eggColor:0x8bdc63,
+        z:0,
+        boss:"Gallina Gigante"
+    },
+    {
+        name:"Bosque Encantado",
+        emoji:"🌲",
+        color:0x286c42,
+        eggColor:0x4c9c59,
+        z:-155,
+        boss:"Tigre"
+    },
+    {
+        name:"Desierto Dorado",
+        emoji:"🏜️",
+        color:0xd5a743,
+        eggColor:0xe7bb4d,
+        z:-310,
+        boss:"Coloso Dorado"
+    },
+    {
+        name:"Cumbres Heladas",
+        emoji:"❄️",
+        color:0x9fdaf0,
+        eggColor:0xbcecff,
+        z:-465,
+        boss:"Titán Glacial"
+    },
+    {
+        name:"Volcán Carmesí",
+        emoji:"🌋",
+        color:0xa53d32,
+        eggColor:0xf15a3d,
+        z:-620,
+        boss:"Cerberus"
+    },
+    {
+        name:"Abismo Marino",
+        emoji:"🌊",
+        color:0x1975a5,
+        eggColor:0x3fb7e8,
+        z:-775,
+        boss:"Ballena Gigante"
+    },
+    {
+        name:"Galaxia Perdida",
+        emoji:"🌌",
+        color:0x51368c,
+        eggColor:0xa86cff,
+        z:-930,
+        boss:"Devorador Cósmico"
+    },
+    {
+        name:"Santuario Eterno",
+        emoji:"♾️",
+        color:0x7048a0,
+        eggColor:0xc48cff,
+        z:-1085,
+        boss:"Guardián Eterno"
+    },
+    {
+        name:"Dominio Divino",
+        emoji:"✨",
+        color:0xcaa92f,
+        eggColor:0xffd94d,
+        z:-1240,
+        boss:"Dios Celestial"
+    }
+];
+
+const MAP_WIDTH = 250;
+const ZONE_LENGTH = 155;
+
+let scene;
+let camera;
+let renderer;
+
+let player;
+let playerVelocityY = 0;
+
+let money = 0;
+let playerName = "";
+
+let playerSpeed = 10;
+let treadmill = null;
+let claimedCorral = null;
+
+let currentZoneIndex = 0;
+
+let cameraYaw = 0;
+let cameraPitch = 0.35;
+
+let keys = {};
+
+let audioStarted = false;
+let pianoGain;
+let galaxyGain;
+
+let galaxyEvent = false;
+
+const eggs = [];
+const bosses = [];
+const corrals = [];
 
 /* =========================================================
-   ESCENA
+   START
    ========================================================= */
 
-const scene =
-    new THREE.Scene();
+const startScreen = document.getElementById("startScreen");
+const nameInput = document.getElementById("nameInput");
+const playButton = document.getElementById("playButton");
+const errorBox = document.getElementById("error");
 
-scene.background =
-    new THREE.Color(0x79bde8);
+const bannedWords = [
+    "puta",
+    "puto",
+    "pendejo",
+    "idiota",
+    "mierda",
+    "estupido",
+    "estúpido",
+    "fuck",
+    "shit"
+];
 
-scene.fog =
-    new THREE.Fog(
-        0x79bde8,
-        180,
-        1200
+function validName(name){
+
+    if(!name) return false;
+
+    if(name.length < 2 || name.length > 16){
+        return false;
+    }
+
+    const lower = name.toLowerCase();
+
+    for(const word of bannedWords){
+        if(lower.includes(word)){
+            return false;
+        }
+    }
+
+    return true;
+}
+
+playButton.addEventListener("click", startGame);
+
+nameInput.addEventListener("keydown",e=>{
+    if(e.key === "Enter"){
+        startGame();
+    }
+});
+
+function startGame(){
+
+    const name = nameInput.value.trim();
+
+    if(!validName(name)){
+        errorBox.textContent =
+            "⚠️ Escribe un nombre válido y sin palabras ofensivas.";
+        return;
+    }
+
+    playerName = name;
+
+    startScreen.style.display = "none";
+
+    if(playerName.toUpperCase() === "ERICK"){
+        document.getElementById("adminButton").style.display = "block";
+    }
+
+    initGame();
+
+    startAudio();
+
+    showAdminMessage(
+        "👑 " + playerName + " ha entrado al servidor"
+    );
+}
+
+/* =========================================================
+   THREE
+   ========================================================= */
+
+function initGame(){
+
+    scene = new THREE.Scene();
+
+    scene.background = new THREE.Color(0x86c8ff);
+
+    scene.fog = new THREE.Fog(
+        0x86c8ff,
+        250,
+        1500
     );
 
-
-/* =========================================================
-   CÁMARA
-   ========================================================= */
-
-const camera =
-    new THREE.PerspectiveCamera(
+    camera = new THREE.PerspectiveCamera(
         70,
-        window.innerWidth /
-        window.innerHeight,
+        innerWidth / innerHeight,
         0.1,
-        2000
+        3000
     );
 
+    camera.position.set(
+        0,
+        15,
+        50
+    );
 
-/* =========================================================
-   RENDERER
-   ========================================================= */
-
-const renderer =
-    new THREE.WebGLRenderer({
+    renderer = new THREE.WebGLRenderer({
         antialias:true
     });
 
-renderer.setSize(
-    window.innerWidth,
-    window.innerHeight
-);
-
-renderer.setPixelRatio(
-    Math.min(
-        window.devicePixelRatio,
-        2
-    )
-);
-
-renderer.shadowMap.enabled=true;
-
-renderer.shadowMap.type =
-    THREE.PCFSoftShadowMap;
-
-document.body.appendChild(
-    renderer.domElement
-);
-
-
-/* =========================================================
-   LUCES
-   ========================================================= */
-
-const hemisphereLight =
-    new THREE.HemisphereLight(
-        0xbde8ff,
-        0x4b3826,
-        2
+    renderer.setPixelRatio(
+        Math.min(devicePixelRatio,2)
     );
 
-scene.add(
-    hemisphereLight
-);
+    renderer.setSize(
+        innerWidth,
+        innerHeight
+    );
 
+    renderer.shadowMap.enabled = true;
 
-const sun =
-    new THREE.DirectionalLight(
+    document.body.appendChild(renderer.domElement);
+
+    const hemi = new THREE.HemisphereLight(
+        0xbfdfff,
+        0x4c593c,
+        1.7
+    );
+
+    scene.add(hemi);
+
+    const sun = new THREE.DirectionalLight(
         0xffffff,
-        2.5
+        2.2
     );
 
-sun.position.set(
-    100,
-    180,
-    80
-);
-
-sun.castShadow=true;
-
-sun.shadow.mapSize.width=2048;
-sun.shadow.mapSize.height=2048;
-
-sun.shadow.camera.left=-300;
-sun.shadow.camera.right=300;
-sun.shadow.camera.top=300;
-sun.shadow.camera.bottom=-1400;
-
-scene.add(
-    sun
-);
-
-
-/* =========================================================
-   MAPA
-   ========================================================= */
-
-const MAP_WIDTH=230;
-
-const ZONE_LENGTH=175;
-
-const START_Z=110;
-
-const TOTAL_ZONES=9;
-
-const END_Z=
-    START_Z -
-    ZONE_LENGTH *
-    TOTAL_ZONES;
-
-
-/* =========================================================
-   ZONAS
-   ========================================================= */
-
-const zones=[
-
-    {
-        name:"🌿 Pradera Inicial",
-        color:0x65bd55,
-        wall:0x5b923d
-    },
-
-    {
-        name:"🌲 Bosque Encantado",
-        color:0x327c43,
-        wall:0x315b38
-    },
-
-    {
-        name:"🏜️ Desierto Dorado",
-        color:0xd9ad4d,
-        wall:0xb4874a
-    },
-
-    {
-        name:"❄️ Cumbres Heladas",
-        color:0xbce7f4,
-        wall:0x9ac8d4
-    },
-
-    {
-        name:"🌋 Volcán Carmesí",
-        color:0x8d3028,
-        wall:0x492724
-    },
-
-    {
-        name:"🌊 Abismo Marino",
-        color:0x126fa5,
-        wall:0x15516d
-    },
-
-    {
-        name:"🌌 Galaxia Perdida",
-        color:0x251b69,
-        wall:0x29205e
-    },
-
-    {
-        name:"♾️ Santuario Eterno",
-        color:0x4e2d82,
-        wall:0x4b356d
-    },
-
-    {
-        name:"✨ Dominio Divino",
-        color:0xd7c76a,
-        wall:0x8c7434
-    }
-
-];
-
-
-/* =========================================================
-   TERRENO
-   ========================================================= */
-
-const ground =
-    new THREE.Mesh(
-        new THREE.BoxGeometry(
-            MAP_WIDTH,
-            4,
-            ZONE_LENGTH *
-            TOTAL_ZONES +
-            100
-        ),
-        new THREE.MeshStandardMaterial({
-            color:0x4c8f4d,
-            roughness:1
-        })
+    sun.position.set(
+        100,
+        250,
+        100
     );
 
-ground.position.set(
-    0,
-    -2,
-    START_Z -
-    (ZONE_LENGTH *
-    TOTAL_ZONES)/2
-);
+    sun.castShadow = true;
 
-ground.receiveShadow=true;
+    scene.add(sun);
 
-scene.add(
-    ground
-);
+    createMap();
+    createCorrals();
+    createPlayer();
+    createEggs();
+    createBosses();
 
-
-/* =========================================================
-   CAMINO
-   ========================================================= */
-
-const road =
-    new THREE.Mesh(
-        new THREE.BoxGeometry(
-            34,
-            .15,
-            ZONE_LENGTH *
-            TOTAL_ZONES +
-            20
-        ),
-        new THREE.MeshStandardMaterial({
-            color:0x8a7968,
-            roughness:1
-        })
+    window.addEventListener(
+        "resize",
+        resize
     );
 
-road.position.set(
-    0,
-    .08,
-    START_Z -
-    (ZONE_LENGTH *
-    TOTAL_ZONES)/2
-);
+    window.addEventListener(
+        "keydown",
+        keyDown
+    );
 
-road.receiveShadow=true;
+    window.addEventListener(
+        "keyup",
+        keyUp
+    );
 
-scene.add(
-    road
-);
+    window.addEventListener(
+        "mousemove",
+        mouseMove
+    );
 
-
-/* =========================================================
-   SUELO DE ZONAS
-   ========================================================= */
-
-zones.forEach(
-    (zone,index)=>{
-
-        const mesh =
-            new THREE.Mesh(
-                new THREE.BoxGeometry(
-                    MAP_WIDTH-8,
-                    .35,
-                    ZONE_LENGTH-4
-                ),
-                new THREE.MeshStandardMaterial({
-                    color:zone.color,
-                    roughness:1
-                })
-            );
-
-        mesh.position.set(
-            0,
-            .15,
-            START_Z -
-            index*ZONE_LENGTH -
-            ZONE_LENGTH/2
-        );
-
-        mesh.receiveShadow=true;
-
-        scene.add(mesh);
-    }
-);
-
+    animate();
+}
 
 /* =========================================================
-   PARED EXTERIOR
+   MATERIAL HELPERS
    ========================================================= */
 
-function createWallSegment(
+function mat(color){
+
+    return new THREE.MeshStandardMaterial({
+        color,
+        roughness:.85,
+        metalness:.05
+    });
+}
+
+function box(
     x,
+    y,
     z,
-    width,
-    depth,
+    sx,
+    sy,
+    sz,
     color
 ){
 
-    const wall =
-        new THREE.Mesh(
-            new THREE.BoxGeometry(
-                width,
-                26,
-                depth
-            ),
-            new THREE.MeshStandardMaterial({
-                color:color,
-                roughness:1
-            })
-        );
+    const mesh = new THREE.Mesh(
+        new THREE.BoxGeometry(
+            sx,
+            sy,
+            sz
+        ),
+        mat(color)
+    );
 
-    wall.position.set(
+    mesh.position.set(
         x,
-        13,
+        y,
         z
     );
 
-    wall.castShadow=true;
-    wall.receiveShadow=true;
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
 
-    scene.add(wall);
+    scene.add(mesh);
 
-
-    const grass =
-        new THREE.Mesh(
-            new THREE.BoxGeometry(
-                width+2,
-                2,
-                depth+2
-            ),
-            new THREE.MeshStandardMaterial({
-                color:0x4e8d3e
-            })
-        );
-
-    grass.position.set(
-        x,
-        26.2,
-        z
-    );
-
-    scene.add(grass);
+    return mesh;
 }
 
-
-/* =========================================================
-   PAREDES POR BIOMA
-   ========================================================= */
-
-for(
-    let i=0;
-    i<TOTAL_ZONES;
-    i++
+function sphere(
+    x,
+    y,
+    z,
+    radius,
+    color
 ){
 
-    const zone=zones[i];
-
-    const centerZ=
-        START_Z -
-        i*ZONE_LENGTH -
-        ZONE_LENGTH/2;
-
-
-    /*
-       Cada zona tiene su propio
-       segmento de pared y color.
-    */
-
-    createWallSegment(
-        -MAP_WIDTH/2,
-        centerZ,
-        8,
-        ZONE_LENGTH+2,
-        zone.wall
+    const mesh = new THREE.Mesh(
+        new THREE.SphereGeometry(
+            radius,
+            16,
+            12
+        ),
+        mat(color)
     );
 
-    createWallSegment(
+    mesh.position.set(
+        x,
+        y,
+        z
+    );
+
+    mesh.castShadow = true;
+
+    scene.add(mesh);
+
+    return mesh;
+}
+
+/* =========================================================
+   MAP
+   ========================================================= */
+
+function createMap(){
+
+    const totalLength =
+        ZONE_LENGTH * zones.length + 180;
+
+    const ground = box(
+        0,
+        -2,
+        -550,
+        MAP_WIDTH,
+        4,
+        totalLength,
+        0x4f7d3f
+    );
+
+    ground.receiveShadow = true;
+
+    /* Camino */
+
+    box(
+        0,
+        .03,
+        -550,
+        34,
+        .08,
+        totalLength,
+        0x575757
+    );
+
+    /* Líneas del camino */
+
+    for(let z=80;z>-1400;z-=30){
+
+        box(
+            0,
+            .09,
+            z,
+            2,
+            .03,
+            13,
+            0xe7d889
+        );
+    }
+
+    createOuterWalls();
+
+    zones.forEach((zone,index)=>{
+
+        createZoneDecorations(
+            zone,
+            index
+        );
+
+        createZoneSign(
+            zone
+        );
+    });
+
+    /* Plaza inicial */
+
+    const plaza = new THREE.Mesh(
+        new THREE.CylinderGeometry(
+            42,
+            42,
+            1,
+            48
+        ),
+        mat(0x777777)
+    );
+
+    plaza.position.set(
+        0,
+        .5,
+        72
+    );
+
+    plaza.receiveShadow = true;
+
+    scene.add(plaza);
+
+    /* Portal */
+
+    const portal = new THREE.Mesh(
+        new THREE.TorusGeometry(
+            10,
+            1.3,
+            16,
+            40
+        ),
+        new THREE.MeshStandardMaterial({
+            color:0x805cff,
+            emissive:0x351f8c,
+            emissiveIntensity:1.8
+        })
+    );
+
+    portal.position.set(
+        0,
+        11,
+        50
+    );
+
+    portal.rotation.x =
+        Math.PI / 2;
+
+    scene.add(portal);
+}
+
+/* =========================================================
+   OUTER WALLS
+   ========================================================= */
+
+function createOuterWalls(){
+
+    const wallHeight = 28;
+
+    const left = box(
+        -MAP_WIDTH/2,
+        wallHeight/2,
+        -550,
+        4,
+        wallHeight,
+        1550,
+        0x705438
+    );
+
+    const right = box(
         MAP_WIDTH/2,
-        centerZ,
-        8,
-        ZONE_LENGTH+2,
-        zone.wall
+        wallHeight/2,
+        -550,
+        4,
+        wallHeight,
+        1550,
+        0x705438
+    );
+
+    /* Grass tops */
+
+    box(
+        -MAP_WIDTH/2,
+        wallHeight+1,
+        -550,
+        5,
+        2,
+        1550,
+        0x57953d
+    );
+
+    box(
+        MAP_WIDTH/2,
+        wallHeight+1,
+        -550,
+        5,
+        2,
+        1550,
+        0x57953d
     );
 }
 
-
 /* =========================================================
-   PAREDES DE INICIO Y FINAL
+   ZONE DECORATION
    ========================================================= */
 
-createWallSegment(
-    0,
-    START_Z+45,
-    MAP_WIDTH,
-    8,
-    0x5b923d
-);
-
-createWallSegment(
-    0,
-    END_Z-45,
-    MAP_WIDTH,
-    8,
-    0xd7c76a
-);
-
-
-/* =========================================================
-   DECORACIÓN DE PAREDES
-   ========================================================= */
-
-function wallDecoration(
+function createZoneDecorations(
+    zone,
     index
 ){
 
-    const centerZ=
-        START_Z -
-        index*ZONE_LENGTH -
-        ZONE_LENGTH/2;
+    const start = zone.z + 65;
+    const end = zone.z - 65;
 
+    for(
+        let z=start;
+        z>end;
+        z-=18
+    ){
 
-    /* PRADERA */
+        const side =
+            Math.random() < .5
+            ? -1
+            : 1;
 
-    if(index===0){
+        const x =
+            side *
+            (45 + Math.random()*55);
 
-        for(
-            let i=0;
-            i<18;
-            i++
-        ){
-
-            createFlower(
-                -112,
-                centerZ+
-                randomRange(-70,70)
-            );
-
-            createFlower(
-                112,
-                centerZ+
-                randomRange(-70,70)
-            );
+        if(index===0){
+            createFlower(x,z);
         }
-    }
 
-
-    /* BOSQUE */
-
-    if(index===1){
-
-        for(
-            let i=0;
-            i<12;
-            i++
-        ){
-
-            createTree(
-                -108,
-                centerZ+
-                randomRange(-70,70),
-                .8
-            );
-
-            createTree(
-                108,
-                centerZ+
-                randomRange(-70,70),
-                .8
-            );
+        if(index===1){
+            createTree(x,z);
         }
-    }
 
-
-    /* DESIERTO */
-
-    if(index===2){
-
-        for(
-            let i=0;
-            i<10;
-            i++
-        ){
-
-            createCactus(
-                -108,
-                centerZ+
-                randomRange(-70,70)
-            );
-
-            createCactus(
-                108,
-                centerZ+
-                randomRange(-70,70)
-            );
+        if(index===2){
+            createCactus(x,z);
         }
-    }
 
-
-    /* HIELO */
-
-    if(index===3){
-
-        for(
-            let i=0;
-            i<12;
-            i++
-        ){
-
-            createCrystal(
-                -108,
-                centerZ+
-                randomRange(-70,70),
-                0xbcefff,
-                randomRange(.8,1.5)
-            );
-
-            createCrystal(
-                108,
-                centerZ+
-                randomRange(-70,70),
-                0xbcefff,
-                randomRange(.8,1.5)
-            );
+        if(index===3){
+            createIce(x,z);
         }
-    }
 
-
-    /* VOLCÁN */
-
-    if(index===4){
-
-        for(
-            let i=0;
-            i<8;
-            i++
-        ){
-
-            createRock(
-                -108,
-                centerZ+
-                randomRange(-70,70),
-                randomRange(.7,1.3),
-                0x33201d
-            );
-
-            createRock(
-                108,
-                centerZ+
-                randomRange(-70,70),
-                randomRange(.7,1.3),
-                0x33201d
-            );
+        if(index===4){
+            createVolcanoRock(x,z);
         }
-    }
 
-
-    /* ABISMO */
-
-    if(index===5){
-
-        for(
-            let i=0;
-            i<14;
-            i++
-        ){
-
-            createCrystal(
-                -108,
-                centerZ+
-                randomRange(-70,70),
-                0x168dff,
-                randomRange(.6,1.2)
-            );
-
-            createCrystal(
-                108,
-                centerZ+
-                randomRange(-70,70),
-                0x168dff,
-                randomRange(.6,1.2)
-            );
+        if(index===5){
+            createCoral(x,z);
         }
-    }
 
-
-    /* GALAXIA */
-
-    if(index===6){
-
-        for(
-            let i=0;
-            i<18;
-            i++
-        ){
-
-            createCrystal(
-                -108,
-                centerZ+
-                randomRange(-70,70),
-                Math.random()>.5
-                ?0x8c5cff
-                :0xff5de7,
-                randomRange(.5,1.1)
-            );
-
-            createCrystal(
-                108,
-                centerZ+
-                randomRange(-70,70),
-                Math.random()>.5
-                ?0x8c5cff
-                :0xff5de7,
-                randomRange(.5,1.1)
-            );
+        if(index===6){
+            createGalaxyCrystal(x,z);
         }
-    }
 
-
-    /* SANTUARIO */
-
-    if(index===7){
-
-        for(
-            let i=-2;
-            i<=2;
-            i++
-        ){
-
-            createCrystal(
-                -108,
-                centerZ+i*28,
-                0xd26cff,
-                1.3
-            );
-
-            createCrystal(
-                108,
-                centerZ+i*28,
-                0x7b5cff,
-                1.3
-            );
+        if(index===7){
+            createSanctuaryCrystal(x,z);
         }
-    }
 
-
-    /* DIVINO */
-
-    if(index===8){
-
-        for(
-            let i=-3;
-            i<=3;
-            i++
-        ){
-
-            createCrystal(
-                -108,
-                centerZ+i*23,
-                0xffdf67,
-                1.3
-            );
-
-            createCrystal(
-                108,
-                centerZ+i*23,
-                0xffdf67,
-                1.3
-            );
+        if(index===8){
+            createDivineCrystal(x,z);
         }
     }
 }
 
+function createFlower(x,z){
 
-/* =========================================================
-   UTILIDADES DECORATIVAS
-   ========================================================= */
-
-function randomRange(
-    min,
-    max
-){
-
-    return Math.random()*
-        (max-min)+min;
-}
-
-
-function createTree(
-    x,
-    z,
-    scale=1
-){
-
-    const group=
-        new THREE.Group();
-
-
-    const trunk=
-        new THREE.Mesh(
-            new THREE.CylinderGeometry(
-                1.3*scale,
-                1.7*scale,
-                9*scale,
-                8
-            ),
-            new THREE.MeshStandardMaterial({
-                color:0x704323
-            })
-        );
-
-    trunk.position.y=
-        4.5*scale;
-
-    trunk.castShadow=true;
-
-    group.add(trunk);
-
-
-    const leaves=
-        new THREE.Mesh(
-            new THREE.SphereGeometry(
-                5.5*scale,
-                8,
-                8
-            ),
-            new THREE.MeshStandardMaterial({
-                color:0x26783b
-            })
-        );
-
-    leaves.position.y=
-        10*scale;
-
-    leaves.castShadow=true;
-
-    group.add(leaves);
-
-
-    group.position.set(
+    sphere(
         x,
-        0,
-        z
+        1.1,
+        z,
+        .8,
+        0xff77aa
     );
 
-    scene.add(group);
+    box(
+        x,
+        .5,
+        z,
+        .15,
+        1,
+        .15,
+        0x3e8f42
+    );
 }
 
+function createTree(x,z){
 
-function createRock(
-    x,
-    z,
-    scale=1,
-    color=0x777777
-){
-
-    const rock=
-        new THREE.Mesh(
-            new THREE.DodecahedronGeometry(
-                3*scale,
-                0
-            ),
-            new THREE.MeshStandardMaterial({
-                color:color
-            })
-        );
-
-    rock.position.set(
+    box(
         x,
-        2*scale,
-        z
+        5,
+        z,
+        2.2,
+        9,
+        2.2,
+        0x714727
     );
 
-    rock.rotation.y=
-        Math.random()*Math.PI;
-
-    rock.castShadow=true;
-
-    scene.add(rock);
+    sphere(
+        x,
+        10,
+        z,
+        5,
+        0x287342
+    );
 }
 
+function createCactus(x,z){
 
-function createCactus(
-    x,
-    z
-){
-
-    const group=
-        new THREE.Group();
-
-    const material=
-        new THREE.MeshStandardMaterial({
-            color:0x3b9b50
-        });
-
-
-    const body=
-        new THREE.Mesh(
-            new THREE.CylinderGeometry(
-                1.5,
-                1.8,
-                9,
-                8
-            ),
-            material
-        );
-
-    body.position.y=4.5;
-
-    group.add(body);
-
-
-    const arm=
-        new THREE.Mesh(
-            new THREE.CylinderGeometry(
-                .9,
-                1.1,
-                4,
-                8
-            ),
-            material
-        );
-
-    arm.position.set(
+    box(
+        x,
         3,
-        4.5,
-        0
+        z,
+        2,
+        6,
+        2,
+        0x3d9845
     );
 
-    arm.rotation.z=
-        Math.PI/2;
-
-    group.add(arm);
-
-
-    group.position.set(
-        x,
-        0,
-        z
+    box(
+        x+2,
+        3,
+        z,
+        1.5,
+        3,
+        1.5,
+        0x3d9845
     );
-
-    scene.add(group);
 }
 
+function createIce(x,z){
 
-function createCrystal(
-    x,
-    z,
-    color=0x7bdcff,
-    scale=1
-){
-
-    const crystal=
-        new THREE.Mesh(
-            new THREE.OctahedronGeometry(
-                3*scale,
-                0
-            ),
-            new THREE.MeshStandardMaterial({
-                color:color,
-                emissive:color,
-                emissiveIntensity:.25
-            })
-        );
+    const crystal = new THREE.Mesh(
+        new THREE.ConeGeometry(
+            3,
+            10,
+            6
+        ),
+        mat(0xc5f4ff)
+    );
 
     crystal.position.set(
         x,
-        3*scale,
+        5,
         z
     );
 
-    crystal.castShadow=true;
+    crystal.castShadow = true;
 
     scene.add(crystal);
 }
 
+function createVolcanoRock(x,z){
 
-function createFlower(
+    sphere(
+        x,
+        2,
+        z,
+        3.5,
+        0x383838
+    );
+}
+
+function createCoral(x,z){
+
+    for(let i=0;i<3;i++){
+
+        box(
+            x+i*2-2,
+            2,
+            z,
+            1.3,
+            4+Math.random()*2,
+            1.3,
+            0xe66b89
+        );
+    }
+}
+
+function createGalaxyCrystal(x,z){
+
+    const c = new THREE.Mesh(
+        new THREE.OctahedronGeometry(3),
+        new THREE.MeshStandardMaterial({
+            color:0x9b4cff,
+            emissive:0x451a86,
+            emissiveIntensity:1.2
+        })
+    );
+
+    c.position.set(
+        x,
+        3,
+        z
+    );
+
+    scene.add(c);
+}
+
+function createSanctuaryCrystal(x,z){
+
+    const c = new THREE.Mesh(
+        new THREE.OctahedronGeometry(3.5),
+        new THREE.MeshStandardMaterial({
+            color:0xb56cff,
+            emissive:0x5c238c,
+            emissiveIntensity:1.2
+        })
+    );
+
+    c.position.set(
+        x,
+        4,
+        z
+    );
+
+    scene.add(c);
+}
+
+function createDivineCrystal(x,z){
+
+    const c = new THREE.Mesh(
+        new THREE.OctahedronGeometry(4),
+        new THREE.MeshStandardMaterial({
+            color:0xffd94a,
+            emissive:0xb87b00,
+            emissiveIntensity:1.4
+        })
+    );
+
+    c.position.set(
+        x,
+        4,
+        z
+    );
+
+    scene.add(c);
+}
+
+/* =========================================================
+   ZONE SIGNS
+   ========================================================= */
+
+function createZoneSign(zone){
+
+    const canvas =
+        document.createElement("canvas");
+
+    canvas.width = 512;
+    canvas.height = 128;
+
+    const ctx =
+        canvas.getContext("2d");
+
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 42px Arial";
+    ctx.textAlign = "center";
+
+    ctx.fillText(
+        zone.emoji+" "+zone.name,
+        256,
+        70
+    );
+
+    const texture =
+        new THREE.CanvasTexture(canvas);
+
+    const sprite =
+        new THREE.Sprite(
+            new THREE.SpriteMaterial({
+                map:texture,
+                transparent:true
+            })
+        );
+
+    sprite.scale.set(
+        50,
+        12.5,
+        1
+    );
+
+    sprite.position.set(
+        0,
+        17,
+        zone.z
+    );
+
+    scene.add(sprite);
+}
+
+/* =========================================================
+   CORRALS
+   ========================================================= */
+
+function createCorrals(){
+
+    const positions = [
+        -90,
+        -30,
+        30,
+        90
+    ];
+
+    positions.forEach((x,index)=>{
+
+        const floor = box(
+            x,
+            .15,
+            45,
+            45,
+            .3,
+            42,
+            0x7d9b63
+        );
+
+        floor.userData.corral =
+            index;
+
+        const sign = createCorralSign(
+            x,
+            index
+        );
+
+        const corral = {
+            index,
+            x,
+            z:45,
+            claimed:false,
+            treadmill:null,
+            pets:[]
+        };
+
+        corrals.push(corral);
+
+        /* Caminadora FUERA */
+
+        const treadmillObj =
+            createTreadmill(
+                x,
+                17
+            );
+
+        corral.treadmill =
+            treadmillObj;
+
+        treadmillObj.visible = false;
+    });
+}
+
+function createCorralSign(
+    x,
+    index
+){
+
+    const canvas =
+        document.createElement("canvas");
+
+    canvas.width = 300;
+    canvas.height = 100;
+
+    const ctx =
+        canvas.getContext("2d");
+
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 34px Arial";
+    ctx.textAlign = "center";
+
+    ctx.fillText(
+        "CORRAL "+(index+1),
+        150,
+        60
+    );
+
+    const sprite =
+        new THREE.Sprite(
+            new THREE.SpriteMaterial({
+                map:new THREE.CanvasTexture(canvas),
+                transparent:true
+            })
+        );
+
+    sprite.scale.set(
+        18,
+        6,
+        1
+    );
+
+    sprite.position.set(
+        x,
+        7,
+        45
+    );
+
+    scene.add(sprite);
+
+    return sprite;
+}
+
+function createTreadmill(
     x,
     z
 ){
 
-    const stem=
-        new THREE.Mesh(
-            new THREE.CylinderGeometry(
-                .12,
-                .12,
-                1.5,
-                5
-            ),
-            new THREE.MeshStandardMaterial({
-                color:0x308a3b
-            })
-        );
-
-    stem.position.set(
-        x,
-        .75,
-        z
-    );
-
-    scene.add(stem);
-
-
-    const flower=
-        new THREE.Mesh(
-            new THREE.SphereGeometry(
-                .65,
-                6,
-                6
-            ),
-            new THREE.MeshStandardMaterial({
-                color:
-                    Math.random()>.5
-                    ?0xff5f8d
-                    :0xffd34e
-            })
-        );
-
-    flower.position.set(
-        x,
-        1.7,
-        z
-    );
-
-    scene.add(flower);
-}
-
-
-/* Decorar paredes */
-
-for(
-    let i=0;
-    i<TOTAL_ZONES;
-    i++
-){
-    wallDecoration(i);
-}
-
-
-/* =========================================================
-   CORRALES
-   ========================================================= */
-
-const corrals=[];
-
-const corralPositions=[
-    -78,
-    -26,
-    26,
-    78
-];
-
-
-function createCorral(
-    x,
-    z,
-    number
-){
-
-    const group=
+    const group =
         new THREE.Group();
 
-
-    const floor=
-        new THREE.Mesh(
-            new THREE.BoxGeometry(
-                46,
-                .4,
-                40
-            ),
-            new THREE.MeshStandardMaterial({
-                color:0xb89a68
-            })
-        );
-
-    floor.position.y=.25;
-
-    floor.receiveShadow=true;
-
-    group.add(floor);
-
-
-    const sign=
-        new THREE.Mesh(
-            new THREE.BoxGeometry(
-                22,
-                8,
-                1
-            ),
-            new THREE.MeshStandardMaterial({
-                color:0x3e291d
-            })
-        );
-
-    sign.position.set(
-        0,
-        5,
-        -19
-    );
-
-    group.add(sign);
-
-
-    group.position.set(
-        x,
-        0,
-        z
-    );
-
-    scene.add(group);
-
-
-    const label=
-        createTextSprite(
-            "🏠 CORRAL "+number
-        );
-
-    label.position.set(
-        x,
-        8,
-        z-20
-    );
-
-    label.scale.set(
-        18,
-        5,
-        1
-    );
-
-    scene.add(label);
-
-
-    corrals.push({
-        number:number,
-        x:x,
-        z:z,
-        claimed:false,
-        group:group
-    });
-}
-
-
-corralPositions.forEach(
-    (x,index)=>{
-        createCorral(
-            x,
-            68,
-            index+1
-        );
-    }
-);
-
-
-/* =========================================================
-   TEXTO SPRITE
-   ========================================================= */
-
-function createTextSprite(
-    text
-){
-
-    const canvas=
-        document.createElement(
-            "canvas"
-        );
-
-    canvas.width=512;
-    canvas.height=128;
-
-    const ctx=
-        canvas.getContext("2d");
-
-    ctx.fillStyle=
-        "rgba(0,0,0,.65)";
-
-    ctx.roundRect(
-        10,
-        10,
-        492,
-        108,
-        25
-    );
-
-    ctx.fill();
-
-    ctx.fillStyle="white";
-
-    ctx.font=
-        "bold 50px Arial";
-
-    ctx.textAlign="center";
-
-    ctx.textBaseline="middle";
-
-    ctx.fillText(
-        text,
-        256,
-        64
-    );
-
-    const texture=
-        new THREE.CanvasTexture(
-            canvas
-        );
-
-    const material=
-        new THREE.SpriteMaterial({
-            map:texture,
-            transparent:true
-        });
-
-    return new THREE.Sprite(
-        material
-    );
-}
-
-
-/* =========================================================
-   PLAZA
-   ========================================================= */
-
-const plaza=
-    new THREE.Mesh(
-        new THREE.CylinderGeometry(
-            28,
-            28,
+    const base = new THREE.Mesh(
+        new THREE.BoxGeometry(
+            11,
             1,
-            32
+            6
         ),
-        new THREE.MeshStandardMaterial({
-            color:0x596579
-        })
+        mat(0x20242d)
     );
 
-plaza.position.set(
-    0,
-    .5,
-    5
-);
-
-plaza.receiveShadow=true;
-
-scene.add(plaza);
-
-
-/* =========================================================
-   PORTAL
-   ========================================================= */
-
-const portalRing=
-    new THREE.Mesh(
-        new THREE.TorusGeometry(
-            12,
-            2,
-            16,
-            48
-        ),
-        new THREE.MeshStandardMaterial({
-            color:0x7e55ff,
-            emissive:0x4c2cff,
-            emissiveIntensity:1
-        })
-    );
-
-portalRing.rotation.x=
-    Math.PI/2;
-
-portalRing.position.y=12;
-
-portalRing.position.z=-25;
-
-scene.add(
-    portalRing
-);
-
-
-/* =========================================================
-   JUGADOR
-   ========================================================= */
-
-const player=
-    new THREE.Group();
-
-
-const body=
-    new THREE.Mesh(
-        new THREE.BoxGeometry(
-            4,
-            5,
-            3
-        ),
-        new THREE.MeshStandardMaterial({
-            color:0x326aff
-        })
-    );
-
-body.position.y=5;
-
-body.castShadow=true;
-
-player.add(body);
-
-
-const head=
-    new THREE.Mesh(
-        new THREE.BoxGeometry(
-            4,
-            4,
-            4
-        ),
-        new THREE.MeshStandardMaterial({
-            color:0xffc89b
-        })
-    );
-
-head.position.y=9.5;
-
-head.castShadow=true;
-
-player.add(head);
-
-
-const hair=
-    new THREE.Mesh(
-        new THREE.BoxGeometry(
-            4.2,
-            1.2,
-            4.2
-        ),
-        new THREE.MeshStandardMaterial({
-            color:0x17120f
-        })
-    );
-
-hair.position.y=11.4;
-
-hair.castShadow=true;
-
-player.add(hair);
-
-
-player.position.set(
-    0,
-    0,
-    24
-);
-
-scene.add(player);
-
-
-/* =========================================================
-   VARIABLES DEL JUGADOR
-   ========================================================= */
-
-let playerName="";
-
-let isOwner=false;
-
-let gameStarted=false;
-
-let claimedCorral=null;
-
-let money=0;
-
-let speed=10;
-
-let playerVelocityY=0;
-
-const gravity=-.025;
-
-const normalSpeed=.32;
-
-const sprintSpeed=.55;
-
-
-/* =========================================================
-   OWNER TAG
-   ========================================================= */
-
-let ownerTag=null;
-
-
-function createOwnerTag(){
-
-    if(ownerTag)
-        return;
-
-    ownerTag=
-        document.createElement(
-            "div"
-        );
-
-    ownerTag.className=
-        "ownerTag";
-
-    ownerTag.textContent=
-        "👑 OWNER 👑";
-
-    document.body.appendChild(
-        ownerTag
-    );
-}
-
-
-function updateOwnerTag(){
-
-    if(
-        !ownerTag ||
-        !isOwner ||
-        !gameStarted
-    )
-        return;
-
-
-    const position=
-        player.position.clone();
-
-    position.y+=16;
-
-    position.project(camera);
-
-
-    const x=
-        (position.x*.5+.5)*
-        window.innerWidth;
-
-    const y=
-        (-position.y*.5+.5)*
-        window.innerHeight;
-
-
-    ownerTag.style.left=
-        x+"px";
-
-    ownerTag.style.top=
-        y+"px";
-}
-
-
-/* =========================================================
-   MOVIMIENTO
-   ========================================================= */
-
-const keys={};
-
-
-document.addEventListener(
-    "keydown",
-    function(event){
-
-        keys[event.code]=true;
-
-
-        if(
-            event.code==="Space" &&
-            player.position.y<=.05
-        ){
-
-            playerVelocityY=.55;
-        }
-
-
-        if(
-            event.code==="KeyE"
-        ){
-
-            interactWithCorral();
-        }
-    }
-);
-
-
-document.addEventListener(
-    "keyup",
-    function(event){
-
-        keys[event.code]=false;
-    }
-);
-
-
-/* =========================================================
-   CÁMARA MOUSE
-   ========================================================= */
-
-let cameraYaw=0;
-
-let cameraPitch=.35;
-
-
-document.addEventListener(
-    "mousemove",
-    function(event){
-
-        if(!gameStarted)
-            return;
-
-
-        cameraYaw-=
-            event.movementX*.003;
-
-        cameraPitch-=
-            event.movementY*.002;
-
-
-        cameraPitch=
-            Math.max(
-                -.25,
-                Math.min(
-                    .95,
-                    cameraPitch
-                )
-            );
-    }
-);
-
-
-/* =========================================================
-   ACTUALIZAR CÁMARA
-   ========================================================= */
-
-function updateCamera(){
-
-    const distance=34;
-
-
-    const horizontalDistance=
-        Math.cos(cameraPitch)*
-        distance;
-
-
-    const cameraX=
-        player.position.x-
-        Math.sin(cameraYaw)*
-        horizontalDistance;
-
-
-    const cameraY=
-        player.position.y+
-        10+
-        Math.sin(cameraPitch)*
-        distance;
-
-
-    const cameraZ=
-        player.position.z+
-        Math.cos(cameraYaw)*
-        horizontalDistance;
-
-
-    camera.position.lerp(
-        new THREE.Vector3(
-            cameraX,
-            cameraY,
-            cameraZ
-        ),
-        .12
-    );
-
-
-    camera.lookAt(
-        new THREE.Vector3(
-            player.position.x,
-            player.position.y+5,
-            player.position.z
-        )
-    );
-}
-
-
-/* =========================================================
-   MOVIMIENTO
-   ========================================================= */
-
-function updatePlayer(){
-
-    if(!gameStarted)
-        return;
-
-
-    let moveX=0;
-
-    let moveZ=0;
-
-
-    if(keys["KeyW"])
-        moveZ-=1;
-
-    if(keys["KeyS"])
-        moveZ+=1;
-
-    if(keys["KeyA"])
-        moveX-=1;
-
-    if(keys["KeyD"])
-        moveX+=1;
-
-
-    const length=
-        Math.sqrt(
-            moveX*moveX+
-            moveZ*moveZ
-        );
-
-
-    if(length>0){
-
-        moveX/=length;
-        moveZ/=length;
-
-
-        const speedMove=
-            keys["ShiftLeft"] ||
-            keys["ShiftRight"]
-            ?sprintSpeed
-            :normalSpeed;
-
-
-        const forwardX=
-            -Math.sin(cameraYaw);
-
-        const forwardZ=
-            -Math.cos(cameraYaw);
-
-        const rightX=
-            Math.cos(cameraYaw);
-
-        const rightZ=
-            -Math.sin(cameraYaw);
-
-
-        player.position.x+=
-            (
-                forwardX*moveZ+
-                rightX*moveX
-            )*
-            speedMove;
-
-
-        player.position.z+=
-            (
-                forwardZ*moveZ+
-                rightZ*moveX
-            )*
-            speedMove;
-
-
-        player.rotation.y=
-            Math.atan2(
-                moveX,
-                moveZ
-            )+
-            cameraYaw;
-    }
-
-
-    playerVelocityY+=
-        gravity;
-
-    player.position.y+=
-        playerVelocityY;
-
-
-    if(
-        player.position.y<0
-    ){
-
-        player.position.y=0;
-
-        playerVelocityY=0;
-    }
-
-
-    const limitX=
-        MAP_WIDTH/2-12;
-
-
-    player.position.x=
-        Math.max(
-            -limitX,
-            Math.min(
-                limitX,
-                player.position.x
-            )
-        );
-
-
-    player.position.z=
-        Math.max(
-            END_Z-30,
-            Math.min(
-                START_Z+30,
-                player.position.z
-            )
-        );
-}
-
-
-/* =========================================================
-   ZONA
-   ========================================================= */
-
-function updateZone(){
-
-    const distance=
-        START_Z-
-        player.position.z;
-
-
-    let index=
-        Math.floor(
-            distance/
-            ZONE_LENGTH
-        );
-
-
-    index=
-        Math.max(
-            0,
-            Math.min(
-                TOTAL_ZONES-1,
-                index
-            )
-        );
-
-
-    document.getElementById(
-        "zone"
-    ).textContent=
-        zones[index].name;
-}
-
-
-/* =========================================================
-   CORRAL MÁS CERCANO
-   ========================================================= */
-
-function getNearbyCorral(){
-
-    let closest=null;
-
-    let closestDistance=999;
-
-
-    corrals.forEach(
-        corral=>{
-
-            const dx=
-                player.position.x-
-                corral.x;
-
-            const dz=
-                player.position.z-
-                corral.z;
-
-
-            const distance=
-                Math.sqrt(
-                    dx*dx+
-                    dz*dz
-                );
-
-
-            if(
-                distance<closestDistance
-            ){
-
-                closestDistance=
-                    distance;
-
-                closest=
-                    corral;
-            }
-        }
-    );
-
-
-    if(
-        closest &&
-        closestDistance<28
-    )
-        return closest;
-
-
-    return null;
-}
-
-
-/* =========================================================
-   INTERACCIÓN CON CORRAL
-   ========================================================= */
-
-function interactWithCorral(){
-
-    if(!gameStarted)
-        return;
-
-
-    const corral=
-        getNearbyCorral();
-
-
-    if(!corral)
-        return;
-
-
-    if(
-        corral.claimed
-    ){
-
-        if(
-            claimedCorral===
-            corral
-        ){
-
-            showAnnouncement(
-                "🏠 Este es tu corral."
-            );
-        }
-        else{
-
-            showAnnouncement(
-                "🔒 Este corral ya está ocupado."
-            );
-        }
-
-        return;
-    }
-
-
-    if(claimedCorral){
-
-        showAnnouncement(
-            "🏠 Ya tienes un corral."
-        );
-
-        return;
-    }
-
-
-    corral.claimed=true;
-
-    claimedCorral=
-        corral;
-
-
-    showAnnouncement(
-        "🏠 ¡CORRAL "+
-        corral.number+
-        " RECLAMADO!"
-    );
-
-
-    createTreadmill(
-        corral
-    );
-}
-
-
-/* =========================================================
-   CAMINADORA
-   ========================================================= */
-
-let treadmill=null;
-
-
-function createTreadmill(
-    corral
-){
-
-    const group=
-        new THREE.Group();
-
-
-    const base=
-        new THREE.Mesh(
-            new THREE.BoxGeometry(
-                13,
-                1,
-                7
-            ),
-            new THREE.MeshStandardMaterial({
-                color:0x252b35
-            })
-        );
-
-    base.position.y=.8;
-
-    base.castShadow=true;
+    base.position.y = .6;
 
     group.add(base);
 
+    const belt = new THREE.Mesh(
+        new THREE.BoxGeometry(
+            8,
+            .25,
+            4
+        ),
+        mat(0x111111)
+    );
 
-    const belt=
-        new THREE.Mesh(
-            new THREE.BoxGeometry(
-                11,
-                .35,
-                5
-            ),
-            new THREE.MeshStandardMaterial({
-                color:0x11151b
-            })
-        );
-
-    belt.position.y=1.45;
+    belt.position.y = 1.2;
 
     group.add(belt);
 
-
-    const handle=
-        new THREE.Mesh(
-            new THREE.BoxGeometry(
-                1,
-                6,
-                1
-            ),
-            new THREE.MeshStandardMaterial({
-                color:0x555c68
-            })
-        );
-
-    handle.position.set(
-        4.5,
-        4,
-        0
+    const bar = new THREE.Mesh(
+        new THREE.BoxGeometry(
+            1,
+            5,
+            1
+        ),
+        mat(0x333333)
     );
 
-    group.add(handle);
-
-
-    const bar=
-        new THREE.Mesh(
-            new THREE.BoxGeometry(
-                1,
-                1,
-                8
-            ),
-            new THREE.MeshStandardMaterial({
-                color:0x666e7a
-            })
-        );
-
     bar.position.set(
-        4.5,
-        6.5,
+        4,
+        3,
         0
     );
 
     group.add(bar);
 
-
-    group.position.set(
-        corral.x,
-        0,
-        corral.z
+    const handle = new THREE.Mesh(
+        new THREE.BoxGeometry(
+            1,
+            1,
+            6
+        ),
+        mat(0x444444)
     );
 
+    handle.position.set(
+        4,
+        5,
+        0
+    );
+
+    group.add(handle);
+
+    group.position.set(
+        x,
+        0,
+        z
+    );
 
     scene.add(group);
 
-    treadmill=group;
+    return group;
+}
 
+/* =========================================================
+   PLAYER
+   ========================================================= */
 
-    showAnnouncement(
-        "🏃 ¡TU CAMINADORA ESTÁ LISTA! 👟"
+function createPlayer(){
+
+    player =
+        new THREE.Group();
+
+    const body = new THREE.Mesh(
+        new THREE.BoxGeometry(
+            3,
+            5,
+            2.5
+        ),
+        mat(0x3c67db)
+    );
+
+    body.position.y = 3;
+
+    player.add(body);
+
+    const head = new THREE.Mesh(
+        new THREE.BoxGeometry(
+            3,
+            3,
+            3
+        ),
+        mat(0xffc98b)
+    );
+
+    head.position.y = 7;
+
+    player.add(head);
+
+    player.position.set(
+        0,
+        0,
+        25
+    );
+
+    scene.add(player);
+}
+
+/* =========================================================
+   EGGS
+   ========================================================= */
+
+function createEggs(){
+
+    zones.forEach((zone,index)=>{
+
+        const egg =
+            createEgg(
+                zone,
+                index
+            );
+
+        eggs.push(egg);
+    });
+}
+
+function createEgg(
+    zone,
+    index
+){
+
+    const group =
+        new THREE.Group();
+
+    const eggMaterial =
+        new THREE.MeshStandardMaterial({
+            color:zone.eggColor,
+            roughness:.45,
+            metalness:.15
+        });
+
+    const body =
+        new THREE.Mesh(
+            new THREE.SphereGeometry(
+                3,
+                24,
+                16
+            ),
+            eggMaterial
+        );
+
+    body.scale.y = 1.25;
+
+    body.castShadow = true;
+
+    group.add(body);
+
+    /* Diseño especial según zona */
+
+    if(index===0){
+
+        for(let i=0;i<4;i++){
+
+            const leaf = new THREE.Mesh(
+                new THREE.BoxGeometry(
+                    .4,
+                    2,
+                    1.4
+                ),
+                mat(0x48a84c)
+            );
+
+            leaf.position.set(
+                Math.cos(i)*2,
+                0,
+                Math.sin(i)*2
+            );
+
+            leaf.rotation.y = i;
+
+            group.add(leaf);
+        }
+    }
+
+    if(index===1){
+
+        for(let i=0;i<5;i++){
+
+            const line = new THREE.Mesh(
+                new THREE.BoxGeometry(
+                    .3,
+                    4,
+                    .4
+                ),
+                mat(0x70452d)
+            );
+
+            line.position.set(
+                Math.cos(i)*2,
+                0,
+                Math.sin(i)*2
+            );
+
+            group.add(line);
+        }
+    }
+
+    if(index===2){
+
+        const ring = new THREE.Mesh(
+            new THREE.TorusGeometry(
+                2.3,
+                .25,
+                10,
+                24
+            ),
+            mat(0xffd95c)
+        );
+
+        ring.rotation.x =
+            Math.PI/2;
+
+        group.add(ring);
+    }
+
+    if(index===3){
+
+        const crystal = new THREE.Mesh(
+            new THREE.ConeGeometry(
+                .7,
+                3,
+                5
+            ),
+            mat(0xe5fbff)
+        );
+
+        crystal.position.y = 2;
+
+        group.add(crystal);
+    }
+
+    if(index===4){
+
+        const lava = new THREE.Mesh(
+            new THREE.TorusGeometry(
+                2,
+                .3,
+                10,
+                24
+            ),
+            mat(0xff3e19)
+        );
+
+        lava.rotation.x =
+            Math.PI/2;
+
+        group.add(lava);
+    }
+
+    if(index===5){
+
+        const fin = new THREE.Mesh(
+            new THREE.ConeGeometry(
+                .7,
+                3,
+                5
+            ),
+            mat(0x8ceaff)
+        );
+
+        fin.rotation.z =
+            Math.PI/2;
+
+        group.add(fin);
+    }
+
+    if(index>=6){
+
+        const ring = new THREE.Mesh(
+            new THREE.TorusGeometry(
+                3,
+                .18,
+                8,
+                24
+            ),
+            mat(
+                index===8
+                ? 0xffdf54
+                : 0xd07cff
+            )
+        );
+
+        ring.rotation.x =
+            Math.PI/2;
+
+        group.add(ring);
+    }
+
+    group.position.set(
+        55,
+        4,
+        zone.z
+    );
+
+    group.userData.zone =
+        index;
+
+    group.userData.type =
+        "egg";
+
+    scene.add(group);
+
+    return group;
+}
+
+/* =========================================================
+   BOSSES
+   ========================================================= */
+
+function createBosses(){
+
+    zones.forEach(
+        (zone,index)=>{
+
+            const boss =
+                createBoss(
+                    zone,
+                    index
+                );
+
+            bosses.push(boss);
+        }
     );
 }
 
+function createBoss(
+    zone,
+    index
+){
 
-/* =========================================================
-   ENTRENAMIENTO
-   ========================================================= */
+    const group =
+        new THREE.Group();
 
-function updateTreadmill(){
+    let bodyColor =
+        0x8c8c8c;
 
-    if(
-        !treadmill ||
-        !claimedCorral
-    )
-        return;
+    if(index===0){
+        bodyColor=0xffffff;
+    }
 
+    if(index===1){
+        bodyColor=0xd68b2e;
+    }
 
-    const dx=
-        player.position.x-
-        claimedCorral.x;
+    if(index===2){
+        bodyColor=0xd7a82f;
+    }
 
-    const dz=
-        player.position.z-
-        claimedCorral.z;
+    if(index===3){
+        bodyColor=0x9edfff;
+    }
 
+    if(index===4){
+        bodyColor=0x3a1111;
+    }
 
-    const distance=
-        Math.sqrt(
-            dx*dx+
-            dz*dz
+    if(index===5){
+        bodyColor=0x6fa8c8;
+    }
+
+    if(index===6){
+        bodyColor=0x8c55d9;
+    }
+
+    if(index===7){
+        bodyColor=0x9b64d4;
+    }
+
+    if(index===8){
+        bodyColor=0xffd64b;
+    }
+
+    const body =
+        new THREE.Mesh(
+            new THREE.BoxGeometry(
+                8,
+                7,
+                6
+            ),
+            mat(bodyColor)
         );
 
+    body.position.y = 5;
 
-    /*
-       Si el jugador está encima
-       de la caminadora, gana +1.
-    */
+    group.add(body);
 
-    if(
-        distance<7 &&
-        player.position.y<2
-    ){
+    const head =
+        new THREE.Mesh(
+            new THREE.SphereGeometry(
+                4,
+                16,
+                12
+            ),
+            mat(bodyColor)
+        );
+
+    head.position.y = 10;
+
+    group.add(head);
+
+    /* Características especiales */
+
+    if(index===0){
+
+        const comb =
+            new THREE.Mesh(
+                new THREE.BoxGeometry(
+                    3,
+                    2,
+                    1
+                ),
+                mat(0xe33a32)
+            );
+
+        comb.position.set(
+            0,
+            14,
+            0
+        );
+
+        group.add(comb);
+    }
+
+    if(index===1){
+
+        for(let i=-1;i<=1;i++){
+
+            const stripe =
+                new THREE.Mesh(
+                    new THREE.BoxGeometry(
+                        .5,
+                        7,
+                        6.2
+                    ),
+                    mat(0x111111)
+                );
+
+            stripe.position.x =
+                i*2;
+
+            stripe.position.y =
+                5;
+
+            group.add(stripe);
+        }
+    }
+
+    if(index===4){
+
+        /* Tres cabezas de Cerberus */
+
+        for(let i=-1;i<=1;i++){
+
+            const head2 =
+                new THREE.Mesh(
+                    new THREE.SphereGeometry(
+                        2.5,
+                        16,
+                        12
+                    ),
+                    mat(0x3a1111)
+                );
+
+            head2.position.set(
+                i*3,
+                11,
+                0
+            );
+
+            group.add(head2);
+        }
+    }
+
+    if(index===5){
+
+        const tail =
+            new THREE.Mesh(
+                new THREE.SphereGeometry(
+                    4,
+                    16,
+                    10
+                ),
+                mat(bodyColor)
+            );
+
+        tail.scale.set(
+            2,
+            .7,
+            .7
+        );
+
+        tail.position.x =
+            -6;
+
+        tail.position.y =
+            5;
+
+        group.add(tail);
+    }
+
+    group.position.set(
+        -60,
+        0,
+        zone.z
+    );
+
+    group.userData.boss =
+        zone.boss;
+
+    group.userData.zone =
+        index;
+
+    scene.add(group);
+
+    return group;
+}
+
+/* =========================================================
+   INPUT
+   ========================================================= */
+
+function keyDown(e){
+
+    keys[e.code] = true;
+
+    if(e.code === "Space"){
 
         if(
-            !updateTreadmill.last
-        )
-            updateTreadmill.last=0;
-
-
-        const now=
-            performance.now();
-
-
-        if(
-            now-
-            updateTreadmill.last>
-            1500
+            player &&
+            player.position.y <= .05
         ){
 
-            speed+=1;
+            playerVelocityY =
+                .55;
+        }
+    }
 
-            updateTreadmill.last=
-                now;
+    if(e.code === "KeyE"){
 
+        interact();
+    }
+}
 
-            showAnnouncement(
-                "👟 ¡VELOCIDAD +1! ⚡ "+
-                speed
+function keyUp(e){
+
+    keys[e.code] = false;
+}
+
+function mouseMove(e){
+
+    if(!player) return;
+
+    cameraYaw -=
+        e.movementX * .0025;
+
+    cameraPitch -=
+        e.movementY * .002;
+
+    cameraPitch =
+        Math.max(
+            -.2,
+            Math.min(
+                .9,
+                cameraPitch
+            )
+        );
+}
+
+/* =========================================================
+   INTERACTION E
+   ========================================================= */
+
+function interact(){
+
+    if(!player) return;
+
+    /* Huevo */
+
+    for(let i=eggs.length-1;i>=0;i--){
+
+        const egg =
+            eggs[i];
+
+        if(!egg.visible) continue;
+
+        const distance =
+            player.position.distanceTo(
+                egg.position
             );
+
+        if(distance < 10){
+
+            egg.visible = false;
+
+            money += 100;
+
+            updateHUD();
+
+            showAdminMessage(
+                "🥚 ¡Has agarrado un huevo de "+
+                zones[egg.userData.zone].name+"!"
+            );
+
+            return;
+        }
+    }
+
+    /* Corral */
+
+    for(const corral of corrals){
+
+        if(corral.claimed) continue;
+
+        const distance =
+            Math.hypot(
+                player.position.x-corral.x,
+                player.position.z-corral.z
+            );
+
+        if(distance < 15){
+
+            claimCorral(
+                corral
+            );
+
+            return;
         }
     }
 }
 
+/* =========================================================
+   CLAIM CORRAL
+   ========================================================= */
+
+function claimCorral(
+    corral
+){
+
+    corral.claimed = true;
+
+    claimedCorral =
+        corral;
+
+    corral.treadmill.visible =
+        true;
+
+    treadmill =
+        corral.treadmill;
+
+    showAdminMessage(
+        "🏠 CORRAL "+(corral.index+1)+
+        " RECLAMADO"
+    );
+}
+
+/* =========================================================
+   MOVEMENT
+   ========================================================= */
+
+function updatePlayer(){
+
+    if(!player) return;
+
+    const direction =
+        new THREE.Vector3();
+
+    if(keys["KeyW"]){
+        direction.z -= 1;
+    }
+
+    if(keys["KeyS"]){
+        direction.z += 1;
+    }
+
+    if(keys["KeyA"]){
+        direction.x -= 1;
+    }
+
+    if(keys["KeyD"]){
+        direction.x += 1;
+    }
+
+    if(direction.length()>0){
+
+        direction.normalize();
+
+        let moveSpeed =
+            .65;
+
+        if(keys["ShiftLeft"] ||
+           keys["ShiftRight"]){
+
+            moveSpeed =
+                1.15;
+        }
+
+        player.position.x +=
+            direction.x * moveSpeed;
+
+        player.position.z +=
+            direction.z * moveSpeed;
+    }
+
+    /* gravedad */
+
+    playerVelocityY -=
+        .025;
+
+    player.position.y +=
+        playerVelocityY;
+
+    if(player.position.y<0){
+
+        player.position.y=0;
+        playerVelocityY=0;
+    }
+
+    /* límites exteriores */
+
+    player.position.x =
+        Math.max(
+            -MAP_WIDTH/2+7,
+            Math.min(
+                MAP_WIDTH/2-7,
+                player.position.x
+            )
+        );
+
+    player.position.z =
+        Math.max(
+            -1340,
+            Math.min(
+                100,
+                player.position.z
+            )
+        );
+
+    /* Caminadora */
+
+    if(
+        claimedCorral &&
+        treadmill
+    ){
+
+        const distance =
+            Math.hypot(
+                player.position.x -
+                treadmill.position.x,
+
+                player.position.z -
+                treadmill.position.z
+            );
+
+        if(distance < 7){
+
+            playerSpeed +=
+                .015;
+
+            playerSpeed =
+                Math.min(
+                    playerSpeed,
+                    999
+                );
+
+            document.getElementById(
+                "speed"
+            ).textContent =
+                Math.floor(playerSpeed);
+        }
+    }
+}
+
+/* =========================================================
+   ZONE
+   ========================================================= */
+
+function updateZone(){
+
+    if(!player) return;
+
+    let closest =
+        0;
+
+    let best =
+        Infinity;
+
+    zones.forEach(
+        (zone,index)=>{
+
+            const distance =
+                Math.abs(
+                    player.position.z -
+                    zone.z
+                );
+
+            if(distance < best){
+
+                best =
+                    distance;
+
+                closest =
+                    index;
+            }
+        }
+    );
+
+    if(
+        closest !==
+        currentZoneIndex
+    ){
+
+        currentZoneIndex =
+            closest;
+    }
+
+    document.getElementById(
+        "zone"
+    ).textContent =
+        zones[currentZoneIndex].name;
+}
+
+/* =========================================================
+   CAMERA
+   ========================================================= */
+
+function updateCamera(){
+
+    const distance =
+        38;
+
+    const horizontal =
+        Math.cos(cameraPitch) *
+        distance;
+
+    const target =
+        new THREE.Vector3(
+            player.position.x -
+            Math.sin(cameraYaw) *
+            horizontal,
+
+            player.position.y +
+            12 +
+            Math.sin(cameraPitch) *
+            distance,
+
+            player.position.z +
+            Math.cos(cameraYaw) *
+            horizontal
+        );
+
+    camera.position.lerp(
+        target,
+        .12
+    );
+
+    camera.lookAt(
+        player.position.x,
+        player.position.y+5,
+        player.position.z
+    );
+}
 
 /* =========================================================
    HUD
@@ -2622,150 +2210,124 @@ function updateTreadmill(){
 function updateHUD(){
 
     document.getElementById(
-        "playerNameHud"
-    ).textContent=
-        "👤 "+
-        playerName;
-
-
-    document.getElementById(
         "money"
-    ).textContent=
-        "💰 $"+
-        money;
-
-
-    document.getElementById(
-        "speedHud"
-    ).textContent=
-        "👟 ⚡ "+
-        speed;
+    ).textContent =
+        Math.floor(money);
 }
 
-
 /* =========================================================
-   ANUNCIO
+   ADMIN MESSAGES
    ========================================================= */
 
-function showAnnouncement(
-    text
+function showAdminMessage(
+    message
 ){
 
-    const element=
+    const container =
         document.getElementById(
-            "announcement"
+            "messageContainer"
         );
 
+    const div =
+        document.createElement("div");
 
-    element.textContent=text;
+    div.className =
+        "adminMessage";
 
-    element.style.display=
-        "block";
+    div.innerHTML =
+        `<div class="adminName">ADMIN</div>
+         <div class="messageText">${escapeHTML(message)}</div>`;
 
+    container.appendChild(div);
 
-    clearTimeout(
-        showAnnouncement.timer
-    );
-
-
-    showAnnouncement.timer=
-        setTimeout(
-            ()=>{
-                element.style.display=
-                    "none";
-            },
-            3500
-        );
+    setTimeout(()=>{
+        div.remove();
+    },5000);
 }
 
+function escapeHTML(text){
+
+    return text
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+}
 
 /* =========================================================
-   PANEL ADMIN
+   ADMIN PANEL
    ========================================================= */
 
-const adminButton=
+const adminButton =
     document.getElementById(
         "adminButton"
     );
 
-const adminPanel=
+const adminPanel =
     document.getElementById(
         "adminPanel"
     );
 
+const adminStatus =
+    document.getElementById(
+        "adminStatus"
+    );
+
+let adminScope =
+    "GLOBAL";
 
 adminButton.addEventListener(
     "click",
     ()=>{
-        adminPanel.style.display=
-            adminPanel.style.display===
+
+        adminPanel.style.display =
+            adminPanel.style.display ===
             "block"
-            ?"none"
-            :"block";
+            ? "none"
+            : "block";
     }
 );
 
-
 document.getElementById(
-    "closeAdmin"
+    "globalBtn"
 ).addEventListener(
     "click",
     ()=>{
-        adminPanel.style.display=
-            "none";
-    }
-);
 
-
-/* =========================================================
-   ALCANCE ADMIN
-   ========================================================= */
-
-let adminScope="GLOBAL";
-
-
-document.getElementById(
-    "globalScope"
-).addEventListener(
-    "click",
-    function(){
-
-        adminScope="GLOBAL";
-
-        this.classList.add("active");
+        adminScope =
+            "GLOBAL";
 
         document.getElementById(
-            "serverScope"
-        ).classList.remove(
-            "active"
-        );
+            "globalBtn"
+        ).classList.add("active");
+
+        document.getElementById(
+            "serverBtn"
+        ).classList.remove("active");
     }
 );
 
-
 document.getElementById(
-    "serverScope"
+    "serverBtn"
 ).addEventListener(
     "click",
-    function(){
+    ()=>{
 
-        adminScope=
+        adminScope =
             "SERVER";
 
-        this.classList.add("active");
+        document.getElementById(
+            "serverBtn"
+        ).classList.add("active");
 
         document.getElementById(
-            "globalScope"
-        ).classList.remove(
-            "active"
-        );
+            "globalBtn"
+        ).classList.remove("active");
     }
 );
 
-
-/* =========================================================
-   MENSAJES ADMIN
-   ========================================================= */
+/* Mensaje */
 
 document.getElementById(
     "sendMessage"
@@ -2773,40 +2335,29 @@ document.getElementById(
     "click",
     ()=>{
 
-        const input=
+        const input =
             document.getElementById(
-                "messageInput"
+                "adminMessageInput"
             );
 
-
-        const message=
+        const text =
             input.value.trim();
 
+        if(!text) return;
 
-        if(!message){
-
-            showAnnouncement(
-                "⚠️ Escribe un mensaje."
-            );
-
-            return;
-        }
-
-
-        showAnnouncement(
-            "📢 "+
-            message
+        showAdminMessage(
+            text
         );
 
+        input.value = "";
 
-        input.value="";
+        adminStatus.textContent =
+            "Mensaje enviado: "+
+            adminScope;
     }
 );
 
-
-/* =========================================================
-   EVENTOS ADMIN
-   ========================================================= */
+/* Evento Galaxy */
 
 document.getElementById(
     "activateEvent"
@@ -2814,413 +2365,317 @@ document.getElementById(
     "click",
     ()=>{
 
-        const event=
+        const event =
             document.getElementById(
                 "eventSelect"
             ).value;
 
+        if(event==="galaxy"){
 
-        showAnnouncement(
-            "👑 EVENTO "+
-            event+
-            " ACTIVADO — "+
-            (
-                adminScope===
-                "GLOBAL"
-                ?"🌎 GLOBAL"
-                :"🖥️ ESTE SERVIDOR"
-            )
-        );
+            activateGalaxy();
+
+            adminStatus.textContent =
+                "🌌 Evento Galaxy activado: "+
+                adminScope;
+        }
     }
 );
 
-
-/* =========================================================
-   JEFES ADMIN
-   ========================================================= */
-
 document.getElementById(
-    "spawnBoss"
+    "stopEvent"
 ).addEventListener(
     "click",
     ()=>{
 
-        const boss=
+        stopGalaxy();
+
+        adminStatus.textContent =
+            "Evento detenido.";
+    }
+);
+
+/* Boss */
+
+document.getElementById(
+    "bossInfo"
+).addEventListener(
+    "click",
+    ()=>{
+
+        const name =
             document.getElementById(
                 "bossSelect"
             ).value;
 
+        const boss =
+            bosses.find(
+                b =>
+                    b.userData.boss ===
+                    name
+            );
 
-        showAnnouncement(
-            "👹 ¡HA APARECIDO "+
-            boss+
-            "! — "+
-            (
-                adminScope===
-                "GLOBAL"
-                ?"🌎 GLOBAL"
-                :"🖥️ ESTE SERVIDOR"
-            )
-        );
+        if(boss){
 
+            const zone =
+                zones[
+                    boss.userData.zone
+                ];
 
-        createBossDisplay(
-            boss
-        );
+            showAdminMessage(
+                "👹 "+name+
+                " está en "+zone.name
+            );
+        }
     }
 );
 
-
-/* =========================================================
-   BOSS VISUAL
-   ========================================================= */
-
-function createBossDisplay(
-    bossName
-){
-
-    const bossGroup=
-        new THREE.Group();
-
-
-    const body=
-        new THREE.Mesh(
-            new THREE.BoxGeometry(
-                12,
-                14,
-                9
-            ),
-            new THREE.MeshStandardMaterial({
-                color:0x461d66
-            })
-        );
-
-    body.position.y=7;
-
-    body.castShadow=true;
-
-    bossGroup.add(body);
-
-
-    const head=
-        new THREE.Mesh(
-            new THREE.DodecahedronGeometry(
-                7,
-                0
-            ),
-            new THREE.MeshStandardMaterial({
-                color:0x6b2990,
-                emissive:0x25102e,
-                emissiveIntensity:.3
-            })
-        );
-
-    head.position.y=17;
-
-    head.castShadow=true;
-
-    bossGroup.add(head);
-
-
-    bossGroup.position.set(
-        0,
-        0,
-        player.position.z-45
-    );
-
-
-    scene.add(
-        bossGroup
-    );
-
-
-    setTimeout(
-        ()=>{
-            scene.remove(
-                bossGroup
-            );
-        },
-        12000
-    );
-}
-
-
-/* =========================================================
-   ENCUESTA
-   ========================================================= */
+/* Encuesta */
 
 document.getElementById(
-    "createPoll"
+    "sendPoll"
 ).addEventListener(
     "click",
     ()=>{
 
-        const input=
+        const input =
             document.getElementById(
                 "pollInput"
             );
 
-
-        const question=
+        const text =
             input.value.trim();
 
+        if(!text) return;
 
-        if(!question){
-
-            showAnnouncement(
-                "⚠️ Escribe una pregunta."
-            );
-
-            return;
-        }
-
-
-        showAnnouncement(
-            "📊 ENCUESTA: "+
-            question
+        showAdminMessage(
+            "📊 ENCUESTA: "+text
         );
 
+        input.value = "";
 
-        input.value="";
+        adminStatus.textContent =
+            "Encuesta publicada.";
     }
 );
-
 
 /* =========================================================
-   NOMBRE
+   GALAXY EVENT
    ========================================================= */
 
-const bannedWords=[
+function activateGalaxy(){
 
-    "puta",
-    "puto",
-    "mierda",
-    "idiota",
-    "estupido",
-    "estúpido",
-    "pendejo",
-    "pendeja",
-    "culo",
-    "coño",
-    "cabron",
-    "cabrón",
-    "fuck",
-    "shit",
-    "bitch"
+    galaxyEvent =
+        true;
 
-];
-
-
-function normalizeName(
-    name
-){
-
-    return name
-        .toLowerCase()
-        .replace(
-            /[^a-z0-9áéíóúüñ]/gi,
-            ""
-        );
-}
-
-
-function validName(
-    name
-){
-
-    if(
-        name.length<3 ||
-        name.length>16
-    )
-        return false;
-
-
-    if(
-        !/^[a-zA-Z0-9áéíóúüñÁÉÍÓÚÜÑ_]+$/.test(
-            name
-        )
-    )
-        return false;
-
-
-    const normalized=
-        normalizeName(
-            name
+    scene.background =
+        new THREE.Color(
+            0x09001f
         );
 
+    scene.fog.color =
+        new THREE.Color(
+            0x09001f
+        );
 
-    for(
-        const word of bannedWords
-    ){
-
-        if(
-            normalized.includes(
-                word
-            )
-        )
-            return false;
+    if(galaxyGain){
+        galaxyGain.gain.value =
+            .18;
     }
 
-
-    return true;
+    showAdminMessage(
+        "🌌 ¡EVENTO GALAXY ACTIVADO!"
+    );
 }
 
+function stopGalaxy(){
+
+    galaxyEvent =
+        false;
+
+    scene.background =
+        new THREE.Color(
+            0x86c8ff
+        );
+
+    scene.fog.color =
+        new THREE.Color(
+            0x86c8ff
+        );
+
+    if(galaxyGain){
+        galaxyGain.gain.value =
+            0;
+    }
+
+    showAdminMessage(
+        "🌌 Evento Galaxy terminado"
+    );
+}
 
 /* =========================================================
-   JUGAR
+   AUDIO
    ========================================================= */
 
-document.getElementById(
-    "playButton"
-).addEventListener(
-    "click",
-    startGame
-);
+/*
+   El piano se genera con Web Audio.
+   No depende de una canción comercial externa.
+   Se reproduce como música permanente del juego.
+*/
 
+function startAudio(){
 
-document.getElementById(
-    "nameInput"
-).addEventListener(
-    "keydown",
-    function(event){
+    if(audioStarted) return;
 
-        if(
-            event.key==="Enter"
-        ){
-            startGame();
-        }
-    }
-);
+    audioStarted =
+        true;
 
+    const AudioContext =
+        window.AudioContext ||
+        window.webkitAudioContext;
 
-function startGame(){
+    if(!AudioContext) return;
 
-    const input=
-        document.getElementById(
-            "nameInput"
-        );
+    const ctx =
+        new AudioContext();
 
-    const error=
-        document.getElementById(
-            "errorMessage"
-        );
+    pianoGain =
+        ctx.createGain();
 
+    galaxyGain =
+        ctx.createGain();
 
-    const name=
-        input.value.trim();
+    pianoGain.gain.value =
+        .045;
 
+    galaxyGain.gain.value =
+        0;
 
-    error.textContent="";
-
-
-    if(!validName(name)){
-
-        error.textContent=
-            "⚠️ Nombre no válido.";
-
-        return;
-    }
-
-
-    const normalized=
-        normalizeName(name);
-
-
-    /*
-       ERICK es el nombre reservado
-       del OWNER en esta versión.
-    */
-
-    if(
-        normalized==="erick"
-    ){
-
-        playerName="ERICK";
-
-        isOwner=true;
-
-        createOwnerTag();
-
-        adminButton.style.display=
-            "block";
-
-
-        showAnnouncement(
-            "🌌👑 OWNER ERICK HA ENTRADO 👑🌌"
-        );
-
-    }
-    else{
-
-        playerName=name;
-
-        isOwner=false;
-
-        adminButton.style.display=
-            "none";
-    }
-
-
-    gameStarted=true;
-
-
-    document.getElementById(
-        "startScreen"
-    ).style.display=
-        "none";
-
-
-    updateHUD();
-
-
-    camera.position.set(
-        0,
-        12,
-        58
+    pianoGain.connect(
+        ctx.destination
     );
 
+    galaxyGain.connect(
+        ctx.destination
+    );
 
-    if(!isOwner){
+    /* Piano elegante permanente */
 
-        showAnnouncement(
-            "🌎 ¡BIENVENIDO A OWNER WORLD, "+
-            playerName+
-            "! 👑"
+    const notes = [
+        261.63,
+        329.63,
+        392.00,
+        523.25,
+        392.00,
+        329.63,
+        293.66,
+        349.23
+    ];
+
+    let noteIndex = 0;
+
+    function playPianoNote(){
+
+        if(!pianoGain) return;
+
+        const osc =
+            ctx.createOscillator();
+
+        const gain =
+            ctx.createGain();
+
+        osc.type =
+            "sine";
+
+        osc.frequency.value =
+            notes[noteIndex];
+
+        gain.gain.setValueAtTime(
+            0,
+            ctx.currentTime
         );
 
+        gain.gain.linearRampToValueAtTime(
+            .35,
+            ctx.currentTime+.08
+        );
+
+        gain.gain.exponentialRampToValueAtTime(
+            .001,
+            ctx.currentTime+2.3
+        );
+
+        osc.connect(gain);
+        gain.connect(pianoGain);
+
+        osc.start();
+        osc.stop(
+            ctx.currentTime+2.4
+        );
+
+        noteIndex =
+            (noteIndex+1) %
+            notes.length;
     }
+
+    playPianoNote();
+
+    setInterval(
+        playPianoNote,
+        1450
+    );
+
+    /* Ambiente Galaxy */
+
+    function galaxySound(){
+
+        if(!galaxyEvent) return;
+
+        const osc =
+            ctx.createOscillator();
+
+        const gain =
+            ctx.createGain();
+
+        osc.type =
+            "sine";
+
+        osc.frequency.value =
+            110 +
+            Math.random()*80;
+
+        gain.gain.setValueAtTime(
+            0,
+            ctx.currentTime
+        );
+
+        gain.gain.linearRampToValueAtTime(
+            .25,
+            ctx.currentTime+.5
+        );
+
+        gain.gain.exponentialRampToValueAtTime(
+            .001,
+            ctx.currentTime+3
+        );
+
+        osc.connect(gain);
+        gain.connect(galaxyGain);
+
+        osc.start();
+        osc.stop(
+            ctx.currentTime+3
+        );
+    }
+
+    setInterval(
+        galaxySound,
+        2200
+    );
 }
 
-
 /* =========================================================
-   RESIZE
+   ANIMATION
    ========================================================= */
-
-window.addEventListener(
-    "resize",
-    function(){
-
-        camera.aspect=
-            window.innerWidth/
-            window.innerHeight;
-
-        camera.updateProjectionMatrix();
-
-        renderer.setSize(
-            window.innerWidth,
-            window.innerHeight
-        );
-    }
-);
-
-
-/* =========================================================
-   ANIMACIÓN
-   ========================================================= */
-
-const clock=
-    new THREE.Clock();
-
 
 function animate(){
 
@@ -3228,27 +2683,43 @@ function animate(){
         animate
     );
 
+    if(player){
 
-    const time=
-        clock.getElapsedTime();
+        updatePlayer();
+        updateZone();
+        updateCamera();
 
+        eggs.forEach(
+            egg=>{
 
-    portalRing.rotation.z=
-        time*.8;
+                if(egg.visible){
 
+                    egg.rotation.y +=
+                        .01;
 
-    updatePlayer();
+                    egg.position.y =
+                        4 +
+                        Math.sin(
+                            performance.now()*.002
+                        )*.4;
+                }
+            }
+        );
 
-    updateCamera();
+        bosses.forEach(
+            boss=>{
 
-    updateZone();
+                boss.rotation.y +=
+                    .0015;
 
-    updateTreadmill();
-
-    updateHUD();
-
-    updateOwnerTag();
-
+                boss.position.y =
+                    Math.sin(
+                        performance.now()*.001+
+                        boss.userData.zone
+                    )*.15;
+            }
+        );
+    }
 
     renderer.render(
         scene,
@@ -3256,8 +2727,26 @@ function animate(){
     );
 }
 
+/* =========================================================
+   RESIZE
+   ========================================================= */
 
-animate();
+function resize(){
+
+    if(!camera || !renderer)
+        return;
+
+    camera.aspect =
+        innerWidth /
+        innerHeight;
+
+    camera.updateProjectionMatrix();
+
+    renderer.setSize(
+        innerWidth,
+        innerHeight
+    );
+}
 
 </script>
 
