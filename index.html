@@ -103,20 +103,20 @@ canvas {
 
 <script>
 /* =========================================================
-   OWNER WORLD V0.2
-   MAPA + 9 ZONAS + 4 BASES ALINEADAS
+   OWNER WORLD V0.3
+   MAPA + ZONAS + CORRALES + MUROS + SALTO + CÁMARA
    ========================================================= */
 
 const scene = new THREE.Scene();
 
 scene.background = new THREE.Color(0x87ceeb);
-scene.fog = new THREE.Fog(0x87ceeb, 180, 950);
+scene.fog = new THREE.Fog(0x87ceeb, 180, 1100);
 
 const camera = new THREE.PerspectiveCamera(
     70,
     window.innerWidth / window.innerHeight,
     0.1,
-    2000
+    2200
 );
 
 const renderer = new THREE.WebGLRenderer({
@@ -144,7 +144,7 @@ sun.position.set(100, 200, 100);
 scene.add(sun);
 
 /* =========================================================
-   GRUPO PRINCIPAL DEL MAPA
+   MAPA
    ========================================================= */
 
 const map = new THREE.Group();
@@ -154,276 +154,292 @@ scene.add(map);
    TERRENO
    ========================================================= */
 
-const groundGeometry = new THREE.BoxGeometry(260, 2, 1250);
-
-const groundMaterial = new THREE.MeshStandardMaterial({
-    color: 0x4c8f45
-});
+const MAP_WIDTH = 260;
+const MAP_LENGTH = 1250;
 
 const ground = new THREE.Mesh(
-    groundGeometry,
-    groundMaterial
+    new THREE.BoxGeometry(MAP_WIDTH, 2, MAP_LENGTH),
+    new THREE.MeshStandardMaterial({
+        color: 0x4c8f45
+    })
 );
 
-ground.position.set(0, -1, -420);
+ground.position.set(0, -1, -430);
 map.add(ground);
 
 /* =========================================================
    CAMINO CENTRAL
    ========================================================= */
 
-const roadMaterial = new THREE.MeshStandardMaterial({
-    color: 0x555555
-});
-
-const roadGeometry = new THREE.BoxGeometry(34, 0.4, 1050);
-
 const road = new THREE.Mesh(
-    roadGeometry,
-    roadMaterial
+    new THREE.BoxGeometry(34, 0.4, 1150),
+    new THREE.MeshStandardMaterial({
+        color: 0x555555
+    })
 );
 
-road.position.set(0, 0.2, -420);
+road.position.set(0, 0.2, -430);
 map.add(road);
 
 /* =========================================================
    ZONAS
-   De abajo hacia arriba:
-   Pradera → ... → Dominio Divino
+   Ahora son un poco más largas.
    ========================================================= */
 
 const zones = [
     {
         name: "🌿 Pradera Inicial",
         z: 0,
+        length: 115,
         color: 0x63b84d
     },
     {
         name: "🌲 Bosque Encantado",
-        z: -120,
+        z: -135,
+        length: 115,
         color: 0x286b3b
     },
     {
         name: "🏜️ Desierto Dorado",
-        z: -240,
+        z: -270,
+        length: 115,
         color: 0xd7a842
     },
     {
         name: "❄️ Cumbres Heladas",
-        z: -360,
+        z: -405,
+        length: 115,
         color: 0xbde8ff
     },
     {
         name: "🌋 Volcán Carmesí",
-        z: -480,
+        z: -540,
+        length: 115,
         color: 0x8f2929
     },
     {
         name: "🌊 Abismo Marino",
-        z: -600,
+        z: -675,
+        length: 115,
         color: 0x176b91
     },
     {
         name: "🌌 Galaxia Perdida",
-        z: -720,
+        z: -810,
+        length: 115,
         color: 0x352060
     },
     {
         name: "♾️ Santuario Eterno",
-        z: -840,
+        z: -945,
+        length: 115,
         color: 0x725ca8
     },
     {
         name: "✨ Dominio Divino",
-        z: -960,
+        z: -1080,
+        length: 115,
         color: 0xd9c875
     }
 ];
 
 /* =========================================================
-   CREAR MARCADORES DE ZONA
+   CREAR ZONAS
    ========================================================= */
 
 function createZone(zone) {
 
-    const platformGeometry = new THREE.BoxGeometry(
-        220,
-        0.5,
-        92
-    );
-
-    const platformMaterial =
+    const platform = new THREE.Mesh(
+        new THREE.BoxGeometry(
+            220,
+            0.5,
+            zone.length
+        ),
         new THREE.MeshStandardMaterial({
             color: zone.color
-        });
-
-    const platform = new THREE.Mesh(
-        platformGeometry,
-        platformMaterial
+        })
     );
 
     platform.position.set(0, 0.5, zone.z);
     map.add(platform);
 
-    /* Entrada visual de la zona */
-
-    const gateGeometry = new THREE.BoxGeometry(
-        65,
-        18,
-        3
-    );
-
-    const gateMaterial =
+    const gate = new THREE.Mesh(
+        new THREE.BoxGeometry(65, 18, 3),
         new THREE.MeshStandardMaterial({
             color: zone.color,
             emissive: zone.color,
             emissiveIntensity: 0.15
-        });
-
-    const gate = new THREE.Mesh(
-        gateGeometry,
-        gateMaterial
+        })
     );
 
-    gate.position.set(0, 9, zone.z - 43);
+    gate.position.set(
+        0,
+        9,
+        zone.z - zone.length / 2
+    );
+
     map.add(gate);
-
-    /* Pilares */
-
-    const pillarGeometry =
-        new THREE.BoxGeometry(5, 18, 5);
-
-    const leftPillar = new THREE.Mesh(
-        pillarGeometry,
-        gateMaterial
-    );
-
-    const rightPillar = new THREE.Mesh(
-        pillarGeometry,
-        gateMaterial
-    );
-
-    leftPillar.position.set(-35, 9, zone.z - 43);
-    rightPillar.position.set(35, 9, zone.z - 43);
-
-    map.add(leftPillar);
-    map.add(rightPillar);
-
-    /* Pequeños detalles laterales */
-
-    for (let i = -4; i <= 4; i++) {
-
-        const detail = new THREE.Mesh(
-            new THREE.BoxGeometry(2, 2, 2),
-            gateMaterial
-        );
-
-        detail.position.set(
-            i * 10,
-            2,
-            zone.z - 47
-        );
-
-        map.add(detail);
-    }
 }
 
 zones.forEach(createZone);
 
 /* =========================================================
-   BASES
-   LAS 4 ESTÁN EN UNA SOLA LÍNEA HORIZONTAL
+   MUROS ALREDEDOR DEL MAPA
+   SOLO AQUÍ.
+   ========================================================= */
+
+const wallMaterial =
+    new THREE.MeshStandardMaterial({
+        color: 0x30343b
+    });
+
+/* Muro izquierdo */
+
+const leftWall = new THREE.Mesh(
+    new THREE.BoxGeometry(5, 35, MAP_LENGTH + 40),
+    wallMaterial
+);
+
+leftWall.position.set(
+    -MAP_WIDTH / 2,
+    17.5,
+    -430
+);
+
+map.add(leftWall);
+
+/* Muro derecho */
+
+const rightWall = new THREE.Mesh(
+    new THREE.BoxGeometry(5, 35, MAP_LENGTH + 40),
+    wallMaterial
+);
+
+rightWall.position.set(
+    MAP_WIDTH / 2,
+    17.5,
+    -430
+);
+
+map.add(rightWall);
+
+/* Muro final */
+
+const endWall = new THREE.Mesh(
+    new THREE.BoxGeometry(MAP_WIDTH + 10, 35, 5),
+    wallMaterial
+);
+
+endWall.position.set(
+    0,
+    17.5,
+    -1085
+);
+
+map.add(endWall);
+
+/* Muro inicial */
+
+const startWall = new THREE.Mesh(
+    new THREE.BoxGeometry(MAP_WIDTH + 10, 35, 5),
+    wallMaterial
+);
+
+startWall.position.set(
+    0,
+    17.5,
+    90
+);
+
+map.add(startWall);
+
+/* =========================================================
+   CORRALES
+   4 bases en una sola línea.
+   SIN MUROS.
    ========================================================= */
 
 const basePositions = [
-    -75,
-    -25,
-    25,
-    75
+    -90,
+    -30,
+    30,
+    90
 ];
 
-function createBase(x, number) {
+function createCorral(x, number) {
 
-    const baseMaterial =
+    const floor = new THREE.Mesh(
+        new THREE.BoxGeometry(48, 2, 40),
         new THREE.MeshStandardMaterial({
-            color: 0xdddddd
-        });
-
-    const base = new THREE.Mesh(
-        new THREE.BoxGeometry(38, 2, 32),
-        baseMaterial
+            color: 0xc99a5a
+        })
     );
 
-    base.position.set(x, 1, 45);
-    map.add(base);
+    floor.position.set(x, 1, 45);
+    map.add(floor);
 
-    /* Casa */
+    /* Poste decorativo */
 
-    const houseMaterial =
+    const postMaterial =
         new THREE.MeshStandardMaterial({
-            color: 0xffffff
+            color: 0x754c24
         });
 
-    const house = new THREE.Mesh(
-        new THREE.BoxGeometry(25, 18, 22),
-        houseMaterial
-    );
+    const postPositions = [
+        [-20, -15],
+        [20, -15],
+        [-20, 15],
+        [20, 15]
+    ];
 
-    house.position.set(x, 10, 45);
-    map.add(house);
+    postPositions.forEach(([px, pz]) => {
 
-    /* Techo */
+        const post = new THREE.Mesh(
+            new THREE.BoxGeometry(2, 7, 2),
+            postMaterial
+        );
 
-    const roofMaterial =
-        new THREE.MeshStandardMaterial({
-            color: 0x333333
-        });
+        post.position.set(
+            x + px,
+            4.5,
+            45 + pz
+        );
 
-    const roof = new THREE.Mesh(
-        new THREE.ConeGeometry(18, 12, 4),
-        roofMaterial
-    );
-
-    roof.rotation.y = Math.PI / 4;
-    roof.position.set(x, 25, 45);
-    map.add(roof);
-
-    /* Nombre */
+        map.add(post);
+    });
 
     const label = createTextSprite(
-        "🏠 BASE " + number
+        "🏠 CORRAL " + number
     );
 
-    label.position.set(x, 38, 45);
-    label.scale.set(24, 8, 1);
+    label.position.set(x, 12, 45);
+    label.scale.set(25, 7, 1);
+
     map.add(label);
 }
 
 basePositions.forEach((x, i) => {
-    createBase(x, i + 1);
+    createCorral(x, i + 1);
 });
 
 /* =========================================================
    PLAZA OWNER
-   Está delante/abajo de las bases
    ========================================================= */
 
-const plazaMaterial =
+const plaza = new THREE.Mesh(
+    new THREE.CylinderGeometry(18, 18, 2, 32),
     new THREE.MeshStandardMaterial({
         color: 0x302060,
         emissive: 0x24124c,
         emissiveIntensity: 0.4
-    });
-
-const plaza = new THREE.Mesh(
-    new THREE.CylinderGeometry(18, 18, 2, 32),
-    plazaMaterial
+    })
 );
 
 plaza.position.set(0, 1.5, 80);
 map.add(plaza);
 
-const plazaLabel = createTextSprite("👑 PLAZA OWNER 👑");
+const plazaLabel =
+    createTextSprite("👑 PLAZA OWNER 👑");
 
 plazaLabel.position.set(0, 12, 80);
 plazaLabel.scale.set(35, 10, 1);
@@ -457,11 +473,9 @@ function createTree(x, z) {
     map.add(leaves);
 }
 
-/* Bosque */
-
 for (let x = -95; x <= 95; x += 25) {
-    createTree(x, -120);
-    createTree(x + 10, -145);
+    createTree(x, -135);
+    createTree(x + 10, -165);
 }
 
 /* =========================================================
@@ -492,11 +506,11 @@ function createCactus(x, z) {
 }
 
 for (let x = -85; x <= 85; x += 35) {
-    createCactus(x, -240);
+    createCactus(x, -270);
 }
 
 /* =========================================================
-   CRISTALES DE HIELO
+   HIELO
    ========================================================= */
 
 function createIce(x, z) {
@@ -515,7 +529,7 @@ function createIce(x, z) {
 }
 
 for (let x = -90; x <= 90; x += 30) {
-    createIce(x, -360);
+    createIce(x, -405);
 }
 
 /* =========================================================
@@ -547,11 +561,11 @@ function createVolcano(x, z) {
     map.add(lava);
 }
 
-createVolcano(-65, -480);
-createVolcano(65, -480);
+createVolcano(-65, -540);
+createVolcano(65, -540);
 
 /* =========================================================
-   ESTRELLAS PARA GALAXIA
+   ESTRELLAS
    ========================================================= */
 
 for (let i = 0; i < 70; i++) {
@@ -568,7 +582,7 @@ for (let i = 0; i < 70; i++) {
     star.position.set(
         (Math.random() - .5) * 210,
         Math.random() * 35 + 4,
-        -720 + (Math.random() - .5) * 80
+        -810 + (Math.random() - .5) * 80
     );
 
     map.add(star);
@@ -592,25 +606,31 @@ for (let i = 0; i < 8; i++) {
     pillar.position.set(
         -85 + i * 25,
         17,
-        -960
+        -1080
     );
 
     map.add(pillar);
 }
 
 /* =========================================================
-   TEXTO 3D SIMPLE
+   TEXTO
    ========================================================= */
 
 function createTextSprite(text) {
 
     const canvas = document.createElement("canvas");
+
     canvas.width = 1024;
     canvas.height = 256;
 
     const ctx = canvas.getContext("2d");
 
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
 
     ctx.font = "bold 70px Arial";
     ctx.textAlign = "center";
@@ -675,13 +695,21 @@ player.position.set(0, 0, 20);
 scene.add(player);
 
 /* =========================================================
-   MOVIMIENTO
+   MOVIMIENTO + SALTO
    ========================================================= */
 
 const keys = {};
 
 document.addEventListener("keydown", e => {
+
     keys[e.code] = true;
+
+    if (
+        e.code === "Space" &&
+        player.position.y <= 0.05
+    ) {
+        playerVelocityY = 0.55;
+    }
 });
 
 document.addEventListener("keyup", e => {
@@ -689,6 +717,9 @@ document.addEventListener("keyup", e => {
 });
 
 let speed = 0.8;
+let playerVelocityY = 0;
+
+const gravity = -0.025;
 
 function updatePlayer() {
 
@@ -714,37 +745,109 @@ function updatePlayer() {
         player.position.x += speed;
     }
 
+    /* Salto */
+
+    playerVelocityY += gravity;
+    player.position.y += playerVelocityY;
+
+    if (player.position.y < 0) {
+        player.position.y = 0;
+        playerVelocityY = 0;
+    }
+
+    /* Límites del mapa */
+
     player.position.x =
-        Math.max(-105, Math.min(105, player.position.x));
+        Math.max(
+            -MAP_WIDTH / 2 + 5,
+            Math.min(
+                MAP_WIDTH / 2 - 5,
+                player.position.x
+            )
+        );
 
     player.position.z =
-        Math.max(-1010, Math.min(90, player.position.z));
+        Math.max(
+            -1080,
+            Math.min(
+                80,
+                player.position.z
+            )
+        );
 }
 
 /* =========================================================
-   CÁMARA TERCERA PERSONA
+   CÁMARA + MOUSE
    ========================================================= */
+
+let cameraYaw = 0;
+let cameraPitch = 0.35;
+
+document.addEventListener("mousemove", event => {
+
+    if (
+        document.pointerLockElement !==
+        renderer.domElement
+    ) {
+        return;
+    }
+
+    cameraYaw -= event.movementX * 0.0025;
+    cameraPitch -= event.movementY * 0.002;
+
+    cameraPitch = Math.max(
+        -0.2,
+        Math.min(0.9, cameraPitch)
+    );
+});
 
 function updateCamera() {
 
-    const target = new THREE.Vector3(
-        player.position.x,
-        player.position.y + 6,
-        player.position.z
+    const distance = 38;
+
+    const horizontalDistance =
+        Math.cos(cameraPitch) * distance;
+
+    const cameraX =
+        player.position.x -
+        Math.sin(cameraYaw) *
+        horizontalDistance;
+
+    const cameraY =
+        player.position.y +
+        12 +
+        Math.sin(cameraPitch) *
+        distance;
+
+    const cameraZ =
+        player.position.z +
+        Math.cos(cameraYaw) *
+        horizontalDistance;
+
+    const cameraPosition =
+        new THREE.Vector3(
+            cameraX,
+            cameraY,
+            cameraZ
+        );
+
+    camera.position.lerp(
+        cameraPosition,
+        0.12
     );
 
-    const cameraPosition = new THREE.Vector3(
-        player.position.x,
-        player.position.y + 32,
-        player.position.z + 38
-    );
+    const target =
+        new THREE.Vector3(
+            player.position.x,
+            player.position.y + 6,
+            player.position.z
+        );
 
-    camera.position.lerp(cameraPosition, 0.08);
     camera.lookAt(target);
 }
 
 /* =========================================================
-   DETECTAR ZONA
+   ZONA ACTUAL
    ========================================================= */
 
 function updateZone() {
@@ -755,7 +858,9 @@ function updateZone() {
     zones.forEach(zone => {
 
         const distance =
-            Math.abs(player.position.z - zone.z);
+            Math.abs(
+                player.position.z - zone.z
+            );
 
         if (distance < bestDistance) {
             bestDistance = distance;
@@ -763,24 +868,24 @@ function updateZone() {
         }
     });
 
-    document.getElementById("zone").textContent =
-        closest.name;
+    document.getElementById("zone")
+        .textContent = closest.name;
 }
 
 /* =========================================================
    DINERO
+   SIN MASCOTAS = $0
    ========================================================= */
 
 let money = 0;
 
-setInterval(() => {
+/*
+   Más adelante:
+   money += dineroGeneradoPorMascotas;
+*/
 
-    money += 1;
-
-    document.getElementById("money").textContent =
-        money;
-
-}, 1000);
+document.getElementById("money")
+    .textContent = "0";
 
 /* =========================================================
    JUGAR
@@ -792,7 +897,8 @@ document.getElementById("playButton")
         document.getElementById("startScreen")
             .style.display = "none";
 
-        renderer.domElement.requestPointerLock?.();
+        renderer.domElement
+            .requestPointerLock?.();
     });
 
 /* =========================================================
@@ -807,7 +913,10 @@ function animate() {
     updateCamera();
     updateZone();
 
-    renderer.render(scene, camera);
+    renderer.render(
+        scene,
+        camera
+    );
 }
 
 animate();
@@ -819,7 +928,8 @@ animate();
 window.addEventListener("resize", () => {
 
     camera.aspect =
-        window.innerWidth / window.innerHeight;
+        window.innerWidth /
+        window.innerHeight;
 
     camera.updateProjectionMatrix();
 
