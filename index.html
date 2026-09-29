@@ -1209,4 +1209,202 @@ document.addEventListener(
         }
 
         cameraYaw -= event.movementX*.0025;
+        cameraPitch -= event.movementY*.002;
+
+        cameraPitch=Math.max(
+            -.2,
+            Math.min(.9,cameraPitch)
+        );
+    }
+);
+
+function updateCamera(){
+
+    const distance=38;
+
+    const horizontalDistance =
+        Math.cos(cameraPitch)*distance;
+
+    const cameraX =
+        player.position.x -
+        Math.sin(cameraYaw)*horizontalDistance;
+
+    const cameraY =
+        player.position.y +
+        12 +
+        Math.sin(cameraPitch)*distance;
+
+    const cameraZ =
+        player.position.z +
+        Math.cos(cameraYaw)*horizontalDistance;
+
+    const cameraPosition =
+        new THREE.Vector3(
+            cameraX,
+            cameraY,
+            cameraZ
+        );
+
+    camera.position.lerp(
+        cameraPosition,
+        .12
+    );
+
+    const target =
+        new THREE.Vector3(
+            player.position.x,
+            player.position.y+6,
+            player.position.z
+        );
+
+    camera.lookAt(target);
+}
+
+
+/* =========================================================
+   DINERO
+========================================================= */
+
+let money=0;
+
+document.getElementById("money").textContent="💰 $0";
+
+
+/* =========================================================
+   DETECCIÓN DE ZONA
+========================================================= */
+
+function updateZone(){
+
+    const distance =
+        START_Z-player.position.z;
+
+    let index=
+        Math.floor(distance/ZONE_LENGTH);
+
+    index=Math.max(
+        0,
+        Math.min(8,index)
+    );
+
+    document.getElementById("zone").textContent=
+        zones[index].name;
+}
+
+
+/* =========================================================
+   ANIMACIÓN
+========================================================= */
+
+function animate(){
+
+    requestAnimationFrame(animate);
+
+    const speed=.22;
+
+    if(keys["KeyW"])
+        player.position.z-=speed;
+
+    if(keys["KeyS"])
+        player.position.z+=speed;
+
+    if(keys["KeyA"])
+        player.position.x-=speed;
+
+    if(keys["KeyD"])
+        player.position.x+=speed;
+
+
+    /* gravedad */
+
+    playerVelocityY+=gravity;
+
+    player.position.y+=playerVelocityY;
+
+    if(player.position.y<0){
+
+        player.position.y=0;
+        playerVelocityY=0;
+    }
+
+
+    /* límites laterales */
+
+    player.position.x=
+        Math.max(
+            -105,
+            Math.min(
+                105,
+                player.position.x
+            )
+        );
+
+
+    /* límite del mapa */
+
+    player.position.z=
+        Math.max(
+            END_Z+8,
+            Math.min(
+                START_Z-2,
+                player.position.z
+            )
+        );
+
+
+    updateZone();
+    updateCamera();
+
+    renderer.render(
+        scene,
+        camera
+    );
+}
+
+
+/* =========================================================
+   JUGAR
+========================================================= */
+
+document
+.getElementById("playButton")
+.addEventListener(
+    "click",
+    ()=>{
+
+        document
+        .getElementById("startScreen")
+        .style.display="none";
+
+        renderer.domElement.requestPointerLock();
+    }
+);
+
+
+/* =========================================================
+   RESIZE
+========================================================= */
+
+window.addEventListener(
+    "resize",
+    ()=>{
+
+        camera.aspect=
+            innerWidth/innerHeight;
+
+        camera.updateProjectionMatrix();
+
+        renderer.setSize(
+            innerWidth,
+            innerHeight
+        );
+    }
+);
+
+animate();
+
+</script>
+
+</body>
+</html>
 ```
